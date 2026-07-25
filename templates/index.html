@@ -7,11 +7,30 @@
          /* Popup styles */
          .popup { display: none; position: fixed; z-index: 1000; left: 0; top: 0;
          width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+
          .popup-content {
-         background: #fff; width: 300px;  padding: 20px;
-         border-radius: 8px; text-align: center;
-         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-         }
+  background: #fff;
+  width: 300px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+  /* Center the popup */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.popup-content input {
+  width: 90%; /* prevent overflow */
+}
+
+.close::after {
+  content: "×"; /* show the close symbol */
+}
+
          @keyframes popupFadeIn {
         from { transform: scale(0.9); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
