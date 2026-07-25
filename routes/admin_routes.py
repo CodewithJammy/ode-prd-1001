@@ -27,7 +27,7 @@ def login():
 
             if row:
                 session["admin_user"] = username  # mark logged in
-                return redirect(url_for("admin.add_question"))
+                return redirect(url_for("admin.dashboard"))
             else:
                 return render_template("index.html", error="Invalid credentials")
         except Exception as e:
@@ -36,6 +36,12 @@ def login():
         # GET request → just show the login page
         return render_template("index.html")
 
+@admin_bp.route("/dashboard", methods=["GET"])
+def dashboard():
+    if "admin_user" not in session:
+        return redirect(url_for("admin.login"))
+    # Render your admin dashboard template
+    return render_template("admin_dashboard.html")
 
 # --- ADD QUESTION ---
 @admin_bp.route("/add-question", methods=["GET", "POST"])
