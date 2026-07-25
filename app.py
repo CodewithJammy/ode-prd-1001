@@ -24,7 +24,9 @@ app.register_blueprint(register_bp)
 @app.route("/")
 def index():
     return render_template("index.html")
-
+@app.route("/courses")
+def courses():
+    return render_template("templates/exam_dashboard.html")
 # Google Apps Script Web App URL
 GAS_URL = "https://script.google.com/macros/s/AKfycbwbJedA3rIluoThDP3r17JbrotsKpEWqBCppgGhikuSQn1PCydVO_rMj3G0tI65I6NJLw/exec"
 
