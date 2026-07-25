@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Portal Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+    nav { background: #34495e; padding: 10px; text-align: center; }
+    nav a { color: white; margin: 0 15px; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    section { padding: 20px; }
+    footer { background: #2c3e50; color: white; text-align: center; padding: 10px; }
+
+    /* Dashboard sections */
+    .exam-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: #f4f4f4;
+      width: 250px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h3 { margin-top: 0; }
+    .card button {
+      background: #2c3e50;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .card button:hover { background: #1a252f; }
+
+    /* Free vs Paid labels */
+    .free { border-top: 4px solid #27ae60; }   /* green */
+    .paid { border-top: 4px solid #e67e22; }   /* orange */
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Exam Portal Dashboard</h1>
+    <p>Select your exam and start practicing</p>
+  </header>
+
+  <nav>
+    <a href="#free">Free Exams</a>
+    <a href="#paid">Paid Exams</a>
+    <a href="/logout" class="logout">Logout</a>
+  </nav>
+
+  <!-- Free Exams -->
+  <section id="free">
+    <h2>Free Exams</h2>
+    <div class="exam-section">
+      <div class="card free">
+        <h3>CCC</h3>
+        <p>Free practice for Computer Concepts exam.</p>
+        <button>Start Exam</button>
+      </div>
+      <div class="card free">
+        <h3>SQL</h3>
+        <p>Free SQL basics practice questions.</p>
+        <button>Start Exam</button>
+      </div>
+      <div class="card free">
+        <h3>Reasoning</h3>
+        <p>Logical reasoning practice set.</p>
+        <button>Start Exam</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Paid Exams -->
+  <section id="paid">
+    <h2>Paid Exams</h2>
+    <div class="exam-section">
+      <div class="card paid">
+        <h3>General Studies</h3>
+        <p>Comprehensive GS exam package.</p>
+        <button>Buy & Start</button>
+      </div>
+      <div class="card paid">
+        <h3>Advanced SQL</h3>
+        <p>Paid SQL advanced level questions.</p>
+        <button>Buy & Start</button>
+      </div>
+      <div class="card paid">
+        <h3>Full Reasoning Pack</h3>
+        <p>Paid reasoning mock exams.</p>
+        <button>Buy & Start</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Exam Portal</p>
+  </footer>
+</body>
+</html>
