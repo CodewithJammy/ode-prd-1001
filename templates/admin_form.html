@@ -70,7 +70,7 @@
 <body>
   <div class="container">
     <h2>Add New Question</h2>
-    <<a href="{{ url_for('admin.login') }}" class="edit-btn">Back to Home</a>
+    <<a href="{{ url_for('admin.dashboard') }}" class="edit-btn">Back to Home</a>
     <form method="POST" action="{{ url_for('admin.add_question') }}">
       
       <label for="section">Section:</label>
