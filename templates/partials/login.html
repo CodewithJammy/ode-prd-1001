@@ -3,6 +3,7 @@
     <span class="close" onclick="closeModal('loginModal')">&times;</span>
     <h2>Login</h2>
     <form onsubmit="return handleLogin(event)">
+      <input type="hidden" name="exam_slug" id="examSlug">
       <label>Email:</label>
       <input type="email" required><br><br>
       <label>Password:</label>
