@@ -8,35 +8,36 @@ exam_bp = Blueprint("exam", __name__, url_prefix="/exam")
 # --- LOGIN ---
 @exam_bp.route("/login", methods=["GET", "POST"])
 
+#@exam_bp.route("/login", methods=["POST"])
 def login():
-    if request.is_json:
-        data = request.get_json()
-        email = data.get("email")
-        password = data.get("password")
-    else:
-        email = request.form.get("email")
-        password = request.form.get("password")
+    try:
+        # Handle both JSON (from fetch) and form data (from normal POST)
+        if request.is_json:
+            data = request.get_json()
+            email = data.get("email")
+            password = data.get("password")
+        else:
+            email = request.form.get("email")
+            password = request.form.get("password")
 
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
+        conn = get_connection()
+        cursor = conn.cursor()
 
-            # Adjust table name/schema to match your DB
-            cursor.execute("SELECT * FROM dbo.UserLogin WHERE email=? AND password=?", (email, password))
-            row = cursor.fetchone()
-            conn.close()
+        # Adjust table name/schema to match your DB
+        cursor.execute("SELECT * FROM dbo.UserLogin WHERE email=? AND password=?", (email, password))
+        row = cursor.fetchone()
+        conn.close()
 
-            if row:
-                session["exam_user"] = email  # mark logged in
-                 return jsonify(success=True)
-            else:
-                return jsonify(success=False, message="Invalid credentials")
-        except Exception as e:
-            logging.exception("Login error")
-            return jsonify(success=False, message=str(e))
-    #else:
-        # GET request → just show the login page
-       #return jsonify(success=False, message="Invalid credentials")
+        if row:
+            session["exam_user"] = email  # mark logged in
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False, message="Invalid credentials")
+
+    except Exception as e:
+        logging.exception("Login error")
+        return jsonify(success=False, message=str(e))
+
 
 # --- Exam Home Page ---
 @exam_bp.route("/", methods=["GET"])
