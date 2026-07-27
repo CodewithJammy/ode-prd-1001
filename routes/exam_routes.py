@@ -104,12 +104,12 @@ def get_questions(section):
         return jsonify({"error": str(e)})
 
 # --- Submit Answer ---
-@exam_bp.route("/submit/<int:qid>", methods=["POST"])
-def submit_answer(qid):
-    selected_option = request.form.get("selected_option")
-    # You can store answers in session or DB
-    answers = session.get("answers", {})
-    answers[qid] = selected_option
-    session["answers"] = answers
+# @exam_bp.route("/submit/<int:qid>", methods=["POST"])
+#def submit_answer(qid):
+#    selected_option = request.form.get("selected_option")
+ #   # You can store answers in session or DB
+  #  answers = session.get("answers", {})
+   # answers[qid] = selected_option
+    #session["answers"] = answers
 
-    return redirect(url_for("exam.exam_home"))
+    #return redirect(url_for("exam.exam_home"))
