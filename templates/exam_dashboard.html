@@ -67,8 +67,11 @@
 </style>
 
 <script>
-function openModal(id) {
+function openModal(id ,slug) {
   document.getElementById(id).style.display = "block";
+  if (slug) {
+    document.getElementById("examSlug").value = slug;
+  }
 }
 function closeModal(id) {
   document.getElementById(id).style.display = "none";
@@ -77,6 +80,7 @@ function handleLogin(event) {
   event.preventDefault();
   const email = event.target.querySelector('input[type="email"]').value;
   const password = event.target.querySelector('input[type="password"]').value;
+  const examSlug = event.target.querySelector('#examSlug').value;
 
   fetch("{{ url_for('exam.login') }}", {
     method: "POST",
