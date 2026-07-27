@@ -78,7 +78,7 @@ function handleLogin(event) {
   const email = event.target.querySelector('input[type="email"]').value;
   const password = event.target.querySelector('input[type="password"]').value;
 
-  fetch("{{ url_for('exam.login') }}", {
+  fetch("{{ url_for('exam.login') }}n", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -86,7 +86,7 @@ function handleLogin(event) {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      window.location.href = "/exam.exam_home"; // or your exam page
+      window.location.href = "{{ url_for('exam.exam_home') }}"; // or your exam page
     } else {
       alert("Invalid credentials");
     }
