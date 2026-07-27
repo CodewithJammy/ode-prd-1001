@@ -75,14 +75,43 @@ function closeModal(id) {
 }
 function handleLogin(event) {
   event.preventDefault();
-  // TODO: validate login with Flask backend
-  window.location.href = "xyz.html";
+  const email = event.target.querySelector('input[type="email"]').value;
+  const password = event.target.querySelector('input[type="password"]').value;
+
+  fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = "/dashboard"; // or your exam page
+    } else {
+      alert("Invalid credentials");
+    }
+  });
 }
+
 function handleSignup(event) {
   event.preventDefault();
-  // TODO: save signup info with Flask backend
-  window.location.href = "xyz.html";
+  const formData = new FormData(event.target);
+
+  fetch("/signup", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = "/dashboard";
+    } else {
+      alert("Signup failed: " + data.message);
+    }
+  });
 }
+
+
 function forgotPassword() {
   alert("Password reset link will be sent to your email.");
 }
@@ -149,5 +178,9 @@ function forgotPassword() {
   <footer>
     <p>&copy; 2026 Exam Portal</p>
   </footer>
+
+  {% include "partials/login.html" %}
+  {% include "partials/signup.html" %}
+
 </body>
 </html>
