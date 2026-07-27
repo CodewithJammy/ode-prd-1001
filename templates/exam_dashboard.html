@@ -86,7 +86,7 @@ function handleLogin(event) {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      window.location.href = "/dashboard"; // or your exam page
+      window.location.href = "/exam.exam_home"; // or your exam page
     } else {
       alert("Invalid credentials");
     }
