@@ -10,7 +10,7 @@ exam_bp = Blueprint("exam", __name__, url_prefix="/exam")
 
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
 
         try:
@@ -18,7 +18,7 @@ def login():
             cursor = conn.cursor()
 
             # Adjust table name/schema to match your DB
-            cursor.execute("SELECT * FROM dbo.UserLogin WHERE username=? AND password=?", (username, password))
+            cursor.execute("SELECT * FROM dbo.UserLogin WHERE email=? AND password=?", (email, password))
             row = cursor.fetchone()
             conn.close()
 
@@ -26,12 +26,12 @@ def login():
                 session["exam_user"] = username  # mark logged in
                 return redirect(url_for("exam.exam_home"))
             else:
-                return render_template("index.html", error="Invalid credentials")
+                return render_template("exam_dashboard.html", error="Invalid credentials")
         except Exception as e:
-            return render_template("index.html", error=f"Database error: {e}")
+            return render_template("exam_dashboard.html", error=f"Database error: {e}")
     else:
         # GET request → just show the login page
-        return render_template("index.html")
+        return render_template("exam_dashboard.html")
 
 # --- Exam Home Page ---
 @exam_bp.route("/", methods=["GET"])
