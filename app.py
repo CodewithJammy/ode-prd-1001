@@ -1,5 +1,5 @@
-from flask import Flask, request, Response, render_template, redirect
-# import requests
+from flask import Flask,  Response, render_template, redirect
+
 import os
 from flask_cors import CORS
 from routes.exam_routes  import exam_bp
