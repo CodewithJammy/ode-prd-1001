@@ -28,14 +28,15 @@ def login():
 
             if row:
                 session["exam_user"] = email  # mark logged in
-                return redirect(url_for("exam.exam_home"))
+                 return jsonify(success=True)
             else:
-                return render_template("exam_dashboard.html", error="Invalid credentials")
+                return jsonify(success=False, message="Invalid credentials")
         except Exception as e:
-            return render_template("exam_dashboard.html", error=f"Database error: {e}")
+            logging.exception("Login error")
+            return jsonify(success=False, message=str(e))
     else:
         # GET request → just show the login page
-        return render_template("exam_dashboard.html")
+       return jsonify(success=False, message="Invalid credentials")
 
 # --- Exam Home Page ---
 @exam_bp.route("/", methods=["GET"])
