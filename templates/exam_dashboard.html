@@ -41,7 +41,54 @@
     /* Free vs Paid labels */
     .free { border-top: 4px solid #27ae60; }   /* green */
     .paid { border-top: 4px solid #e67e22; }   /* orange */
-  </style>
+  
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  width: 350px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+</style>
+
+<script>
+function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+function handleLogin(event) {
+  event.preventDefault();
+  // TODO: validate login with Flask backend
+  window.location.href = "xyz.html";
+}
+function handleSignup(event) {
+  event.preventDefault();
+  // TODO: save signup info with Flask backend
+  window.location.href = "xyz.html";
+}
+function forgotPassword() {
+  alert("Password reset link will be sent to your email.");
+}
+</script>
+
+
 </head>
 <body>
   <header>
