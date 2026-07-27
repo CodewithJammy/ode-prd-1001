@@ -5,14 +5,43 @@ from models.db_config import get_connection
 # Create blueprint
 exam_bp = Blueprint("exam", __name__, url_prefix="/exam")
 
+# --- LOGIN ---
+@exam_bp.route("/login", methods=["GET", "POST"])
+
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+
+            # Adjust table name/schema to match your DB
+            cursor.execute("SELECT * FROM dbo.UserLogin WHERE username=? AND password=?", (username, password))
+            row = cursor.fetchone()
+            conn.close()
+
+            if row:
+                session["exam_user"] = username  # mark logged in
+                return redirect(url_for("exam.exam_home"))
+            else:
+                return render_template("index.html", error="Invalid credentials")
+        except Exception as e:
+            return render_template("index.html", error=f"Database error: {e}")
+    else:
+        # GET request → just show the login page
+        return render_template("index.html")
+
 # --- Exam Home Page ---
 @exam_bp.route("/", methods=["GET"])
 def exam_home():
-    if "admin_user" not in session:
+    if "exam_user" not in session:
         # If you want only logged-in users to access exam
         return redirect(url_for("admin.login"))
 
     return render_template("practice.html")  # your HTML page
+
 
 # --- Load Questions by Section ---
 @exam_bp.route("/questions/<string:section>", methods=["GET"])
