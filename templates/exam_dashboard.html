@@ -78,7 +78,7 @@ function handleLogin(event) {
   const email = event.target.querySelector('input[type="email"]').value;
   const password = event.target.querySelector('input[type="password"]').value;
 
-  fetch("/login", {
+  fetch("{{ url_for('exam.login') }}", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
