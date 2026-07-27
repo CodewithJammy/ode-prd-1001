@@ -89,6 +89,7 @@
             }
           palette.appendChild(btn);
         });
+         updatePalette();
         if (sectionQuestions.length > 0) {
             showQuestion(0);
         } else {
@@ -199,11 +200,15 @@ function markForReview() {
   }
 }*/
 
-  function updatePalette() {
+function updatePalette() {
   const paletteBtns = document.getElementById('palette').children;
   sectionQuestions.forEach((q, i) => {
     if (markedQuestions.has(q.id)) {
-      paletteBtns[i].style.background = "orange";
+      paletteBtns[i].style.background = "orange"; // review
+    } else if (userResponses[currentSection]?.[q.id]) {
+      paletteBtns[i].style.background = "green"; // answered
+    } else {
+      paletteBtns[i].style.background = ""; // default
     }
   });
 }
