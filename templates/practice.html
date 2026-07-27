@@ -84,6 +84,9 @@
           const btn = document.createElement('button');
           btn.textContent = i + 1;
           btn.onclick = () => showQuestion(i);
+           if (userResponses[section]?.[q.id]) {
+            btn.style.background = "green"; // already answered
+            }
           palette.appendChild(btn);
         });
         if (sectionQuestions.length > 0) {
@@ -179,12 +182,13 @@
  let markedQuestions = new Set();
 
 function markForReview() {
-  markedQuestions.add(currentIndex); // store the index
+  const q = sectionQuestions[currentIndex];
+  markedQuestions.add(q.id); // use ID not index
   updatePalette();
   saveAndNext();
 }
 
-function updatePalette() {
+/*function updatePalette() {
   const paletteBtns = document.getElementById('palette').children;
   for (let i = 0; i < paletteBtns.length; i++) {
     if (markedQuestions.has(i)) {
@@ -193,6 +197,15 @@ function updatePalette() {
       paletteBtns[i].style.background = ""; // reset if not marked
     }
   }
+}*/
+
+  function updatePalette() {
+  const paletteBtns = document.getElementById('palette').children;
+  sectionQuestions.forEach((q, i) => {
+    if (markedQuestions.has(q.id)) {
+      paletteBtns[i].style.background = "orange";
+    }
+  });
 }
 
   let examDuration = 0;       // in minutes, fetched from DB
