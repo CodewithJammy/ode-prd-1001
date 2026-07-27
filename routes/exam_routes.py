@@ -40,8 +40,8 @@ def login():
 
 
 # --- Exam Home Page ---
-@exam_bp.route("/", methods=["GET"])
-def exam_home():
+@exam_bp.route("/<string:course_slug>", methods=["GET"])
+def exam_home(course_slug):
     if "exam_user" not in session:
         # If you want only logged-in users to access exam
         return redirect(url_for("admin.login"))
