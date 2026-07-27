@@ -9,7 +9,11 @@ exam_bp = Blueprint("exam", __name__, url_prefix="/exam")
 @exam_bp.route("/login", methods=["GET", "POST"])
 
 def login():
-    if request.method == "POST":
+    if request.is_json:
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+    else:
         email = request.form.get("email")
         password = request.form.get("password")
 
@@ -23,7 +27,7 @@ def login():
             conn.close()
 
             if row:
-                session["exam_user"] = username  # mark logged in
+                session["exam_user"] = email  # mark logged in
                 return redirect(url_for("exam.exam_home"))
             else:
                 return render_template("exam_dashboard.html", error="Invalid credentials")
