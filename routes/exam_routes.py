@@ -45,8 +45,15 @@ def exam_home(course_slug):
     if "exam_user" not in session:
         # If you want only logged-in users to access exam
         return redirect(url_for("admin.login"))
+    # Map slug to DB section
+    slug_map = {
+        "ccc": "Computer Concepts",
+        "sql": "SQL Basics",
+        "reasoning": "Logical Reasoning"
+    }
+    db_section = slug_map.get(course_slug, course_slug)    
 
-    return render_template("practice.html")  # your HTML page
+    return render_template("practice.html" , section=db_section)  # your HTML page
 
 
 # --- Load Questions by Section ---
