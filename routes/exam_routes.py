@@ -34,9 +34,9 @@ def login():
         except Exception as e:
             logging.exception("Login error")
             return jsonify(success=False, message=str(e))
-    else:
+    #else:
         # GET request → just show the login page
-       return jsonify(success=False, message="Invalid credentials")
+       #return jsonify(success=False, message="Invalid credentials")
 
 # --- Exam Home Page ---
 @exam_bp.route("/", methods=["GET"])
