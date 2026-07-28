@@ -16,7 +16,7 @@ def signup():
         email = request.form["email"]
         mobile = request.form["mobile"]
         password = request.form["password"]
-        payment_option = request.form["payment_option"]
+        payment_method = request.form["payment_option"]
 
         hashed_password = generate_password_hash(password)
 
@@ -27,10 +27,10 @@ def signup():
         cursor = conn.cursor()
         cursor.execute(
             """
-            INSERT INTO Subscriber (username, email, mobile, password, payment_option, payment_status, amount, date, expiredate)
-            VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
+            INSERT INTO Subscriber (username, email, mobile, course,password, payment_method, payment_status, amount, date, expiredate)
+            VALUES (?, ?, ?,'ccc', ?, ?, ?, ?, GETDATE(), ?)
             """,
-            (username, email, mobile, hashed_password, payment_option, "Pending", amount, expiredate)
+            (username, email, mobile, hashed_password, payment_method, "Pending", amount, expiredate)
         )
         conn.commit()
         conn.close()
