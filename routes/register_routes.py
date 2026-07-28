@@ -2,6 +2,7 @@ import pyodbc
 from flask import Flask, Blueprint, render_template, request, session, redirect, url_for,jsonify,current_app
 from models.db_config import get_connection
 from werkzeug.security import generate_password_hash
+from flask_mail import Message
 import secrets
 from datetime import datetime, timedelta
 
