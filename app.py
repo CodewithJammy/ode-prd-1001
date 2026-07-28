@@ -8,7 +8,10 @@ from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 
-mail = Mail()   # create Mail object first
+mail = Mail(app)
+
+# Inject mail into blueprint
+register_bp.mail = mail
 
 # Create Flask app once
 app = Flask(__name__)
