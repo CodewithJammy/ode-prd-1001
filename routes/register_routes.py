@@ -43,6 +43,23 @@ def signup():
         return jsonify({"success": False, "message": str(e)}), 400
 
 
+@register_bp.route("/forgot-password", methods=["POST"])
+def forgot_password():
+    data = request.get_json()
+    email = data.get("email")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Subscriber WHERE email=?", (email,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
+    else:
+        return jsonify({"success": False, "message": "No account found with that email."}), 404
+
+
 @register_bp.route("/register", methods=["POST"])
 def register():
     fullname = request.form["name"]
