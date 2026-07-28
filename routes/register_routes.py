@@ -45,7 +45,6 @@ def signup():
         return jsonify({"success": False, "message": str(e)}), 400
 
 
-
 @register_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
     try:
@@ -56,45 +55,62 @@ def forgot_password():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM Subscriber WHERE email=?", (email,))
         row = cursor.fetchone()
-        conn.close()
 
         if row:
-            # Generate a secure token
+            # Generate secure token + expiry
             token = secrets.token_urlsafe(32)
+            expire_time = datetime.utcnow() + timedelta(hours=1)
 
-            # TODO: Save token in DB with expiry time
-            # cursor.execute("UPDATE Subscriber SET reset_token=?, reset_expire=? WHERE email=?", (token, expire_time, email))
+            cursor.execute(
+                "UPDATE Subscriber SET reset_token=?, reset_expire=? WHERE email=?",
+                (token, expire_time, email)
+            )
+            conn.commit()
+            conn.close()
 
             # Build reset link
             reset_link = url_for('user.reset_password', token=token, _external=True)
 
             # Send email
-            msg = Message("Password Reset Request",
-                          recipients=[email])
-            msg.body = f"Click the link to reset your password: {reset_link}"
+            msg = Message("Password Reset Request", recipients=[email])
+            msg.body = f"Click the link to reset your password:\n{reset_link}\n\nThis link expires in 1 hour."
             mail.send(msg)
 
             return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
         else:
+            conn.close()
             return jsonify({"success": False, "message": "No account found with that email."}), 404
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
 
+
+
 @register_bp.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT reset_expire FROM Subscriber WHERE reset_token=?", (token,))
+    row = cursor.fetchone()
+
+    if not row or row.reset_expire < datetime.utcnow():
+        conn.close()
+        return "Reset link expired or invalid", 400
+
     if request.method == "POST":
         new_password = request.form["password"]
         hashed_password = generate_password_hash(new_password)
 
-        # Verify token from DB, then update password
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("UPDATE Subscriber SET password=? WHERE reset_token=?", (hashed_password, token))
+        cursor.execute(
+            "UPDATE Subscriber SET password=?, reset_token=NULL, reset_expire=NULL WHERE reset_token=?",
+            (hashed_password, token)
+        )
         conn.commit()
         conn.close()
 
         return "Password updated successfully!"
+    conn.close()
     return render_template("reset_password.html", token=token)
+
 
 
 
