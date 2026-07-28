@@ -4,6 +4,9 @@ from models.db_config import get_connection
 from werkzeug.security import generate_password_hash
 import secrets
 from datetime import datetime, timedelta
+from app import mail
+from flask_mail import Message
+
 
 
 app = Flask(__name__)
