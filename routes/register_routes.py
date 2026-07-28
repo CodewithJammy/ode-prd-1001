@@ -2,6 +2,8 @@ import pyodbc
 from flask import Flask, Blueprint, render_template, request, session, redirect, url_for,jsonify
 from models.db_config import get_connection
 from werkzeug.security import generate_password_hash
+import secrets
+
 
 app = Flask(__name__)
 
@@ -43,21 +45,40 @@ def signup():
         return jsonify({"success": False, "message": str(e)}), 400
 
 
+
 @register_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
-    data = request.get_json()
-    email = data.get("email")
+    try:
+        data = request.get_json()
+        email = data.get("email")
 
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Subscriber WHERE email=?", (email,))
-    row = cursor.fetchone()
-    conn.close()
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Subscriber WHERE email=?", (email,))
+        row = cursor.fetchone()
+        conn.close()
 
-    if row:
-        return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
-    else:
-        return jsonify({"success": False, "message": "No account found with that email."}), 404
+        if row:
+            # Generate a secure token
+            token = secrets.token_urlsafe(32)
+
+            # TODO: Save token in DB with expiry time
+            # cursor.execute("UPDATE Subscriber SET reset_token=?, reset_expire=? WHERE email=?", (token, expire_time, email))
+
+            # Build reset link
+            reset_link = url_for('user.reset_password', token=token, _external=True)
+
+            # Send email
+            msg = Message("Password Reset Request",
+                          recipients=[email])
+            msg.body = f"Click the link to reset your password: {reset_link}"
+            mail.send(msg)
+
+            return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
+        else:
+            return jsonify({"success": False, "message": "No account found with that email."}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
 
 
 @register_bp.route("/register", methods=["POST"])
