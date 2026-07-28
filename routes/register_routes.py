@@ -1,19 +1,12 @@
 import pyodbc
-from flask import Flask, Blueprint, render_template, request, session, redirect, url_for,jsonify
+from flask import Flask, Blueprint, render_template, request, session, redirect, url_for,jsonify,current_app
 from models.db_config import get_connection
 from werkzeug.security import generate_password_hash
 import secrets
 from datetime import datetime, timedelta
-from app import mail
-from flask_mail import Message
-
-
-
 
 
 register_bp = Blueprint("user", __name__, url_prefix="/user")
-
-
 
 @register_bp.route("/signup", methods=["POST"])
 def signup():
@@ -78,7 +71,7 @@ def forgot_password():
             # Send email
             msg = Message("Password Reset Request", recipients=[email])
             msg.body = f"Click the link to reset your password:\n{reset_link}\n\nThis link expires in 1 hour."
-            mail.send(msg)
+            current_app.extensions['mail'].send(msg)
 
             return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
         else:
