@@ -4,20 +4,25 @@
     <h2>Signup</h2>
     <form onsubmit="return handleSignup(event)">
       <label>Name:</label>
-      <input type="text" required><br><br>
+      <input type="text" name="name" required><br><br>
+
       <label>Email:</label>
-      <input type="email" required><br><br>
+      <input type="email" name="email" required><br><br>
+
       <label>Mobile No:</label>
-      <input type="tel" pattern="[0-9]{10}" required><br><br>
+      <input type="tel" name="mobile" pattern="[0-9]{10}" required><br><br>
+
       <label>Password:</label>
-      <input type="password" required><br><br>
+      <input type="password" name="password" required><br><br>
+
       <label>Payment Option:</label>
-      <select required>
+      <select name="payment_option" required>
         <option value="">Select</option>
         <option value="upi">UPI</option>
         <option value="card">Credit/Debit Card</option>
         <option value="netbanking">Net Banking</option>
       </select><br><br>
+
       <button type="submit">Signup</button>
     </form>
   </div>
