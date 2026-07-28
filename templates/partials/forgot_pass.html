@@ -16,7 +16,7 @@
     event.preventDefault();
     const email = document.querySelector("#forgotEmail").value;
 
-    fetch(" {{ url_for('user.forgot_password') }}", {
+    fetch(" {{ url_for('user.forgot-password') }}", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })
