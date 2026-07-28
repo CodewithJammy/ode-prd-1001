@@ -1,5 +1,5 @@
 from flask import Flask,  Response, render_template, redirect
-
+import logging
 import os
 from flask_cors import CORS
 from routes.exam_routes  import exam_bp
@@ -10,6 +10,13 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 mail = Mail(app)
+
+
+logging.info("MAIL_SERVER=%s", app.config.get("MAIL_SERVER"))
+logging.info("MAIL_PORT=%s", app.config.get("MAIL_PORT"))
+logging.info("MAIL_USE_TLS=%s", app.config.get("MAIL_USE_TLS"))
+logging.info("MAIL_USE_SSL=%s", app.config.get("MAIL_USE_SSL"))
+logging.info("MAIL_USERNAME=%s", app.config.get("MAIL_USERNAME"))
 
 # Inject mail into blueprint
 register_bp.mail = mail
