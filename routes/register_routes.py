@@ -4,7 +4,7 @@ from models.db_config import get_connection
 
 app = Flask(__name__)
 
-register_bp = Blueprint("userregister", __name__, url_prefix="/user")
+register_bp = Blueprint("user", __name__, url_prefix="/user")
 
 
 @register_bp.route("/signup", methods=["POST"])
