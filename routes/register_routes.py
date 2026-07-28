@@ -5,7 +5,9 @@ from werkzeug.security import generate_password_hash
 from flask_mail import Message
 import secrets
 from datetime import datetime, timedelta
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 register_bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -46,6 +48,10 @@ def signup():
 @register_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
     try:
+        # Log raw request info
+        logging.info("Headers: %s", request.headers)
+        logging.info("Raw data: %s", request.data)
+        logging.info("JSON: %s", request.get_json(silent=True))
         data = request.get_json(silent=True)
         if not data or "email" not in data:
             return jsonify({"success": False, "message": "Invalid request format"}), 400
