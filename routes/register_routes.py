@@ -103,27 +103,29 @@ def forgot_password():
 def reset_password(token):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT reset_expire FROM Subscriber WHERE reset_token=?", (token,))
-    row = cursor.fetchone()
+    try:
+        cursor.execute("SELECT reset_expire FROM Subscriber WHERE reset_token=?", (token,))
+        row = cursor.fetchone()
 
-    if not row or row.reset_expire < datetime.utcnow():
+        # If no row or expired
+        if not row or row[0] < datetime.utcnow():
+            return "Reset link expired or invalid", 400
+
+        if request.method == "POST":
+            new_password = request.form["password"]
+            hashed_password = generate_password_hash(new_password)
+
+            cursor.execute(
+                "UPDATE Subscriber SET password=?, reset_token=NULL, reset_expire=NULL WHERE reset_token=?",
+                (hashed_password, token)
+            )
+            conn.commit()
+            return "Password updated successfully!"
+
+        # GET request → render form
+        return render_template("reset_password.html", token=token)
+    finally:
         conn.close()
-        return "Reset link expired or invalid", 400
-
-    if request.method == "POST":
-        new_password = request.form["password"]
-        hashed_password = generate_password_hash(new_password)
-
-        cursor.execute(
-            "UPDATE Subscriber SET password=?, reset_token=NULL, reset_expire=NULL WHERE reset_token=?",
-            (hashed_password, token)
-        )
-        conn.commit()
-        conn.close()
-
-        return "Password updated successfully!"
-    conn.close()
-    return render_template("reset_password.html", token=token)
 
 
 
