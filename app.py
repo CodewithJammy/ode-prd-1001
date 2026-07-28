@@ -18,16 +18,26 @@ logging.info("MAIL_USE_TLS=%s", app.config.get("MAIL_USE_TLS"))
 logging.info("MAIL_USE_SSL=%s", app.config.get("MAIL_USE_SSL"))
 logging.info("MAIL_USERNAME=%s", app.config.get("MAIL_USERNAME"))
 
+
 # Inject mail into blueprint
 register_bp.mail = mail
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False 
-app.config['MAIL_USERNAME'] = 'hsamsed@gmail.com'
-app.config['MAIL_PASSWORD'] = 'ywow wasr eafb ugzr'  # use app password, not your real password
-app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
+
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USE_SSL'] = False 
+# app.config['MAIL_USERNAME'] = 'hsamsed@gmail.com'
+# app.config['MAIL_PASSWORD'] = 'ywow wasr eafb ugzr'  # use app password, not your real password
+# app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
 
 
 
