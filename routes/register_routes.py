@@ -80,6 +80,23 @@ def forgot_password():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
 
+@register_bp.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if request.method == "POST":
+        new_password = request.form["password"]
+        hashed_password = generate_password_hash(new_password)
+
+        # Verify token from DB, then update password
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE Subscriber SET password=? WHERE reset_token=?", (hashed_password, token))
+        conn.commit()
+        conn.close()
+
+        return "Password updated successfully!"
+    return render_template("reset_password.html", token=token)
+
+
 
 @register_bp.route("/register", methods=["POST"])
 def register():
