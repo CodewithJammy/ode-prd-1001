@@ -109,7 +109,7 @@ function handleSignup(event) {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      window.location.href = "/dashboard";
+      window.location.href = "{{ url_for('courses') }}";
     } else {
       alert("Signup failed: " + data.message);
     }
