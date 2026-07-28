@@ -1,0 +1,38 @@
+<div id="forgotPasswordModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('forgotPasswordModal')">&times;</span>
+    <h2>Forgot Password</h2>
+    <form onsubmit="forgotPassword(event)">
+      <label for="forgotEmail">Email:</label>
+      <input type="email" id="forgotEmail" name="email" required>
+      <br><br>
+      <button type="submit">Send Reset Link</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function forgotPassword(event) {
+    event.preventDefault();
+    const email = document.querySelector("#forgotEmail").value;
+
+    fetch("/user/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(err => console.error(err));
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+  }
+</script>
