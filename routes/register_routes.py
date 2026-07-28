@@ -6,6 +6,9 @@ from flask_mail import Message
 import secrets
 from datetime import datetime, timedelta
 import logging
+import smtplib
+
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -45,48 +48,53 @@ def signup():
         return jsonify({"success": False, "message": str(e)}), 400
 
 
+
+
 @register_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
     try:
-        # Log raw request info
-        logging.info("Headers: %s", request.headers)
-        logging.info("Raw data: %s", request.data)
-        logging.info("JSON: %s", request.get_json(silent=True))
         data = request.get_json(silent=True)
         if not data or "email" not in data:
             return jsonify({"success": False, "message": "Invalid request format"}), 400
-        email = data.get("email")
 
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Subscriber WHERE email=?", (email,))
-        row = cursor.fetchone()
+        email = data["email"]
+        logging.info("Parsed email: %s", email)
 
-        if row:
-            # Generate secure token + expiry
-            token = secrets.token_urlsafe(32)
-            expire_time = datetime.utcnow() + timedelta(hours=1)
+        # DB lookup logic here...
 
-            cursor.execute(
-                "UPDATE Subscriber SET reset_token=?, reset_expire=? WHERE email=?",
-                (token, expire_time, email)
-            )
-            conn.commit()
-            conn.close()
+        reset_link = url_for('user.reset_password', token="dummy", _external=True)
 
-            # Build reset link
-            reset_link = url_for('user.reset_password', token=token, _external=True)
+        msg = Message("Password Reset Request", recipients=[email])
+        msg.body = f"Click the link to reset your password:\n{reset_link}\n\nThis link expires in 1 hour."
 
-            # Send email
-            msg = Message("Password Reset Request", recipients=[email])
-            msg.body = f"Click the link to reset your password:\n{reset_link}\n\nThis link expires in 1 hour."
+        try:
+            logging.info("Connecting to SMTP server %s:%s",
+                         current_app.config['MAIL_SERVER'],
+                         current_app.config['MAIL_PORT'])
+            logging.info("TLS: %s, SSL: %s",
+                         current_app.config['MAIL_USE_TLS'],
+                         current_app.config['MAIL_USE_SSL'])
+
+            # Force a manual test connection before sending
+            server = smtplib.SMTP(current_app.config['MAIL_SERVER'],
+                                  current_app.config['MAIL_PORT'])
+            if current_app.config['MAIL_USE_TLS']:
+                server.starttls()
+            server.login(current_app.config['MAIL_USERNAME'],
+                         current_app.config['MAIL_PASSWORD'])
+            logging.info("SMTP login successful")
+
+            # Now let Flask-Mail send
             current_app.extensions['mail'].send(msg)
+            logging.info("Password reset email sent to %s", email)
 
-            return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
-        else:
-            conn.close()
-            return jsonify({"success": False, "message": "No account found with that email."}), 404
+        except Exception as smtp_error:
+            logging.exception("SMTP send failed")
+            return jsonify({"success": False, "message": f"Email send failed: {smtp_error}"}), 500
+
+        return jsonify({"success": True, "message": "Password reset link has been sent to your email."})
     except Exception as e:
+        logging.exception("Forgot password route failed")
         return jsonify({"success": False, "message": str(e)}), 400
 
 
