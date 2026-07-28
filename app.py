@@ -6,6 +6,17 @@ from routes.exam_routes  import exam_bp
 from models.db_config import get_connection
 from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
+from flask_mail import Mail, Message
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'hsamsed@gmail.com'
+app.config['MAIL_PASSWORD'] = 'your_app_password'  # use app password, not your real password
+app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
+
+mail = Mail(app)
+
 # Create Flask app once
 app = Flask(__name__)
 CORS(app)  # adds CORS headers automatically
