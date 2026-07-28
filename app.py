@@ -8,13 +8,12 @@ from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 
+app = Flask(__name__)
 mail = Mail(app)
 
 # Inject mail into blueprint
 register_bp.mail = mail
 
-# Create Flask app once
-app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -22,7 +21,7 @@ app.config['MAIL_USERNAME'] = 'hsamsed@gmail.com'
 app.config['MAIL_PASSWORD'] = 'ywow wasr eafb ugzr'  # use app password, not your real password
 app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
 
-mail.init_app(app)   # initialize after config
+
 
 
 CORS(app)  # adds CORS headers automatically
