@@ -102,7 +102,7 @@ function handleSignup(event) {
   event.preventDefault();
   const formData = new FormData(event.target);
 
-  fetch("/signup", {
+  fetch("{{ url_for('user.signup') }}", {
     method: "POST",
     body: formData
   })
