@@ -7,6 +7,35 @@ app = Flask(__name__)
 register_bp = Blueprint("userregister", __name__, url_prefix="/user")
 
 
+@register_bp.route("/signup", methods=["POST"])
+def signup():
+    username = request.form["name"]
+    email = request.form["email"]
+    mobile = request.form["mobile"]
+    password = request.form["password"]
+    payment_option = request.form["payment_option"]
+
+    # Hash password before storing
+    hashed_password = generate_password_hash(password)
+
+    # Default values
+    amount = 0
+    expiredate = None
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO Subscriber (username, email , mobile, password, payment_option, payment_status, amount, date, expiredate)
+        VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
+        """,
+        (username, email , mobile, hashed_password, payment_option, "Pending", amount, expiredate)
+    )
+    conn.commit()
+    conn.close()
+
+    return f"Hello {username}, you are registered successfully! Payment pending."
+
 @register_bp.route("/register", methods=["POST"])
 def register():
     fullname = request.form["name"]
