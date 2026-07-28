@@ -46,7 +46,9 @@ def signup():
 @register_bp.route("/forgot-password", methods=["POST"])
 def forgot_password():
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not data or "email" not in data:
+            return jsonify({"success": False, "message": "Invalid request format"}), 400
         email = data.get("email")
 
         conn = get_connection()
