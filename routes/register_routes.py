@@ -34,7 +34,13 @@ def signup():
     conn.commit()
     conn.close()
 
-    return f"Hello {username}, you are registered successfully! Payment pending."
+    
+    return jsonify({
+            "success": True,
+            "message": f"Hello {username}, you are registered successfully! Payment pending."
+        })
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
 
 @register_bp.route("/register", methods=["POST"])
 def register():
