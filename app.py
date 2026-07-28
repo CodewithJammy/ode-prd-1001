@@ -8,6 +8,8 @@ from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 
+# Create Flask app once
+app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -17,8 +19,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
 
 mail = Mail(app)
 
-# Create Flask app once
-app = Flask(__name__)
+
 CORS(app)  # adds CORS headers automatically
 
 # Initialize DB
