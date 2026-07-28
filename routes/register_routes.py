@@ -9,7 +9,7 @@ from flask_mail import Message
 
 
 
-app = Flask(__name__)
+
 
 register_bp = Blueprint("user", __name__, url_prefix="/user")
 
