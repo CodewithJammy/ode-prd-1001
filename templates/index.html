@@ -95,7 +95,7 @@
          <div class="popup-content">
             <span class="close" onclick="closeExamLoginPopup()">&times;</span> 
             <h2>Exam Portal Login</h2>
-            <form id="examLoginForm" method="POST" action="{{ url_for('userregister.exam_login') }}">
+            <form id="examLoginForm" method="POST" action="{{ url_for('user.exam_login') }}">
                   {% if error %}
                   <p style="color:red;">{{ error }}</p>
                   {% endif %} 
