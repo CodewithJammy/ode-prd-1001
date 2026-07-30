@@ -75,14 +75,15 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-  		<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#coursesPanel">Courses</a>
-	  </li>
+       <ul class="navbar-nav me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('courses') }}">Courses</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('tests') }}">Tests</a>
+  </li>
+</ul>
 
-          <li class="nav-item">
-  <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#testsPanel">Tests</a>
-</li> </ul>
            <ul class="navbar-nav ms-auto">
           <li class="nav-item">
   		<!-- Navbar Login link -->
