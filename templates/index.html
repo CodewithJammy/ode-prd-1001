@@ -149,47 +149,54 @@
 
       <!-- Right side: Sign Up / Login Form -->
       <div class="col-md-6 p-4">
-
         <!-- Sign Up Section (default visible) -->
-        <div id="signupSection">
-          <h4 class="fw-bold mb-3">Sign Up</h4>
-          <p class="text-muted">Please enter your mobile number to continue.</p>
+		<!-- Sign Up Section -->
+<div id="signupSection">
+  <h4 class="fw-bold mb-3">Sign Up</h4>
+  <p class="text-muted">Please enter your mobile number to continue.</p>
 
-          <label for="mobileNumber" class="form-label">Mobile Number</label>
-          <input type="tel" class="form-control mb-3" id="mobileNumber" placeholder="Enter 10 digit number">
-          <button class="btn btn-primary w-100 mb-3" onclick="sendOTP()">Continue →</button>
+  <!-- Mobile Number Form -->
+  <form action="{{ url_for('otp.send_otp') }}" method="post">
+    <label for="mobileNumber" class="form-label">Mobile Number</label>
+    <input type="tel" class="form-control mb-3" id="mobileNumber" name="mobileNumber" placeholder="Enter 10 digit number" required>
+    <button class="btn btn-primary w-100 mb-3" type="submit">Continue →</button>
+  </form>
 
-          <!-- OTP Section -->
-          <div id="otpSection" class="d-none">
-            <label for="otpCode" class="form-label">Enter OTP</label>
-            <input type="text" class="form-control mb-2" id="otpCode" placeholder="Enter OTP">
-            <button class="btn btn-success w-100" onclick="verifyOTP()">Verify & Login</button>
-          </div>
+  <!-- OTP Section -->
+  <form action="{{ url_for('otp.verify_otp') }}" method="post">
+    <div id="otpSection">
+      <label for="otpCode" class="form-label">Enter OTP</label>
+      <input type="text" class="form-control mb-2" id="otpCode" name="otpCode" placeholder="Enter OTP" required>
+      <button class="btn btn-success w-100" type="submit">Verify & Login</button>
+    </div>
+  </form>
 
-          <!-- Divider -->
-          <div class="text-center my-3">
-            <span class="text-muted">Or Login with</span>
-          </div>
+  <!-- Divider -->
+  <div class="text-center my-3">
+    <span class="text-muted">Or Login with</span>
+  </div>
 
-          <!-- Social Login Buttons in one row -->
-          <div class="row text-center g-2">
-            <div class="col">
-              <button class="btn btn-google w-100" onclick="loginGoogle()">
-                <i class="fa-brands fa-google me-2"></i> Google
-              </button>
-            </div>
-            <div class="col">
-              <button class="btn btn-facebook w-100" onclick="loginFacebook()">
-                <i class="fa-brands fa-facebook-f me-2"></i> Facebook
-              </button>
-            </div>
-            <div class="col">
-              <button class="btn btn-email w-100" onclick="showEmailForm()">
-                <i class="fa-solid fa-envelope me-2"></i> Email
-              </button>
-            </div>
-          </div>
-        </div>
+  <!-- Social Login Buttons -->
+  <div class="row text-center g-2">
+    <div class="col">
+      <button class="btn btn-google w-100" onclick="loginGoogle()">
+        <i class="fa-brands fa-google me-2"></i> Google
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-facebook w-100" onclick="loginFacebook()">
+        <i class="fa-brands fa-facebook-f me-2"></i> Facebook
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-email w-100" onclick="showEmailForm()">
+        <i class="fa-solid fa-envelope me-2"></i> Email
+      </button>
+    </div>
+  </div>
+</div>
+  
+       </div>
 
         <!-- Email Login Section (hidden by default) -->
         <div id="emailSection" class="d-none">
