@@ -120,42 +120,42 @@
 
   <!-- Featured Courses -->
   <section class="py-3">
-    <div class="container">
-      <h2 class="mb-4 text-center">Popular Practice Test</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card course-card shadow-sm">
-            <img src="static/images/Copilot_20260730_120719.png" class="card-img-top" alt="Course">
-            <div class="card-body">
-              <h5 class="card-title">CCC Certification</h5>
-              <p class="card-text"> test series and study material.</p>
-              <a href="#" class="btn btn-primary">Explore</a>
-            </div>
+  <div class="container">
+    <h2 class="mb-4 text-center">Popular Practice Test</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card course-card shadow-sm">
+          <img src="{{ url_for('static', filename='images/Copilot_20260730_120719.png') }}" class="card-img-top" alt="Course">
+          <div class="card-body">
+            <h5 class="card-title">CCC Certification</h5>
+            <p class="card-text">Test series and study material.</p>
+            <a href="#" class="btn btn-primary">Explore</a>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card course-card shadow-sm">
-            <img src="static/images/Copilot_20260730_120726.png" class="card-img-top" alt="Course">
-            <div class="card-body">
-              <h5 class="card-title">General Knowledge</h5>
-              <p class="card-text">Practice sets with detailed solutions.</p>
-              <a href="#" class="btn btn-primary">Explore</a>
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card course-card shadow-sm">
+          <img src="{{ url_for('static', filename='images/Copilot_20260730_120726.png') }}" class="card-img-top" alt="Course">
+          <div class="card-body">
+            <h5 class="card-title">General Knowledge</h5>
+            <p class="card-text">Practice sets with detailed solutions.</p>
+            <a href="#" class="btn btn-primary">Explore</a>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card course-card shadow-sm">
-            <img src="static/images/Copilot_20260730_120744.png" class="card-img-top" alt="Course">
-            <div class="card-body">
-              <h5 class="card-title">Logical Reasoning</h5>
-              <p class="card-text">Mock tests designed by experts.</p>
-              <a href="#" class="btn btn-primary">Explore</a>
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card course-card shadow-sm">
+          <img src="{{ url_for('static', filename='images/Copilot_20260730_120744.png') }}" class="card-img-top" alt="Course">
+          <div class="card-body">
+            <h5 class="card-title">Logical Reasoning</h5>
+            <p class="card-text">Mock tests designed by experts.</p>
+            <a href="#" class="btn btn-primary">Explore</a>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 <!-- Footer -->
 <footer class="bg-dark text-light pt-5 pb-4">
