@@ -5,5 +5,5 @@ requests==2.32.3
 flask_cors==4.0.0
 gunicorn==22.0.0
 Flask-Mail
-twillio
+twilio
 
