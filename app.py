@@ -7,17 +7,20 @@ from models.db_config import get_connection
 from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
+from otp import otp_bp
 
 app = Flask(__name__)
 
-
-
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
-
+app.register_blueprint(otp_bp)
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')    
 @app.route('/courses')
 def courses():
     return render_template('courses.html')
