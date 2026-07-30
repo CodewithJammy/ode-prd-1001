@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Available Courses</h2>
+  <!-- Offcanvas Panel for Courses -->
+<div class="offcanvas offcanvas-start w-100" tabindex="-1" id="coursesPanel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Available Courses</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <!-- Tabs for Course Categories -->
+    <ul class="nav nav-pills mb-3" id="coursesTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="banking-course-tab" data-bs-toggle="tab" data-bs-target="#banking-course" type="button" role="tab">Banking</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ssc-course-tab" data-bs-toggle="tab" data-bs-target="#ssc-course" type="button" role="tab">SSC</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="railway-course-tab" data-bs-toggle="tab" data-bs-target="#railway-course" type="button" role="tab">Railway</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="upsc-course-tab" data-bs-toggle="tab" data-bs-target="#upsc-course" type="button" role="tab">UPSC</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="coursesTabContent">
+
+      <!-- Banking Courses -->
+      <div class="tab-pane fade show active" id="banking-course" role="tabpanel" aria-labelledby="banking-course-tab">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">IBPS PO Course</h5>
+                <p class="card-text">Video lectures + Notes</p>
+                <p class="fw-bold text-success">₹999</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SBI Clerk Course</h5>
+                <p class="card-text">Practice sets + Solutions</p>
+                <p class="fw-bold text-success">₹799</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSC Courses -->
+      <div class="tab-pane fade" id="ssc-course" role="tabpanel" aria-labelledby="ssc-course-tab">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SSC GD Course</h5>
+                <p class="card-text">Complete syllabus coverage</p>
+                <p class="fw-bold text-success">₹699</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SSC CGL Course</h5>
+                <p class="card-text">Detailed lectures + Mock practice</p>
+                <p class="fw-bold text-success">₹899</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Railway Courses -->
+      <div class="tab-pane fade" id="railway-course" role="tabpanel" aria-labelledby="railway-course-tab">
+        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+      </div>
+
+      <!-- UPSC Courses -->
+      <div class="tab-pane fade" id="upsc-course" role="tabpanel" aria-labelledby="upsc-course-tab">
+        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
