@@ -1,82 +1,127 @@
-{% extends "index.html" %}
-{% block content %}
-<div class="container py-4">
-  <h2 class="mb-4 text-center">Available Tests</h2>
-  <!-- Paste your test tab structure here -->
-  
-<!-- Offcanvas Panel for Tests -->
-<div class="offcanvas offcanvas-start w-100" tabindex="-1" id="testsPanel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Available Tests</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tests - EduPrep</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-    <!-- Tabs for Modules -->
-    <ul class="nav nav-pills mb-3" id="testsTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="banking-tab" data-bs-toggle="tab" data-bs-target="#banking" type="button" role="tab">Banking</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="ssc-tab" data-bs-toggle="tab" data-bs-target="#ssc" type="button" role="tab">SSC</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="railway-tab" data-bs-toggle="tab" data-bs-target="#railway" type="button" role="tab">Railway</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="upsc-tab" data-bs-toggle="tab" data-bs-target="#upsc" type="button" role="tab">UPSC</button>
-      </li>
-    </ul>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">EduPrep</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('courses') }}">Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('tests') }}">Tests</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#loginCurtain">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="testsTabContent">
+  <!-- Page Content -->
+  <div class="container py-5 mt-5">
+    <h2 class="mb-4 text-center">Available Tests</h2>
 
-      <!-- Banking Tab -->
-      <div class="tab-pane fade show active" id="banking" role="tabpanel" aria-labelledby="banking-tab">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">IBPS PO Test Series</h5>
-                <p class="card-text">20 Full Length Mocks</p>
-                <p class="fw-bold text-success">₹499</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
+    <!-- Offcanvas Panel for Tests -->
+    <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="testsPanel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Available Tests</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <!-- Tabs for Test Categories -->
+        <ul class="nav nav-pills mb-3" id="testsTab" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="banking-tab" data-bs-toggle="tab" data-bs-target="#banking" type="button">Banking</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="ssc-tab" data-bs-toggle="tab" data-bs-target="#ssc" type="button">SSC</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="railway-tab" data-bs-toggle="tab" data-bs-target="#railway" type="button">Railway</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="upsc-tab" data-bs-toggle="tab" data-bs-target="#upsc" type="button">UPSC</button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="testsTabContent">
+
+          <!-- Banking Tests -->
+          <div class="tab-pane fade show active" id="banking">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">IBPS PO Test Series</h5>
+                    <p class="card-text">20 Full Length Mocks</p>
+                    <p class="fw-bold text-success">₹499</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">SBI Clerk Practice</h5>
+                    <p class="card-text">15 Mock Tests</p>
+                    <p class="fw-bold text-success">₹399</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">SBI Clerk Practice</h5>
-                <p class="card-text">15 Mock Tests</p>
-                <p class="fw-bold text-success">₹399</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
-              </div>
-            </div>
+
+          <!-- SSC Tests -->
+          <div class="tab-pane fade" id="ssc">
+            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
           </div>
+
+          <!-- Railway Tests -->
+          <div class="tab-pane fade" id="railway">
+            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
+          </div>
+
+          <!-- UPSC Tests -->
+          <div class="tab-pane fade" id="upsc">
+            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
+          </div>
+
         </div>
       </div>
-
-      <!-- SSC Tab -->
-      <div class="tab-pane fade" id="ssc" role="tabpanel" aria-labelledby="ssc-tab">
-        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
-      </div>
-
-      <!-- Railway Tab -->
-      <div class="tab-pane fade" id="railway" role="tabpanel" aria-labelledby="railway-tab">
-        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
-      </div>
-
-      <!-- UPSC Tab -->
-      <div class="tab-pane fade" id="upsc" role="tabpanel" aria-labelledby="upsc-tab">
-        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
-      </div>
-
     </div>
   </div>
-</div>
 
+  <!-- Footer -->
+  <footer class="bg-dark text-light pt-5 pb-4 mt-5">
+    <div class="container text-center">
+      <h5 class="fw-bold">EduPrep</h5>
+      <p class="small">Your trusted exam preparation partner.</p>
+      <p class="mb-0">&copy; 2026 EduPrep. All rights reserved.</p>
+    </div>
+  </footer>
 
-
-</div>
-{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
