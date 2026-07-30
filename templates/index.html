@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduPrep Homepage</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+	.btn-email {
+  background-color: #444;
+  color: white;
+}
+.btn-facebook {
+  background-color: #1877F2;
+  color: white;
+}
+.btn-google {
+  background-color: #DB4437;
+  color: white;
+}
+.card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
+
+
+   
+   .course-card {
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.hero {
+  position: relative;
+  min-height: 300px;
+  background: url('C:/Users/dell/Downloads/Copilot_20260730_114046.png') center/cover no-repeat;
+}
+
+/* Gradient overlay */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.6), rgba(255, 0, 150, 0.6));
+  z-index: 1;
+}
+
+/* Constrain content width */
+.hero .hero-content {
+  max-width: 900px;   /* adjust this value to make section narrower */
+  margin: 0 auto;     /* center the content */
+  position: relative;
+  z-index: 2;         /* keep above overlay */
+}
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">EduPrep</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+  		<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#coursesPanel">Courses</a>
+	  </li>
+
+          <li class="nav-item">
+  <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#testsPanel">Tests</a>
+</li> </ul>
+           <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+  		<!-- Navbar Login link -->
+			<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#loginCurtain">Login</a>		
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+<!-- Hero Section -->
+<section class="hero d-flex align-items-center text-light">
+  <div class="overlay"></div>
+  <div class="container position-relative hero-content">
+    <div class="row justify-content-center">
+      
+      <!-- Left side: Title and text -->
+      <div class="col-lg-8 text-center">
+        <h1 class="fw-bold display-4">OneDayExams</h1>
+        <p class="lead">Prepare Smarter, Achieve More</p>
+        <p class="mb-4">Join thousands of learners excelling in competitive exams.</p>
+        <form class="d-flex justify-content-center mt-3">
+          <input class="form-control me-2" style="max-width: 300px;" type="search" placeholder="Search courses or tests">
+          <button class="btn btn-light">Search</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Featured Courses -->
+  <section class="py-3">
+    <div class="container">
+      <h2 class="mb-4 text-center">Popular Practice Test</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card course-card shadow-sm">
+            <img src="C:/Users/dell/Downloads/Copilot_20260730_120719.png" class="card-img-top" alt="Course">
+            <div class="card-body">
+              <h5 class="card-title">CCC Certification</h5>
+              <p class="card-text"> test series and study material.</p>
+              <a href="#" class="btn btn-primary">Explore</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card course-card shadow-sm">
+            <img src="C:/Users/dell/Downloads/Copilot_20260730_120726.png" class="card-img-top" alt="Course">
+            <div class="card-body">
+              <h5 class="card-title">General Knowledge</h5>
+              <p class="card-text">Practice sets with detailed solutions.</p>
+              <a href="#" class="btn btn-primary">Explore</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card course-card shadow-sm">
+            <img src="C:/Users/dell/Downloads/Copilot_20260730_120744.png" class="card-img-top" alt="Course">
+            <div class="card-body">
+              <h5 class="card-title">Logical Reasoning</h5>
+              <p class="card-text">Mock tests designed by experts.</p>
+              <a href="#" class="btn btn-primary">Explore</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Footer -->
+<footer class="bg-dark text-light pt-5 pb-4">
+  <div class="container">
+    <div class="row">
+
+      <!-- Company Info -->
+      <div class="col-md-3 text-center text-md-start mb-3">
+        <h5 class="fw-bold">EduPrep</h5>
+        <p class="small">Your trusted exam preparation partner. Learn, practice, and succeed with our courses and mock tests.</p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-3 text-center mb-3">
+        <h6 class="fw-bold">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light text-decoration-none">Courses</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Mock Tests</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Profile</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Help</a></li>
+        </ul>
+      </div>
+
+      <!-- About Us -->
+      <div class="col-md-3 text-center mb-3">
+        <h6 class="fw-bold">About Us</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light text-decoration-none">Our Story</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Mission & Vision</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Careers</a></li>
+          <li><a href="#" class="text-light text-decoration-none">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Social Media -->
+      <div class="col-md-3 text-center text-md-end mb-3">
+        <h6 class="fw-bold">Follow Us</h6>
+        <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
+        <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
+        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
+        <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
+      </div>
+
+    </div>
+
+    <!-- Divider -->
+    <hr class="border-light">
+
+    <!-- Copyright -->
+    <div class="row">
+      <div class="col text-center">
+        <p class="mb-0">&copy; 2026 EduPrep. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Offcanvas Panel for Courses -->
+<div class="offcanvas offcanvas-start w-100" tabindex="-1" id="coursesPanel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Available Courses</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <!-- Tabs for Course Categories -->
+    <ul class="nav nav-pills mb-3" id="coursesTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="banking-course-tab" data-bs-toggle="tab" data-bs-target="#banking-course" type="button" role="tab">Banking</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ssc-course-tab" data-bs-toggle="tab" data-bs-target="#ssc-course" type="button" role="tab">SSC</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="railway-course-tab" data-bs-toggle="tab" data-bs-target="#railway-course" type="button" role="tab">Railway</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="upsc-course-tab" data-bs-toggle="tab" data-bs-target="#upsc-course" type="button" role="tab">UPSC</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="coursesTabContent">
+
+      <!-- Banking Courses -->
+      <div class="tab-pane fade show active" id="banking-course" role="tabpanel" aria-labelledby="banking-course-tab">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">IBPS PO Course</h5>
+                <p class="card-text">Video lectures + Notes</p>
+                <p class="fw-bold text-success">₹999</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SBI Clerk Course</h5>
+                <p class="card-text">Practice sets + Solutions</p>
+                <p class="fw-bold text-success">₹799</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSC Courses -->
+      <div class="tab-pane fade" id="ssc-course" role="tabpanel" aria-labelledby="ssc-course-tab">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SSC GD Course</h5>
+                <p class="card-text">Complete syllabus coverage</p>
+                <p class="fw-bold text-success">₹699</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SSC CGL Course</h5>
+                <p class="card-text">Detailed lectures + Mock practice</p>
+                <p class="fw-bold text-success">₹899</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Railway Courses -->
+      <div class="tab-pane fade" id="railway-course" role="tabpanel" aria-labelledby="railway-course-tab">
+        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+      </div>
+
+      <!-- UPSC Courses -->
+      <div class="tab-pane fade" id="upsc-course" role="tabpanel" aria-labelledby="upsc-course-tab">
+        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Offcanvas Panel for Tests -->
+<div class="offcanvas offcanvas-start w-100" tabindex="-1" id="testsPanel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Available Tests</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <!-- Tabs for Modules -->
+    <ul class="nav nav-pills mb-3" id="testsTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="banking-tab" data-bs-toggle="tab" data-bs-target="#banking" type="button" role="tab">Banking</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="ssc-tab" data-bs-toggle="tab" data-bs-target="#ssc" type="button" role="tab">SSC</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="railway-tab" data-bs-toggle="tab" data-bs-target="#railway" type="button" role="tab">Railway</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="upsc-tab" data-bs-toggle="tab" data-bs-target="#upsc" type="button" role="tab">UPSC</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="testsTabContent">
+
+      <!-- Banking Tab -->
+      <div class="tab-pane fade show active" id="banking" role="tabpanel" aria-labelledby="banking-tab">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">IBPS PO Test Series</h5>
+                <p class="card-text">20 Full Length Mocks</p>
+                <p class="fw-bold text-success">₹499</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">SBI Clerk Practice</h5>
+                <p class="card-text">15 Mock Tests</p>
+                <p class="fw-bold text-success">₹399</p>
+                <button class="btn btn-primary w-100">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSC Tab -->
+      <div class="tab-pane fade" id="ssc" role="tabpanel" aria-labelledby="ssc-tab">
+        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
+      </div>
+
+      <!-- Railway Tab -->
+      <div class="tab-pane fade" id="railway" role="tabpanel" aria-labelledby="railway-tab">
+        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
+      </div>
+
+      <!-- UPSC Tab -->
+      <div class="tab-pane fade" id="upsc" role="tabpanel" aria-labelledby="upsc-tab">
+        <div class="alert alert-info text-center">Mock test will come soon 🚀</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Login Offcanvas Curtain -->
+<div class="offcanvas offcanvas-end w-100" tabindex="-1" id="loginCurtain">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title fw-bold">Welcome to EduPrep</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="row">
+      
+      <!-- Left side: Illustration / Branding -->
+      <div class="col-md-6 d-flex flex-column justify-content-center align-items-center bg-light p-4">
+        <img src="https://via.placeholder.com/300x200?text=Study+Illustration" class="img-fluid mb-3" alt="Study Illustration">
+        <h4 class="fw-bold">Largest Learning Destination</h4>
+        <p class="text-muted">Join 10K+ crore students learning and sharing together.</p>
+      </div>
+
+      <!-- Right side: Sign Up / Login Form -->
+      <div class="col-md-6 p-4">
+
+        <!-- Sign Up Section (default visible) -->
+        <div id="signupSection">
+          <h4 class="fw-bold mb-3">Sign Up</h4>
+          <p class="text-muted">Please enter your mobile number to continue.</p>
+
+          <label for="mobileNumber" class="form-label">Mobile Number</label>
+          <input type="tel" class="form-control mb-3" id="mobileNumber" placeholder="Enter 10 digit number">
+          <button class="btn btn-primary w-100 mb-3" onclick="sendOTP()">Continue →</button>
+
+          <!-- OTP Section -->
+          <div id="otpSection" class="d-none">
+            <label for="otpCode" class="form-label">Enter OTP</label>
+            <input type="text" class="form-control mb-2" id="otpCode" placeholder="Enter OTP">
+            <button class="btn btn-success w-100" onclick="verifyOTP()">Verify & Login</button>
+          </div>
+
+          <!-- Divider -->
+          <div class="text-center my-3">
+            <span class="text-muted">Or Login with</span>
+          </div>
+
+          <!-- Social Login Buttons in one row -->
+          <div class="row text-center g-2">
+            <div class="col">
+              <button class="btn btn-google w-100" onclick="loginGoogle()">
+                <i class="fa-brands fa-google me-2"></i> Google
+              </button>
+            </div>
+            <div class="col">
+              <button class="btn btn-facebook w-100" onclick="loginFacebook()">
+                <i class="fa-brands fa-facebook-f me-2"></i> Facebook
+              </button>
+            </div>
+            <div class="col">
+              <button class="btn btn-email w-100" onclick="showEmailForm()">
+                <i class="fa-solid fa-envelope me-2"></i> Email
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Login Section (hidden by default) -->
+        <div id="emailSection" class="d-none">
+          <h4 class="fw-bold mb-3">Login</h4>
+          <label>Email</label>
+          <input type="email" class="form-control mb-2" placeholder="Enter email">
+          <label>Password</label>
+          <input type="password" class="form-control mb-2" placeholder="Enter password">
+          <button class="btn btn-primary w-100">Login with Email</button>
+          <p class="mt-2 text-center">
+            <a href="#" onclick="backToSignup()">← Back to Sign Up</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sendOTP() {
+  document.getElementById('otpSection').classList.remove('d-none');
+  alert("OTP sent to your mobile number!");
+}
+function verifyOTP() {
+  let otp = document.getElementById('otpCode').value;
+  if(otp === "1234"){ // demo check
+    alert("Login successful!");
+    var offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('loginCurtain'));
+    offcanvas.hide();
+  } else {
+    alert("Invalid OTP, try again.");
+  }
+}
+
+// Social login actions
+function loginGoogle() {
+  alert("Redirecting to Google login...");
+}
+function loginFacebook() {
+  alert("Redirecting to Facebook login...");
+}
+
+// Toggle between Sign Up and Email Login
+function showEmailForm() {
+  document.getElementById('signupSection').classList.add('d-none');
+  document.getElementById('emailSection').classList.remove('d-none');
+}
+function backToSignup() {
+  document.getElementById('emailSection').classList.add('d-none');
+  document.getElementById('signupSection').classList.remove('d-none');
+}
+</script>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
