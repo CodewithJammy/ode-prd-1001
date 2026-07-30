@@ -1,99 +1,148 @@
-{% extends "index.html" %}
-{% block content %}
-<div class="container py-4">
-  <h2 class="mb-4 text-center">Available Courses</h2>
-  <!-- Offcanvas Panel for Courses -->
-<div class="offcanvas offcanvas-start w-100" tabindex="-1" id="coursesPanel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Available Courses</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Courses - EduPrep</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-    <!-- Tabs for Course Categories -->
-    <ul class="nav nav-pills mb-3" id="coursesTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="banking-course-tab" data-bs-toggle="tab" data-bs-target="#banking-course" type="button" role="tab">Banking</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="ssc-course-tab" data-bs-toggle="tab" data-bs-target="#ssc-course" type="button" role="tab">SSC</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="railway-course-tab" data-bs-toggle="tab" data-bs-target="#railway-course" type="button" role="tab">Railway</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="upsc-course-tab" data-bs-toggle="tab" data-bs-target="#upsc-course" type="button" role="tab">UPSC</button>
-      </li>
-    </ul>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">EduPrep</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('courses') }}">Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('tests') }}">Tests</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#loginCurtain">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="coursesTabContent">
+  <!-- Page Content -->
+  <div class="container py-5 mt-5">
+    <h2 class="mb-4 text-center">Available Courses</h2>
 
-      <!-- Banking Courses -->
-      <div class="tab-pane fade show active" id="banking-course" role="tabpanel" aria-labelledby="banking-course-tab">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">IBPS PO Course</h5>
-                <p class="card-text">Video lectures + Notes</p>
-                <p class="fw-bold text-success">₹999</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
+    <!-- Offcanvas Panel for Courses -->
+    <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="coursesPanel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Available Courses</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <!-- Tabs for Course Categories -->
+        <ul class="nav nav-pills mb-3" id="coursesTab" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="banking-course-tab" data-bs-toggle="tab" data-bs-target="#banking-course" type="button">Banking</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="ssc-course-tab" data-bs-toggle="tab" data-bs-target="#ssc-course" type="button">SSC</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="railway-course-tab" data-bs-toggle="tab" data-bs-target="#railway-course" type="button">Railway</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="upsc-course-tab" data-bs-toggle="tab" data-bs-target="#upsc-course" type="button">UPSC</button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="coursesTabContent">
+
+          <!-- Banking Courses -->
+          <div class="tab-pane fade show active" id="banking-course">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">IBPS PO Course</h5>
+                    <p class="card-text">Video lectures + Notes</p>
+                    <p class="fw-bold text-success">₹999</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">SBI Clerk Course</h5>
+                    <p class="card-text">Practice sets + Solutions</p>
+                    <p class="fw-bold text-success">₹799</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">SBI Clerk Course</h5>
-                <p class="card-text">Practice sets + Solutions</p>
-                <p class="fw-bold text-success">₹799</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
+
+          <!-- SSC Courses -->
+          <div class="tab-pane fade" id="ssc-course">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">SSC GD Course</h5>
+                    <p class="card-text">Complete syllabus coverage</p>
+                    <p class="fw-bold text-success">₹699</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">SSC CGL Course</h5>
+                    <p class="card-text">Detailed lectures + Mock practice</p>
+                    <p class="fw-bold text-success">₹899</p>
+                    <button class="btn btn-primary w-100">Buy Now</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Railway Courses -->
+          <div class="tab-pane fade" id="railway-course">
+            <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+          </div>
+
+          <!-- UPSC Courses -->
+          <div class="tab-pane fade" id="upsc-course">
+            <div class="alert alert-info text-center">Courses will come soon 🚀</div>
+          </div>
+
         </div>
       </div>
-
-      <!-- SSC Courses -->
-      <div class="tab-pane fade" id="ssc-course" role="tabpanel" aria-labelledby="ssc-course-tab">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">SSC GD Course</h5>
-                <p class="card-text">Complete syllabus coverage</p>
-                <p class="fw-bold text-success">₹699</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">SSC CGL Course</h5>
-                <p class="card-text">Detailed lectures + Mock practice</p>
-                <p class="fw-bold text-success">₹899</p>
-                <button class="btn btn-primary w-100">Buy Now</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Railway Courses -->
-      <div class="tab-pane fade" id="railway-course" role="tabpanel" aria-labelledby="railway-course-tab">
-        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
-      </div>
-
-      <!-- UPSC Courses -->
-      <div class="tab-pane fade" id="upsc-course" role="tabpanel" aria-labelledby="upsc-course-tab">
-        <div class="alert alert-info text-center">Courses will come soon 🚀</div>
-      </div>
-
     </div>
   </div>
-</div>
 
-</div>
-{% endblock %}
+  <!-- Footer -->
+  <footer class="bg-dark text-light pt-5 pb-4 mt-5">
+    <div class="container text-center">
+      <h5 class="fw-bold">EduPrep</h5>
+      <p class="small">Your trusted exam preparation partner.</p>
+      <p class="mb-0">&copy; 2026 EduPrep. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
