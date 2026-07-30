@@ -107,10 +107,12 @@
         <h1 class="fw-bold display-4">OneDayExams</h1>
         <p class="lead">Prepare Smarter, Achieve More</p>
         <p class="mb-4">Join thousands of learners excelling in competitive exams.</p>
-        <form class="d-flex justify-content-center mt-3">
-          <input class="form-control me-2" style="max-width: 300px;" type="search" placeholder="Search courses or tests">
-          <button class="btn btn-light">Search</button>
-        </form>
+        <form class="d-flex justify-content-center mt-3" action="{{ url_for('search') }}" method="get">
+  			 <input class="form-control me-2" style="max-width: 300px;" 
+        	 type="search" name="q" placeholder="Search courses or tests">
+  			 <button class="btn btn-light" type="submit">Search</button>
+		</form>
+
       </div>
 
     </div>
