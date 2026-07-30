@@ -1,4 +1,4 @@
-from flask import Flask,  Response, render_template, redirect
+from flask import Flask,  Response, render_template, redirect ,request
 import logging
 import os
 from flask_cors import CORS
