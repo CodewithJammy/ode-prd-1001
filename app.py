@@ -24,6 +24,13 @@ def courses():
 @app.route('/tests')
 def tests():
     return render_template('tests.html')
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    query = request.args.get('q')  # get search term from URL
+    # For now, just show the query back
+    # Later you can filter courses/tests from a database
+    return render_template('search_results.html', query=query)
+
 
 @app.route("/ping", methods=["POST"])
 def ping():
