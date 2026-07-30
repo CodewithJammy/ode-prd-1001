@@ -9,80 +9,21 @@ from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 
 app = Flask(__name__)
-mail = Mail(app)
 
-
-logging.info("MAIL_SERVER=%s", app.config.get("MAIL_SERVER"))
-logging.info("MAIL_PORT=%s", app.config.get("MAIL_PORT"))
-logging.info("MAIL_USE_TLS=%s", app.config.get("MAIL_USE_TLS"))
-logging.info("MAIL_USE_SSL=%s", app.config.get("MAIL_USE_SSL"))
-logging.info("MAIL_USERNAME=%s", app.config.get("MAIL_USERNAME"))
-
-
-# Inject mail into blueprint
-register_bp.mail = mail
-
-
-app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
-app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
-
-# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-# app.config['MAIL_PORT'] = 587
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USE_SSL'] = False 
-# app.config['MAIL_USERNAME'] = 'hsamsed@gmail.com'
-# app.config['MAIL_PASSWORD'] = 'ywow wasr eafb ugzr'  # use app password, not your real password
-# app.config['MAIL_DEFAULT_SENDER'] = 'hsamsed@gmail.com'
-
-
-
-
-CORS(app)  # adds CORS headers automatically
-
-# Initialize DB
-# init_db(app)
 
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 
-# Register the admin blueprint
-app.register_blueprint(admin_bp)
-app.register_blueprint(exam_bp)
-app.register_blueprint(register_bp)
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/courses")
+@app.route('/courses')
 def courses():
-    return render_template("exam_dashboard.html")
-# Google Apps Script Web App URL
-GAS_URL = "https://script.google.com/macros/s/AKfycbwbJedA3rIluoThDP3r17JbrotsKpEWqBCppgGhikuSQn1PCydVO_rMj3G0tI65I6NJLw/exec"
-
-@app.route("/proxy", methods=["GET", "POST", "OPTIONS"])
-def proxy():
-    if request.method == "OPTIONS":
-        # Explicit preflight response
-        resp = Response()
-        resp.status_code = 200
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-        return resp
-
-    if request.method == "GET":
-        r = requests.get(GAS_URL, params=request.args)
-    else:
-        r = requests.post(GAS_URL, json=request.json)
-
-    resp = Response(r.content, status=r.status_code, content_type=r.headers.get("Content-Type"))
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    return resp
+    return render_template('courses.html')
+@app.route('/tests')
+def tests():
+    return render_template('tests.html')
 
 @app.route("/ping", methods=["POST"])
 def ping():
