@@ -16,21 +16,21 @@ def send_otp():
     session['otp_time'] = time.time()
     session['mobile'] = mobile
 
-    # Fast2SMS API call
-    url = "https://www.fast2sms.com/dev/bulkV2"
+    # Fast2SMS OTP API
+    url = "https://www.fast2sms.com/dev/otp/send"
     payload = {
-        "sender_id": "FSTSMS",  # default sender ID, DLT required for custom
-        "message": f"Welcome to OneDayExam! Your OTP is {otp}",
-        "language": "english",
-        "route": "q",  # quick transactional route
+        "authorization": FAST2SMS_API_KEY,
+        "variables_values": otp,
+        "route": "otp",
         "numbers": mobile
     }
     headers = {
-        "authorization": FAST2SMS_API_KEY,
-        "Content-Type": "application/x-www-form-urlencoded"
+        "accept": "application/json",
+        "content-type": "application/json"
     }
 
-    response = requests.post(url, data=payload, headers=headers)
+    response = requests.post(url, json=payload, headers=headers)
+
     if response.status_code == 200:
         flash("OTP sent successfully!")
     else:
@@ -38,24 +38,25 @@ def send_otp():
 
     return redirect(url_for('signup'))
 
+
+
 @otp_bp.route('/verify', methods=['POST'])
 def verify_otp():
     entered_otp = request.form.get('otpCode')
-    stored_otp = session.get('otp')
-    otp_time = session.get('otp_time')
+    mobile = session.get('mobile')
 
-    if not stored_otp or not otp_time:
-        flash("No OTP found, please request again.")
-        return redirect(url_for('signup'))
+    url = "https://www.fast2sms.com/dev/otp/verify"
+    payload = {
+        "authorization": FAST2SMS_API_KEY,
+        "otp": entered_otp,
+        "numbers": mobile
+    }
+    headers = {"accept": "application/json", "content-type": "application/json"}
+    response = requests.post(url, json=payload, headers=headers)
 
-    if time.time() - otp_time > 600:  # 10 minutes validity
-        flash("OTP expired, please request a new one.")
-        return redirect(url_for('signup'))
-
-    if entered_otp == stored_otp:
+    if response.status_code == 200 and "true" in response.text.lower():
         flash("Signup successful!")
-        # TODO: Save user to DB here
         return redirect(url_for('home'))
     else:
-        flash("Invalid OTP, try again.")
+        flash("Invalid or expired OTP.")
         return redirect(url_for('signup'))
