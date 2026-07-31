@@ -1,62 +1,55 @@
 # otp.py
 import os, random, time, requests
 from flask import Blueprint, request, session, redirect, url_for, flash
-
+from azure.communication.email import EmailClient
 otp_bp = Blueprint('otp', __name__, url_prefix='/otp')
 
-FAST2SMS_API_KEY = os.getenv("FAST2SMS_API_KEY")  # set in environment
+connection_string = os.getenv("AZURE_COMMUNICATION_CONNECTION_STRING")
+email_client = EmailClient.from_connection_string(connection_string)
 
-@otp_bp.route('/send', methods=['POST'])
+@otp_bp.route('/send_otp', methods=['POST'])
 def send_otp():
-    mobile = request.form.get('mobileNumber')
-    otp = str(random.randint(1000, 9999))
+    email = request.form.get('email')
+    otp = str(random.randint(100000, 999999))
 
-    # Store OTP + timestamp
+    # Save OTP + timestamp
     session['otp'] = otp
     session['otp_time'] = time.time()
-    session['mobile'] = mobile
+    session['email'] = email
 
-    # Fast2SMS OTP API
-    url = "https://www.fast2sms.com/dev/otp/send"
-    payload = {
-        "authorization": FAST2SMS_API_KEY,
-        "variables_values": otp,
-        "route": "otp",
-        "numbers": mobile
-    }
-    headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
+    message = {
+        "senderAddress": "noreply@yourdomain.azurecomm.net",
+        "recipients": {"to": [{"address": email}]},
+        "content": {
+            "subject": "Your OneDayExam OTP",
+            "plainText": f"Your OTP is {otp}. It will expire in 10 minutes."
+        }
     }
 
-    response = requests.post(url, json=payload, headers=headers)
-
-    if response.status_code == 200:
-        flash("OTP sent successfully!")
-    else:
-        flash("Failed to send OTP. Please try again.")
-
+    poller = email_client.begin_send(message)
+    result = poller.result()
+    print("Email send status:", result)
+    flash("OTP sent to your email!")
     return redirect(url_for('signup'))
 
-
-
-@otp_bp.route('/verify', methods=['POST'])
+@otp_bp.route('/verify_otp', methods=['POST'])
 def verify_otp():
     entered_otp = request.form.get('otpCode')
-    mobile = session.get('mobile')
+    stored_otp = session.get('otp')
+    otp_time = session.get('otp_time')
 
-    url = "https://www.fast2sms.com/dev/otp/verify"
-    payload = {
-        "authorization": FAST2SMS_API_KEY,
-        "otp": entered_otp,
-        "numbers": mobile
-    }
-    headers = {"accept": "application/json", "content-type": "application/json"}
-    response = requests.post(url, json=payload, headers=headers)
+    if not stored_otp or not otp_time:
+        flash("No OTP found, please request again.")
+        return redirect(url_for('signup'))
 
-    if response.status_code == 200 and "true" in response.text.lower():
-        flash("Signup successful!")
-        return redirect(url_for('home'))
+    if time.time() - otp_time > 600:  # 10 minutes expiry
+        flash("OTP expired, please request a new one.")
+        return redirect(url_for('signup'))
+
+    if entered_otp == stored_otp:
+        flash("Verification successful!")
+        # TODO: update user DB status here
+        return redirect(url_for('index'))
     else:
-        flash("Invalid or expired OTP.")
+        flash("Invalid OTP, try again.")
         return redirect(url_for('signup'))
