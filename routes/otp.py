@@ -18,7 +18,7 @@ def send_otp():
     session['email'] = email
 
     message = {
-        "senderAddress": "noreply@yourdomain.azurecomm.net",
+        "senderAddress": "DoNotReply@8eba1789-8297-4341-a70c-f23f248cd46b.azurecomm.net",
         "recipients": {"to": [{"address": email}]},
         "content": {
             "subject": "Your OneDayExam OTP",
