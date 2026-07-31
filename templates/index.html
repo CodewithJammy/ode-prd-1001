@@ -219,20 +219,7 @@
 
 
 <script>
-function sendOTP() {
-  document.getElementById('otpSection').classList.remove('d-none');
-  alert("OTP sent to your mobile number!");
-}
-function verifyOTP() {
-  let otp = document.getElementById('otpCode').value;
-  if(otp === "1234"){ // demo check
-    alert("Login successful!");
-    var offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('loginCurtain'));
-    offcanvas.hide();
-  } else {
-    alert("Invalid OTP, try again.");
-  }
-}
+
 
 // Social login actions
 function loginGoogle() {
