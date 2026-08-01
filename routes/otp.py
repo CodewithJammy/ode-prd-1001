@@ -30,7 +30,7 @@ def send_otp():
     result = poller.result()
     print("Email send status:", result)
     flash("OTP sent to your email!")
-    return redirect(url_for('signup'))
+    return redirect(url_for('user.signup'))
 
 @otp_bp.route('/verify_otp', methods=['POST'])
 def verify_otp():
@@ -40,11 +40,11 @@ def verify_otp():
 
     if not stored_otp or not otp_time:
         flash("No OTP found, please request again.")
-        return redirect(url_for('signup'))
+        return redirect(url_for('user.signup'))
 
     if time.time() - otp_time > 600:  # 10 minutes expiry
         flash("OTP expired, please request a new one.")
-        return redirect(url_for('signup'))
+        return redirect(url_for('user.signup'))
 
     if entered_otp == stored_otp:
         flash("Verification successful!")
@@ -52,4 +52,4 @@ def verify_otp():
         return redirect(url_for('user.login'))
     else:
         flash("Invalid OTP, try again.")
-        return redirect(url_for('signup'))
+        return redirect(url_for('user.signup'))
