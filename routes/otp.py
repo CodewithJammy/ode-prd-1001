@@ -10,33 +10,44 @@ email_client = EmailClient.from_connection_string(connection_string)
 @otp_bp.route('/send_otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
-    otp = str(random.randint(100000, 999999))
 
-    # Save OTP + timestamp
-    session['otp'] = otp
-    session['otp_time'] = time.time()
-    session['email'] = email
+    # Check if email already exists in Users table
+    cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
+    row = cursor.fetchone()
 
-    message = {
-        "senderAddress": "DoNotReply@8eba1789-8297-4341-a70c-f23f248cd46b.azurecomm.net",
-        "recipients": {"to": [{"address": email}]},
-        "content": {
-            "subject": "Your OneDayExam OTP",
-            "plainText": f"Your OTP is {otp}. It will expire in 10 minutes."
+    if row:
+        # Existing user → ask them to login
+        flash("User already exists, please login.")
+        return redirect(url_for('user.login_form'))  # or wherever your login form is
+    else:
+        # New user → generate OTP
+        otp = str(random.randint(100000, 999999))
+        session['otp'] = otp
+        session['otp_time'] = time.time()
+        session['pending_email'] = email  # store email for verify step
+
+        message = {
+            "senderAddress": "DoNotReply@8eba1789-8297-4341-a70c-f23f248cd46b.azurecomm.net",
+            "recipients": {"to": [{"address": email}]},
+            "content": {
+                "subject": "Your OneDayExam OTP",
+                "plainText": f"Your OTP is {otp}. It will expire in 10 minutes."
+            }
         }
-    }
 
-    poller = email_client.begin_send(message)
-    result = poller.result()
-    print("Email send status:", result)
-    flash("OTP sent to your email!")
-    return redirect(url_for('user.signup'))
+        poller = email_client.begin_send(message)
+        result = poller.result()
+        print("Email send status:", result)
+
+        flash("OTP sent to your email!")
+        return redirect(url_for('user.signup'))
 
 @otp_bp.route('/verify_otp', methods=['POST'])
 def verify_otp():
     entered_otp = request.form.get('otpCode')
     stored_otp = session.get('otp')
     otp_time = session.get('otp_time')
+    email = session.get('pending_email')
 
     if not stored_otp or not otp_time:
         flash("No OTP found, please request again.")
@@ -47,9 +58,14 @@ def verify_otp():
         return redirect(url_for('user.signup'))
 
     if entered_otp == stored_otp:
-        flash("Verification successful!")
-        # TODO: update user DB status here
-        return redirect(url_for('user.login'))
+        # Insert new user with NewUser=1
+        cursor.execute("INSERT INTO Users (Email, NewUser) VALUES (?, 1)", (email,))
+        conn.commit()
+        user_id = cursor.execute("SELECT SCOPE_IDENTITY()").fetchval()
+        session['user_id'] = user_id
+
+        flash("Verification successful! Please complete your profile.")
+        return redirect(url_for('user.user_home'))
     else:
         flash("Invalid OTP, try again.")
         return redirect(url_for('user.signup'))
