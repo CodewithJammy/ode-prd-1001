@@ -72,7 +72,7 @@ jobs:
           az webapp deploy \
             --resource-group exambank \
             --name exambank \
-            --src-path .
+            --src-path ./python-app
       
 
    
