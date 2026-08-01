@@ -14,6 +14,8 @@ app = Flask(__name__)
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.register_blueprint(otp_bp)
+app.register_blueprint(user_bp)
+
 
 @app.route("/")
 def index():
