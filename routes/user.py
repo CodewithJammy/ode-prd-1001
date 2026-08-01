@@ -5,6 +5,11 @@ from models.db_config import get_connection
 # Create blueprint
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 
+@user_bp.route('/signup', methods=['GET'])
+def signup_form():
+    return render_template('signup.html')
+
+
 @user_bp.route('/signup', methods=['POST'])
 def signup():
     email = request.form['email']
