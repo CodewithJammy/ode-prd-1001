@@ -49,7 +49,7 @@ def verify_otp():
     if entered_otp == stored_otp:
         flash("Verification successful!")
         # TODO: update user DB status here
-        return redirect(url_for('index'))
+        return redirect(url_for('user.login'))
     else:
         flash("Invalid OTP, try again.")
         return redirect(url_for('signup'))
