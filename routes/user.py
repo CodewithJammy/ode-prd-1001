@@ -39,7 +39,6 @@ def signup():
 
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
-@user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
     user_id = session.get('user_id')
     print("DEBUG: session['user_id'] =", user_id)
@@ -63,7 +62,7 @@ def user_home():
     db_flag = str(user.get('NewUser')).lower()
     url_flag = str(new_user_param).lower() if new_user_param else None
 
-    if url_flag == "true" or db_flag in ("true", "1"):
+    if url_flag == "True" or db_flag in ("True", "1"):
         # First-time profile update
         if request.method == 'POST':
             username = request.form['username']
