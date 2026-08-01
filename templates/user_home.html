@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+    <!-- Company name as link to user home -->
+    <a class="navbar-brand fw-bold" href="/user-home">EduPrep</a>
+
+    <!-- Left side links -->
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+      <li class="nav-item"><a class="nav-link" href="/tests">Tests</a></li>
+    </ul>
+
+    <!-- Center: Search bar -->
+    <form class="d-flex mx-auto" style="max-width: 400px;">
+      <input class="form-control me-2" type="search" placeholder="Search courses or tests">
+      <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+
+    <!-- Right side: User icon -->
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle fa-lg"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="/logout">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Secondary Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item"><a class="nav-link active" href="/orders">My Orders</a></li>
+      <li class="nav-item"><a class="nav-link" href="/performance">Performance</a></li>
+      <li class="nav-item"><a class="nav-link" href="/details">Personal Details</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main Body -->
+<div class="container my-4">
+  <h2 class="mb-4">My Orders</h2>
+
+  <!-- Example Jinja logic -->
+  {% if orders %}
+    <div class="row g-4">
+      {% for order in orders %}
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img src="{{ order.image }}" class="card-img-top" alt="{{ order.name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ order.name }}</h5>
+            <p class="card-text">{{ order.description }}</p>
+            <a href="/courses/{{ order.id }}" class="btn btn-primary">View</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      Nothing in your box. Please see our list of <a href="/courses">courses</a> or <a href="/tests">tests</a>.
+    </div>
+  {% endif %}
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+</body>
+</html>
