@@ -78,6 +78,5 @@ def user_home():
             return redirect(url_for('user.user_home'))
         return render_template('UserProfileUpdate.html', user=user)
     else:
-        # cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
-        # orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
+       
         return render_template('user_home.html', user=user, orders=orders)
