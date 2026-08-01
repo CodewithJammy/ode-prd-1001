@@ -1,9 +1,8 @@
 Flask==3.0.3
-flask_sqlalchemy==3.1.1
 pyodbc==4.0.35
 requests==2.32.3
 flask_cors==4.0.0
 gunicorn==22.0.0
 Flask-Mail
-twilio
+azure-communication-email
 
