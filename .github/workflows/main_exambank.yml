@@ -66,13 +66,14 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_586729A2B53A414589C4CF2DE6468EC8 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DEFC38F72AE44D4B8C5B8BEC8A0E0D41 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_82BBB3986E1E412BAE297FE28454D020 }}
-
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'exambank'
-          slot-name: 'Production'
+      # 👉 Add this step here
+      - name: Deploy using Azure CLI
+        run: |
+          az webapp deploy \
+            --resource-group exambank \
+            --name exambank \
+            --src-path .
+      
 
    
 
