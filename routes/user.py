@@ -59,10 +59,10 @@ def user_home():
     print("DEBUG: newUser param =", new_user_param)
 
     # Normalize both DB and URL values
-    db_flag = str(user.get('NewUser')).lower()
-    url_flag = str(new_user_param).lower() if new_user_param else None
+    db_flag = int(user.get('NewUser'))
+    url_flag = int(new_user_param) if new_user_param else None
 
-    if url_flag == "true" or db_flag in ("true", "1"):
+    if url_flag == 1 or db_flag in ("true", "1"):
         # First-time profile update
         if request.method == 'POST':
             username = request.form['username']
