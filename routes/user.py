@@ -39,9 +39,10 @@ def signup():
 
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
+@user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
     user_id = session.get('user_id')
-    print("DEBUG: session['user_id'] =", user_id)  # This will show in Logstream
+    print("DEBUG: session['user_id'] =", user_id)
     if not user_id:
         flash("No user session found, please login.")
         return redirect(url_for('user.signup_form'))
@@ -54,7 +55,16 @@ def user_home():
         flash("User not found in database.")
         return redirect(url_for('user.signup_form'))
 
-    if user['NewUser']:  # first-time profile update
+    # Read newUser from URL
+    new_user_param = request.args.get('newUser')
+    print("DEBUG: newUser param =", new_user_param)
+
+    # Normalize both DB and URL values
+    db_flag = str(user.get('NewUser')).lower()
+    url_flag = str(new_user_param).lower() if new_user_param else None
+
+    if url_flag == "true" or db_flag in ("true", "1"):
+        # First-time profile update
         if request.method == 'POST':
             username = request.form['username']
             password = generate_password_hash(request.form['password'])
