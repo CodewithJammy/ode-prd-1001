@@ -15,6 +15,12 @@ user_bp = Blueprint("user", __name__, url_prefix="/user")
 def signup_form():
     return render_template('signup.html')
 
+def row_to_dict(cursor, row):
+    """Convert a pyodbc row tuple into a dictionary keyed by column names."""
+    if not row:
+        return None
+    columns = [col[0] for col in cursor.description]
+    return dict(zip(columns, row))
 
 @user_bp.route('/signup', methods=['POST'])
 def signup():
