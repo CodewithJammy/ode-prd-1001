@@ -5,7 +5,7 @@ from models.db_config import get_connection
 # Create blueprint
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 
-@app.route('/signup')
+@user_bp.route('/signup')
 def signup():
     return render_template('signup.html')    
 @user_bp.route('/login', methods=['POST'])
