@@ -62,7 +62,7 @@ def user_home():
     db_flag = str(user.get('NewUser')).lower()
     url_flag = str(new_user_param).lower() if new_user_param else None
 
-    if url_flag == "True" or db_flag in ("True", "1"):
+    if url_flag == "true" or db_flag in ("true", "1"):
         # First-time profile update
         if request.method == 'POST':
             username = request.form['username']
@@ -78,6 +78,6 @@ def user_home():
             return redirect(url_for('user.user_home'))
         return render_template('UserProfileUpdate.html', user=user)
     else:
-        cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
-        orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
+        # cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
+        # orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
         return render_template('user_home.html', user=user, orders=orders)
