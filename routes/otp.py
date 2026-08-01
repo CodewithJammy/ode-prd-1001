@@ -1,30 +1,32 @@
-# otp.py
-import os, random, time, requests
+import os, random, time
 from flask import Blueprint, request, session, redirect, url_for, flash
 from azure.communication.email import EmailClient
+from models.db_config import get_connection
+
 otp_bp = Blueprint('otp', __name__, url_prefix='/otp')
 
 connection_string = os.getenv("AZURE_COMMUNICATION_CONNECTION_STRING")
 email_client = EmailClient.from_connection_string(connection_string)
 
+conn = get_connection()
+cursor = conn.cursor()
+
 @otp_bp.route('/send_otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
 
-    # Check if email already exists in Users table
+    # Check if email already exists
     cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
     row = cursor.fetchone()
 
     if row:
-        # Existing user → ask them to login
         flash("User already exists, please login.")
-        return redirect(url_for('user.login_form'))  # or wherever your login form is
+        return redirect(url_for('user.login_form'))
     else:
-        # New user → generate OTP
         otp = str(random.randint(100000, 999999))
         session['otp'] = otp
         session['otp_time'] = time.time()
-        session['pending_email'] = email  # store email for verify step
+        session['pending_email'] = email
 
         message = {
             "senderAddress": "DoNotReply@8eba1789-8297-4341-a70c-f23f248cd46b.azurecomm.net",
@@ -53,12 +55,11 @@ def verify_otp():
         flash("No OTP found, please request again.")
         return redirect(url_for('user.signup'))
 
-    if time.time() - otp_time > 600:  # 10 minutes expiry
+    if time.time() - otp_time > 600:
         flash("OTP expired, please request a new one.")
         return redirect(url_for('user.signup'))
 
     if entered_otp == stored_otp:
-        # Insert new user with NewUser=1
         cursor.execute("INSERT INTO Users (Email, NewUser) VALUES (?, 1)", (email,))
         conn.commit()
         user_id = cursor.execute("SELECT SCOPE_IDENTITY()").fetchval()
