@@ -31,11 +31,23 @@ def signup():
         return redirect(url_for('otp.send_otp'))
   
 
+
 @user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
-    cursor.execute("SELECT * FROM Users WHERE Id = ?", (session['user_id'],))
-    user = cursor.fetchone()
-    if user.NewUser:  # first-time profile update
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("No user session found, please login.")
+        return redirect(url_for('user.signup_form'))
+
+    cursor.execute("SELECT * FROM Users WHERE Id = ?", (user_id,))
+    row = cursor.fetchone()
+    user = row_to_dict(cursor, row)
+
+    if not user:
+        flash("User not found in database.")
+        return redirect(url_for('user.signup_form'))
+
+    if user['NewUser']:  # first-time profile update
         if request.method == 'POST':
             username = request.form['username']
             password = generate_password_hash(request.form['password'])
@@ -45,13 +57,11 @@ def user_home():
                 UPDATE Users 
                 SET Username=?, PasswordHash=?, Mobile=?, Gender=?, NewUser=0 
                 WHERE Id=?
-            """, (username, password, mobile, gender, session['user_id']))
+            """, (username, password, mobile, gender, user_id))
             conn.commit()
-            return redirect(url_for('user_home'))
+            return redirect(url_for('user.user_home'))
         return render_template('UserProfileUpdate.html', user=user)
     else:
-        # Normal dashboard
-        # Fetch orders for this user
-        cursor.execute("SELECT * FROM Orders WHERE UserId=?", (session['user_id'],))
-        orders = cursor.fetchall()
+        cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
+        orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
         return render_template('user_home.html', user=user, orders=orders)
