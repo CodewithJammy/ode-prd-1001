@@ -72,6 +72,5 @@ def user_home():
             conn.commit()
             return redirect(url_for('user.user_home'))
         return render_template('UserProfileUpdate.html', user=user)
-    else:
-       
-        return redirect(url_for('user.user_home'))
+    # Existing user   
+    return redirect(url_for('user.user_home'))
