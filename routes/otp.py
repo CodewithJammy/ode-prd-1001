@@ -62,7 +62,7 @@ def verify_otp():
     if entered_otp == stored_otp:
         cursor.execute("INSERT INTO Users (Email, NewUser) VALUES (?, 1)", (email,))
         conn.commit()
-        user_id = cursor.execute("SELECT SCOPE_IDENTITY()").fetchval()
+        user_id = cursor.execute("SELECT SCOPE_IDENTITY()").fetchval()[0]
         session['user_id'] = user_id
 
         flash("Verification successful! Please complete your profile.")
