@@ -51,6 +51,12 @@ def verify_otp():
     otp_time = session.get('otp_time')
     email = session.get('pending_email')
 
+    print("DEBUG: Incoming verify_otp request")
+    print("DEBUG: entered_otp =", entered_otp)
+    print("DEBUG: stored_otp =", stored_otp)
+    print("DEBUG: pending_email =", email)
+    print("DEBUG: session contents BEFORE insert =", dict(session))
+    
     if not stored_otp or not otp_time:
         flash("No OTP found, please request again.")
         return redirect(url_for('user.signup'))
@@ -65,10 +71,16 @@ def verify_otp():
         
         cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
         row = cursor.fetchone()
+        if not row:
+            print("DEBUG: No row found for email =", email)
+            flash("User creation failed, please try again.")
+            return redirect(url_for('user.signup'))
+            
         user_id = row[0]  # first column is Id
 
         session['user_id'] = user_id   # Store in session
-        print("DEBUG: session['user_id'] set =", session['user_id'])
+        print("DEBUG: session contents AFTER insert =", dict(session))
+        
         
         flash("Verification successful! Please complete your profile.")
         return redirect(url_for('user.user_home'))
