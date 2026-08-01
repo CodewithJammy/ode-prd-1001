@@ -41,6 +41,7 @@ def signup():
 @user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
     user_id = session.get('user_id')
+    print("DEBUG: session['user_id'] =", user_id)  # This will show in Logstream
     if not user_id:
         flash("No user session found, please login.")
         return redirect(url_for('user.signup_form'))
