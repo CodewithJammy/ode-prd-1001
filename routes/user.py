@@ -1,6 +1,12 @@
 
-from flask import Blueprint, render_template, request, session, redirect, url_for,jsonify
+from flask import Blueprint, render_template, request, session, redirect, url_for,jsonify,flash
 from models.db_config import get_connection
+from werkzeug.security import generate_password_hash
+
+
+# Create connection + cursor
+conn = get_connection()
+cursor = conn.cursor()
 
 # Create blueprint
 user_bp = Blueprint("user", __name__, url_prefix="/user")
@@ -24,19 +30,6 @@ def signup():
         session['pending_email'] = email
         return redirect(url_for('otp.send_otp'))
   
-@user_bp.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
-    row = cursor.fetchone()
-    if not row:
-        cursor.execute("INSERT INTO Users (Email, NewUser) VALUES (?, 1)", (email,))
-        conn.commit()
-        user_id = cursor.execute("SELECT SCOPE_IDENTITY()").fetchval()
-    else:
-        user_id = row[0]
-    session['user_id'] = user_id
-    return redirect(url_for('user_home'))
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
