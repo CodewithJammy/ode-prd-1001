@@ -67,6 +67,9 @@ def verify_otp():
         row = cursor.fetchone()
         user_id = row[0]  # first column is Id
 
+        session['user_id'] = user_id   # Store in session
+        print("DEBUG: session['user_id'] set =", session['user_id'])
+        
         flash("Verification successful! Please complete your profile.")
         return redirect(url_for('user.user_home'))
     else:
