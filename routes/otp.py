@@ -69,14 +69,14 @@ def verify_otp():
         cursor.execute("INSERT INTO Users (Email, NewUser) VALUES (?, 1)", (email,))
         conn.commit()
         
-        cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
+        cursor.execute("SELECT Id , NewUser FROM Users WHERE Email = ?", (email,))
         row = cursor.fetchone()
         if not row:
             print("DEBUG: No row found for email =", email)
             flash("User creation failed, please try again.")
             return redirect(url_for('user.signup'))
             
-        user_id = row[0]  # first column is Id
+        user_id, new_user_flag = row
 
         session['user_id'] = user_id   # Store in session
         print("DEBUG: session contents AFTER insert =", dict(session))
