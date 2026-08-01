@@ -7,7 +7,7 @@ from models.db_config import get_connection
 from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
-from otp import otp_bp
+from routes.otp import otp_bp
 
 app = Flask(__name__)
 
