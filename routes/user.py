@@ -15,6 +15,11 @@ user_bp = Blueprint("user", __name__, url_prefix="/user")
 def signup_form():
     return render_template('signup.html')
 
+@user_bp.route('/user_dash', methods=['GET'])
+def user_dashboard():
+    return render_template('user_home.html')
+
+
 def row_to_dict(cursor, row):
     """Convert a pyodbc row tuple into a dictionary keyed by column names."""
     if not row:
@@ -70,7 +75,7 @@ def user_home():
                 WHERE Id=?
             """, (username, password, mobile, gender, user_id))
             conn.commit()
-            return redirect(url_for('user.user_home'))
+            return redirect(url_for('user.user_dash'))
         return render_template('UserProfileUpdate.html', user=user)
     # Existing user   
-    return redirect(url_for('user.user_home'))
+    return redirect(url_for('user.user_dash'))
