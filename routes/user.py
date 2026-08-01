@@ -5,9 +5,20 @@ from models.db_config import get_connection
 # Create blueprint
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 
-@user_bp.route('/signup')
+@user_bp.route('/signup', methods=['POST'])
 def signup():
-    return render_template('signup.html')    
+    email = request.form['email']
+    cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
+    row = cursor.fetchone()
+
+    if row:
+        flash("User already exists, please login.")
+        return redirect(url_for('user.login_form'))
+    else:
+        # Send OTP (your existing otp.send_otp logic)
+        session['pending_email'] = email
+        return redirect(url_for('otp.send_otp'))
+  
 @user_bp.route('/login', methods=['POST'])
 def login():
     email = request.form['email']
