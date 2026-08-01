@@ -54,15 +54,9 @@ def user_home():
         flash("User not found in database.")
         return redirect(url_for('user.signup_form'))
 
-    # Read newUser from URL
-    new_user_param = request.args.get('newUser')
-    print("DEBUG: newUser param =", new_user_param)
+    
 
-    # Normalize both DB and URL values
-   
-    url_flag = int(new_user_param) if new_user_param else None
-
-    if url_flag == 1 :
+    if int(user["NewUser"]) == 1:
         # First-time profile update
         if request.method == 'POST':
             username = request.form['username']
