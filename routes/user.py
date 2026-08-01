@@ -73,4 +73,4 @@ def user_home():
         return render_template('UserProfileUpdate.html', user=user)
     else:
        
-        return render_template('user_home.html', user=user, orders=orders)
+        return render_template('user_home.html', user=user)
