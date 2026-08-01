@@ -83,7 +83,8 @@ def verify_otp():
         
         
         flash("Verification successful! Please complete your profile.")
-        return redirect(url_for('user.user_home'))
+        new_user_flag = str(user.get('NewUser'))
+        return redirect(url_for('user.user_home', newUser=new_user_flag))
     else:
         flash("Invalid OTP, try again.")
         return redirect(url_for('user.signup'))
