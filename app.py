@@ -8,6 +8,7 @@ from routes.admin_routes import admin_bp
 from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 from routes.otp import otp_bp
+from routes.user import user_bp
 
 app = Flask(__name__)
 
@@ -18,9 +19,7 @@ app.register_blueprint(otp_bp)
 def index():
     return render_template("index.html")
 
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')    
+
 @app.route('/courses')
 def courses():
     return render_template('courses.html')
