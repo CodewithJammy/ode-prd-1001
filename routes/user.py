@@ -3,9 +3,13 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from models.db_config import get_connection
 
 # Create blueprint
-user_bp = Blueprint("user", __name__, url_prefix="/exam")
-@user_bp.route('/signup', methods=['POST'])
+user_bp = Blueprint("user", __name__, url_prefix="/user")
+
+@app.route('/signup')
 def signup():
+    return render_template('signup.html')    
+@user_bp.route('/login', methods=['POST'])
+def login():
     email = request.form['email']
     cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
     row = cursor.fetchone()
