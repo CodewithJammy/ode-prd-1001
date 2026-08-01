@@ -39,7 +39,7 @@ def user_home():
             """, (username, password, mobile, gender, session['user_id']))
             conn.commit()
             return redirect(url_for('user_home'))
-        return render_template('profile_update.html', user=user)
+        return render_template('UserProfileUpdate.html', user=user)
     else:
         # Normal dashboard
         # Fetch orders for this user
