@@ -45,4 +45,4 @@ def user_home():
         # Fetch orders for this user
         cursor.execute("SELECT * FROM Orders WHERE UserId=?", (session['user_id'],))
         orders = cursor.fetchall()
-        return render_template('user_dashboard.html', user=user, orders=orders)
+        return render_template('user_home.html', user=user, orders=orders)
