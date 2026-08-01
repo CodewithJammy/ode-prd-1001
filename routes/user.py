@@ -40,6 +40,7 @@ def signup():
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
+    return "DEBUG VERSION 12345"
     user_id = session.get('user_id')
     print("DEBUG: session['user_id'] =", user_id)
     if not user_id:
