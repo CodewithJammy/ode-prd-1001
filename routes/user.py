@@ -75,7 +75,7 @@ def user_home():
                 WHERE Id=?
             """, (username, password, mobile, gender, user_id))
             conn.commit()
-            return redirect(url_for('user.user_dash'))
+            return redirect(url_for('user.user_dashboard'))
         return render_template('UserProfileUpdate.html', user=user)
     # Existing user   
-    return redirect(url_for('user.user_dash'))
+    return redirect(url_for('user.user_dashboard'))
