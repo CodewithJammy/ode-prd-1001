@@ -21,7 +21,7 @@ def send_otp():
 
     if row:
         flash("User already exists, please login.")
-        return redirect(url_for('user.login_form'))
+        return redirect(url_for('user.signup'))
     else:
         otp = str(random.randint(100000, 999999))
         session['otp'] = otp
