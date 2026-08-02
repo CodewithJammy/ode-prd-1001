@@ -11,33 +11,58 @@
 <body>
 {% include 'user_navbar.html' %}
 
-
 <!-- Main Body -->
 <div class="container my-4">
-  <h2 class="mb-4">My Orders</h2>
-
-  <!-- Example Jinja logic -->
-  {% if orders %}
-    <div class="row g-4">
-      {% for order in orders %}
-      <div class="col-md-4">
-        <div class="card shadow-sm">
-          <img src="{{ order.image }}" class="card-img-top" alt="{{ order.name }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ order.name }}</h5>
-            <p class="card-text">{{ order.description }}</p>
-            <a href="/courses/{{ order.id }}" class="btn btn-primary">View</a>
+  {% if active_tab == 'orders' %}
+    <h2 class="mb-4">My Orders</h2>
+    {% if orders %}
+      <div class="row g-4">
+        {% for order in orders %}
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <img src="{{ order.image }}" class="card-img-top" alt="{{ order.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ order.name }}</h5>
+              <p class="card-text">{{ order.description }}</p>
+              <a href="/courses/{{ order.id }}" class="btn btn-primary">View</a>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="alert alert-info">
-      Nothing in your box. Please see our list of <a href="/courses">courses</a> or <a href="/tests">tests</a>.
-    </div>
+    {% else %}
+      <div class="alert alert-info">No orders found.</div>
+    {% endif %}
+
+  {% elif active_tab == 'performance' %}
+    <h2 class="mb-4">Performance</h2>
+    {% if performance %}
+      <ul class="list-group">
+        {% for p in performance %}
+          <li class="list-group-item">
+            {{ p.Subject }} – Score: {{ p.Score }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="alert alert-info">No performance data available.</div>
+    {% endif %}
+
+  {% elif active_tab == 'details' %}
+    <h2 class="mb-4">Personal Details</h2>
+    {% if user %}
+      <table class="table table-bordered">
+        <tr><th>Name</th><td>{{ user.Username }}</td></tr>
+        <tr><th>Email</th><td>{{ user.Email }}</td></tr>
+        <tr><th>Mobile</th><td>{{ user.Mobile }}</td></tr>
+        <tr><th>Gender</th><td>{{ user.Gender }}</td></tr>
+      </table>
+    {% else %}
+      <div class="alert alert-info">No user details found.</div>
+    {% endif %}
   {% endif %}
 </div>
+
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
