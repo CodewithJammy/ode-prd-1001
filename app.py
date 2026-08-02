@@ -9,12 +9,14 @@ from routes.register_routes import register_bp
 from flask_mail import Mail, Message
 from routes.otp import otp_bp
 from routes.user import user_bp
+from routes.courses import courses_bp
 
 app = Flask(__name__)
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.register_blueprint(otp_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(courses_bp)
 
 
 @app.route("/")
