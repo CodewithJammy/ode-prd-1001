@@ -35,6 +35,28 @@ def signup():
         session['pending_email'] = email
         return redirect(url_for('otp.send_otp'))
   
+@user_bp.route('/login', methods=['POST'])
+def login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    # Query user from DB
+    cursor.execute("SELECT Id, PasswordHash FROM Users WHERE Email=?", (email,))
+    row = cursor.fetchone()
+
+    if row:
+        user_id, stored_hash = row
+        # Verify password
+        if check_password_hash(stored_hash, password):
+            session['user_id'] = user_id
+            flash("Login successful!", "success")
+            return redirect(url_for('user.user_home'))
+        else:
+            flash("Invalid password", "danger")
+    else:
+        flash("Email not found", "danger")
+
+    return redirect(url_for('user.signup_form'))
 
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
