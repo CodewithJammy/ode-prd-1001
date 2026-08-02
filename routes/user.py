@@ -101,4 +101,4 @@ def user_home():
             return redirect(url_for('user.user_dashboard'))
         return render_template('UserProfileUpdate.html', user=user)
     # Existing user   
-    return redirect(url_for('user.user_dashboard'))
+    return return render_template('user_home.html', user=user)
