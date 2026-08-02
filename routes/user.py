@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for,jsonify,flash
 from models.db_config import get_connection
 from werkzeug.security import generate_password_hash
+from models.db_helpers import row_to_dict
 
 
 # Create connection + cursor
@@ -19,13 +20,6 @@ def signup_form():
 def user_dashboard():
     return render_template('user_home.html')
 
-
-def row_to_dict(cursor, row):
-    """Convert a pyodbc row tuple into a dictionary keyed by column names."""
-    if not row:
-        return None
-    columns = [col[0] for col in cursor.description]
-    return dict(zip(columns, row))
 
 @user_bp.route('/signup', methods=['POST'])
 def signup():
