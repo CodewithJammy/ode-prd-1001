@@ -58,6 +58,13 @@ def login():
 
     return redirect(url_for('user.signup_form'))
 
+@user_bp.route('/logout')
+def logout():
+    # Clear the session
+    session.clear()
+    flash("You have been logged out.", "info")
+    return redirect(url_for('index'))
+
 
 @user_bp.route('/user-home', methods=['GET', 'POST'])
 def user_home():
