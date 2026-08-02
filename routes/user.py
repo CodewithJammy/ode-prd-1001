@@ -121,5 +121,5 @@ def user_details():
     elif tab == "details":
         cursor.execute("SELECT * FROM Users WHERE Id=?", (user_id,))
         user = row_to_dict(cursor, cursor.fetchone())
-        return render_template('user_home.html', active_tab="details", user=user)
+        return render_template('user_home.html', active_tab=tab, user=user)
 
