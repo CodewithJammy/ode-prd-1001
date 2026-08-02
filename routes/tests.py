@@ -9,7 +9,7 @@ cursor = conn.cursor()
 # Create blueprint
 tests_bp = Blueprint("tests", __name__, url_prefix="/tests")
 
-@tests_bp.route('/tests')
+@tests_bp.route('/')
 def tests():
     # Get distinct categories
     cursor.execute("SELECT DISTINCT Category FROM Tests")
