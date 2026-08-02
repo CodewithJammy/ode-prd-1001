@@ -20,12 +20,16 @@
       <form method="get" action="{{ url_for('courses.courses') }}">
         <div class="mb-3">
           <label class="form-label">Category</label>
-          <select name="category" class="form-select">
-            <option value="">All</option>
-            <option value="Course">Courses</option>
-            <option value="Test">Tests</option>
-          </select>
-        </div>
+            <select name="category" class="form-select">
+              <option value="">All</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>
+                {{ cat }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
         <div class="mb-3">
           <label class="form-label">Price Range</label>
           <select name="price" class="form-select">
