@@ -1,43 +1,54 @@
 <!-- Top Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container-fluid">
-    <!-- Company name as link to user home -->
     <a class="navbar-brand fw-bold" href="/user/user-home">EduPrep</a>
 
-    <!-- Left side links -->
-    <ul class="navbar-nav me-auto">
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('courses.courses') }}">Courses</a></li>
-      <li class="nav-item"><a class="nav-link" href="/tests">Tests</a></li>
-    </ul>
+    <!-- Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
+      aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <!-- Center: Search bar -->
-    <form class="d-flex mx-auto" style="max-width: 400px;">
-      <input class="form-control me-2" type="search" placeholder="Search courses or tests">
-      <button class="btn btn-outline-primary" type="submit">Search</button>
-    </form>
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="topNavbar">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('courses.courses') }}">Courses</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tests">Tests</a></li>
+      </ul>
 
-    <!-- Right side: User icon -->
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
-          <i class="fas fa-user-circle fa-lg"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="{{ url_for('user.logout') }}">Logout</a></li>
-        </ul>
-      </li>
-    </ul>
+      <form class="d-flex mx-auto" style="max-width: 400px;">
+        <input class="form-control me-2" type="search" placeholder="Search courses or tests">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle fa-lg"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ url_for('user.logout') }}">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
 <!-- Secondary Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <ul class="navbar-nav mx-auto">
-      <li class="nav-item"><a class="nav-link {% if active_tab=='orders' %}active{% endif %}" href="{{ url_for('user.user_details', tab='orders') }}">My Orders</a></li>
-      <li class="nav-item"><a class="nav-link {% if active_tab=='performance' %}active{% endif %}" href="{{ url_for('user.user_details', tab='performance') }}">Performance</a></li>
-      <li class="nav-item"><a class="nav-link {% if active_tab=='details' %}active{% endif %}" href="{{ url_for('user.user_details', tab='details') }}">Personal Details</a></li>
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#secondaryNavbar"
+      aria-controls="secondaryNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    </ul>
+    <div class="collapse navbar-collapse" id="secondaryNavbar">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link {% if active_tab=='orders' %}active{% endif %}" href="{{ url_for('user.user_details', tab='orders') }}">My Orders</a></li>
+        <li class="nav-item"><a class="nav-link {% if active_tab=='performance' %}active{% endif %}" href="{{ url_for('user.user_details', tab='performance') }}">Performance</a></li>
+        <li class="nav-item"><a class="nav-link {% if active_tab=='details' %}active{% endif %}" href="{{ url_for('user.user_details', tab='details') }}">Personal Details</a></li>
+      </ul>
+    </div>
   </div>
 </nav>
