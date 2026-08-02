@@ -104,3 +104,22 @@ def user_home():
         return render_template('UserProfileUpdate.html', user=user)
     # Existing user   
     return  render_template('user_home.html', user=user)
+
+@user_bp.route('/user-details')
+def user_details():
+    tab = request.args.get('tab', 'orders')  # default orders
+    user_id = session.get('user_id')
+
+    if tab == "orders":
+        cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
+        orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
+        return render_template('user_home.html', active_tab="orders", orders=orders)
+    elif tab == "performance":
+        cursor.execute("SELECT * FROM Performance WHERE UserId=?", (user_id,))
+        perf = [row_to_dict(cursor, r) for r in cursor.fetchall()]
+        return render_template('user_home.html', active_tab="performance", performance=perf)
+    elif tab == "details":
+        cursor.execute("SELECT * FROM Users WHERE Id=?", (user_id,))
+        user = row_to_dict(cursor, cursor.fetchone())
+        return render_template('user_home.html', active_tab="details", user=user)
+
