@@ -22,9 +22,6 @@ app.register_blueprint(courses_bp)
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route('/tests')
-def tests():
-    return render_template('tests.html')
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.args.get('q')  # get search term from URL
