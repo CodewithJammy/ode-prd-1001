@@ -18,7 +18,7 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.register_blueprint(otp_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(courses_bp)
-
+app.register_blueprint(tests_bp)
 
 @app.route("/")
 def index():
