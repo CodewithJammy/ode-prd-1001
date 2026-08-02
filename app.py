@@ -22,11 +22,6 @@ app.register_blueprint(courses_bp)
 @app.route("/")
 def index():
     return render_template("index.html")
-
-
-@app.route('/courses')
-def courses():
-    return render_template('courses.html')
 @app.route('/tests')
 def tests():
     return render_template('tests.html')
