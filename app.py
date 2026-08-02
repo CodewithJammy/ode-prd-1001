@@ -10,6 +10,7 @@ from flask_mail import Mail, Message
 from routes.otp import otp_bp
 from routes.user import user_bp
 from routes.courses import courses_bp
+from routes.tests import tests_bp
 
 app = Flask(__name__)
 
