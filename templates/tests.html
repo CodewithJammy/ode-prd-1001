@@ -4,93 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tests - EduPrep</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
 </head>
 <body>
 
   <!-- Navbar -->
   {% include 'navbar.html' %}
-  <!-- Page Content -->
-  <div class="container py-5 mt-5">
-    <h2 class="mb-4 text-center">Available Tests</h2>
+     {% block content %}
+<div class="container-fluid my-4">
+  <div class="row">
+    <!-- Left Sidebar Filters -->
+    <div class="col-md-3">
+      <h5>Filters</h5>
+      <form method="get" action="{{ url_for('tests.tests') }}">
+        
+        <!-- Category Filter -->
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-select">
+            <option value="">All</option>
+            {% for cat in categories %}
+              <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>
+                {{ cat }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
 
-    <!-- Offcanvas Panel for Tests -->
-    <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="testsPanel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Available Tests</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-      </div>
-      <div class="offcanvas-body">
+        <!-- Price Filter -->
+        <div class="mb-3">
+          <label class="form-label">Price Range</label>
+          <select name="price" class="form-select">
+            <option value="">All</option>
+            <option value="low" {% if request.args.get('price') == 'low' %}selected{% endif %}>Under ₹500</option>
+            <option value="mid" {% if request.args.get('price') == 'mid' %}selected{% endif %}>₹500–₹1000</option>
+            <option value="high" {% if request.args.get('price') == 'high' %}selected{% endif %}>Above ₹1000</option>
+          </select>
+        </div>
 
-        <!-- Tabs for Test Categories -->
-        <ul class="nav nav-pills mb-3" id="testsTab" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" id="banking-tab" data-bs-toggle="tab" data-bs-target="#banking" type="button">Banking</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" id="ssc-tab" data-bs-toggle="tab" data-bs-target="#ssc" type="button">SSC</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" id="railway-tab" data-bs-toggle="tab" data-bs-target="#railway" type="button">Railway</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" id="upsc-tab" data-bs-toggle="tab" data-bs-target="#upsc" type="button">UPSC</button>
-          </li>
-        </ul>
+        <!-- Level Filter -->
+        <div class="mb-3">
+          <label class="form-label">Level</label>
+          <select name="level" class="form-select">
+            <option value="">All</option>
+            {% for lvl in levels %}
+              <option value="{{ lvl }}" {% if request.args.get('level') == lvl %}selected{% endif %}>
+                {{ lvl }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
 
-        <!-- Tab Content -->
-        <div class="tab-content" id="testsTabContent">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+      </form>
+    </div>
 
-          <!-- Banking Tests -->
-          <div class="tab-pane fade show active" id="banking">
-            <div class="row g-4">
-              <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">IBPS PO Test Series</h5>
-                    <p class="card-text">20 Full Length Mocks</p>
-                    <p class="fw-bold text-success">₹499</p>
-                    <button class="btn btn-primary w-100">Buy Now</button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">SBI Clerk Practice</h5>
-                    <p class="card-text">15 Mock Tests</p>
-                    <p class="fw-bold text-success">₹399</p>
-                    <button class="btn btn-primary w-100">Buy Now</button>
-                  </div>
-                </div>
-              </div>
+    <!-- Right Content -->
+    <div class="col-md-9">
+      <div class="row g-4">
+        {% for test in tests %}
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <img src="{{ test.ImageUrl }}" class="card-img-top" alt="{{ test.Name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ test.Name }}</h5>
+              <p class="card-text">{{ test.Description }}</p>
+              <p class="fw-bold">₹{{ test.Price }}</p>
+              <p class="text-muted">Level: {{ test.Level }}</p>
+              <a href="/buy/{{ test.Id }}" class="btn btn-primary">Buy</a>
             </div>
           </div>
-
-          <!-- SSC Tests -->
-          <div class="tab-pane fade" id="ssc">
-            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
-          </div>
-
-          <!-- Railway Tests -->
-          <div class="tab-pane fade" id="railway">
-            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
-          </div>
-
-          <!-- UPSC Tests -->
-          <div class="tab-pane fade" id="upsc">
-            <div class="alert alert-info text-center">Mock tests will come soon 🚀</div>
-          </div>
-
         </div>
+        {% endfor %}
       </div>
     </div>
   </div>
-
+</div>
+{% endblock %}
   <!-- Footer -->
 {% include 'footer.html' %}
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
