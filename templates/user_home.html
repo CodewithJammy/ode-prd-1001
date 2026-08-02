@@ -18,7 +18,7 @@
 
     <!-- Left side links -->
     <ul class="navbar-nav me-auto">
-      <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+      <li class="nav-item"><a class="nav-link" href="href="{{ url_for('courses.courses') }}">Courses</a></li>
       <li class="nav-item"><a class="nav-link" href="/tests">Tests</a></li>
     </ul>
 
@@ -35,7 +35,7 @@
           <i class="fas fa-user-circle fa-lg"></i>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          <li><a class="dropdown-item" href="href="{{ url_for('index') }}">Logout</a></li>
         </ul>
       </li>
     </ul>
