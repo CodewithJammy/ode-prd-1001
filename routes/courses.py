@@ -36,5 +36,8 @@ def courses():
     cursor.execute(query, params)
     rows = cursor.fetchall()
     courses = [row_to_dict(cursor, r) for r in rows]
-
-    return render_template('courses.html', courses=courses, categories=categories)
+    if 'user_id' in session:  # logged in
+        return render_template('user_courses.html', courses=courses, categories=categories)
+    else:  # public
+        return render_template('courses.html', courses=courses, categories=categories)
+    
