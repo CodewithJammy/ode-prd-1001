@@ -10,8 +10,13 @@ cursor = conn.cursor()
 # Create blueprint
 courses_bp = Blueprint("courses", __name__, url_prefix="/courses")
 @courses_bp.route('/courses')
+
 def courses():
-    # Read filters from query string
+    # Get distinct categories
+    cursor.execute("SELECT DISTINCT Category FROM Courses")
+    categories = [row[0] for row in cursor.fetchall()]
+
+    # Apply filters
     category = request.args.get('category')
     price = request.args.get('price')
 
@@ -32,4 +37,4 @@ def courses():
     rows = cursor.fetchall()
     courses = [row_to_dict(cursor, r) for r in rows]
 
-    return render_template('courses.html', courses=courses)
+    return render_template('courses.html', courses=courses, categories=categories)
