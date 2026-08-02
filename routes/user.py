@@ -16,6 +16,10 @@ user_bp = Blueprint("user", __name__, url_prefix="/user")
 def signup_form():
     return render_template('signup.html')
 
+@user_bp.route('/', methods=['GET'])
+def user_courses():
+    return render_template('user_courses.html')
+
 @user_bp.route('/user_dash', methods=['GET'])
 def user_dashboard():
     return render_template('user_home.html')
