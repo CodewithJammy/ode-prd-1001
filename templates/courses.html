@@ -45,26 +45,23 @@
 
     <!-- Right Content -->
     <div class="col-md-9">
-      <div class="row g-4">
-
-        {% for course in courses %}
-
-        <div class="col-md-4">
-          <div class="card shadow-sm">
-            <img src="{{ item.ImagePath }}" class="card-img-top" alt="{{ item.Name }}">
-            <div class="card-body">
-              <h5 class="card-title">{{ item.Name }}</h5>
-              <p class="card-text">{{ item.Description }}</p>
-              <p class="fw-bold">₹{{ item.Price }}</p>
-              <a href="/buy/{{ item.Id }}" class="btn btn-primary">Buy</a>
-            </div>
-          </div>
+  <div class="row g-4">
+    {% for course in courses %}
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <img src="{{ course.ImageUrl }}" class="card-img-top" alt="{{ course.Name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ course.Name }}</h5>
+          <p class="card-text">{{ course.Description }}</p>
+          <p class="fw-bold">₹{{ course.Price }}</p>
+          <a href="/buy/{{ course.Id }}" class="btn btn-primary">Buy</a>
         </div>
-
-        {% endfor %}
-
       </div>
     </div>
+    {% endfor %}
+  </div>
+</div>
+
   </div>
 </div>
 
