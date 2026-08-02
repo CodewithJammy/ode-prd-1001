@@ -1,70 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>User Home</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}Courses - EduPrep{% endblock %}
 {% include 'user_navbar.html' %}
 
 {% block content %}
-<div class="row">
-  <!-- Left Sidebar -->
-  <div class="col-md-3">
-    <h5>Filters</h5>
-    <form method="get" action="{{ url_for('courses.courses') }}">
-      <div class="mb-3">
-        <label class="form-label">Category</label>
-        <select name="category" class="form-select">
-          <option value="">All</option>
-          {% for cat in categories %}
-            <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>
-              {{ cat }}
-            </option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Price Range</label>
-        <select name="price" class="form-select">
-          <option value="">All</option>
-          <option value="low">Under ₹500</option>
-          <option value="mid">₹500–₹1000</option>
-          <option value="high">Above ₹1000</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Apply</button>
-    </form>
-  </div>
+<div class="container-fluid my-4">
+  <div class="row">
+    <!-- Left Sidebar -->
+    <aside class="col-12 col-md-3 mb-4">
+      <h5>Filters</h5>
+      <form method="get" action="{{ url_for('courses.courses') }}">
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-select">
+            <option value="">All</option>
+            {% for cat in categories %}
+              <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>
+                {{ cat }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Price Range</label>
+          <select name="price" class="form-select">
+            <option value="">All</option>
+            <option value="low">Under ₹500</option>
+            <option value="mid">₹500–₹1000</option>
+            <option value="high">Above ₹1000</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+      </form>
+    </aside>
 
-  <!-- Right Content -->
-  <div class="col-md-9">
-    <div class="row g-4">
-      {% for course in courses %}
-      <div class="col-md-4">
-        <div class="card shadow-sm">
-          <!-- Use ImagePath if that’s your DB column -->
-          <img src="{{ course.ImagePath }}" class="card-img-top" alt="{{ course.Name }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ course.Name }}</h5>
-            <p class="card-text">{{ course.Description }}</p>
-            <p class="fw-bold">₹{{ course.Price }}</p>
-            <a href="/buy/{{ course.Id }}" class="btn btn-primary">Buy</a>
+    <!-- Right Content -->
+    <main class="col-12 col-md-9">
+      <div class="row g-4">
+        {% for course in courses %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <img src="{{ course.ImagePath }}" class="card-img-top img-fluid" alt="{{ course.Name }}">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ course.Name }}</h5>
+              <p class="card-text">{{ course.Description }}</p>
+              <p class="fw-bold mt-auto">₹{{ course.Price }}</p>
+              <a href="/buy/{{ course.Id }}" class="btn btn-primary mt-2">Buy</a>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
+    </main>
   </div>
 </div>
 {% endblock %}
-  
-  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-
-</body>
-</html>
-  
