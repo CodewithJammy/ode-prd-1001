@@ -17,18 +17,24 @@
     <h2 class="mb-4">My Orders</h2>
     {% if orders %}
       <div class="row g-4">
-        {% for order in orders %}
-        <div class="col-md-4">
-          <div class="card shadow-sm">
-            <img src="{{ order.image }}" class="card-img-top" alt="{{ order.name }}">
-            <div class="card-body">
-              <h5 class="card-title">{{ order.name }}</h5>
-              <p class="card-text">{{ order.description }}</p>
-              <a href="/courses/{{ order.id }}" class="btn btn-primary">View</a>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
+       {% for order in orders %}
+<div class="col-md-4">
+  <div class="card shadow-sm">
+    <img src="{{ order.imageurl }}" class="card-img-top" alt="{{ order.name }}">
+    <div class="card-body">
+      <h5 class="card-title">{{ order.name }}</h5>
+      <p class="card-text">{{ order.description }}</p>
+      <p class="fw-bold">₹{{ order.amount }}</p>
+
+      {% if order.Order_Type == 'course' %}
+        <a href="/courses/{{ order.Order_TypeId }}" class="btn btn-primary">View</a>
+      {% elif order.Order_Type == 'test' %}
+        <a href="/tests/{{ order.Order_TypeId }}" class="btn btn-primary">View</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}
       </div>
     {% else %}
       <div class="alert alert-info">No orders found.</div>
