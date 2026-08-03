@@ -88,7 +88,7 @@ def user_home():
     if not user:
         flash("User not found in database.")
         return redirect(url_for('user.signup_form'))
-
+    next_url = request.args.get('next') or session.get('next_url')
     
 
     if int(user["NewUser"]) == 1:
@@ -105,7 +105,7 @@ def user_home():
             """, (username, password, mobile, gender, user_id))
             conn.commit()
             return redirect(url_for('user.user_dashboard'))
-        return render_template('UserProfileUpdate.html', user=user)
+        return render_template('UserProfileUpdate.html', user=user , next=next_url)
     # Existing user   
     return  render_template('user_home.html', user=user)
 
