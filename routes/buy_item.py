@@ -12,7 +12,7 @@ def buy_item(item_type, item_id):
         return redirect(url_for('signup', next=url_for('buy_item', item_type=item_type, item_id=item_id)))
     else:
         # Logged in → go straight to payment
-        return redirect(url_for('payment', item_type=item_type, item_id=item_id))
+        return redirect(url_for('buy.payment', item_type=item_type, item_id=item_id))
 
 
 
