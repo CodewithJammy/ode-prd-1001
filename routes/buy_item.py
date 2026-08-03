@@ -58,7 +58,7 @@ def process_payment(item_type, item_id):
     expire_date = start_date + timedelta(days=90)  # 3 months
 
     cursor.execute("""
-        INSERT INTO Orders (UserId,  order_type, order_typeid,amount PaymentMethod, orderdate, order_expiredate)
+        INSERT INTO Orders (UserId,  order_type, order_typeid,amount ,PaymentMethod, orderdate, order_expiredate)
         VALUES (?, ?, ?, ?, ?, ?, ? )
     """, (user_id, order_type, order_typeid, price , method, start_date, expire_date))
     conn.commit()
