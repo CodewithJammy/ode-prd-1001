@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from models.db_config import get_connection
 from models.db_helpers import row_to_dict
 from werkzeug.security import generate_password_hash
