@@ -50,6 +50,7 @@ def verify_otp():
     stored_otp = session.get('otp')
     otp_time = session.get('otp_time')
     email = session.get('pending_email')
+    next_url = session.get('next_url')
 
     print("DEBUG: Incoming verify_otp request")
     print("DEBUG: entered_otp =", entered_otp)
@@ -84,7 +85,7 @@ def verify_otp():
         flash("Verification successful! Please complete your profile.")
         
         #  Use new_user_flag directly
-        return redirect(url_for('user.user_home', newUser=int(new_user_flag) ,userId=user_id))
+        return redirect(url_for('user.user_home', newUser=int(new_user_flag) , next=next_url))
     else:
         flash("Invalid OTP, try again.")
         return redirect(url_for('user.signup'))
