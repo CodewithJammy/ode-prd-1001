@@ -56,6 +56,9 @@ def login():
         if check_password_hash(stored_hash, password):
             session['user_id'] = user_id
             flash("Login successful!", "success")
+            next_url = request.form.get('next') or request.args.get('next')
+            if next_url:
+                return redirect(next_url)
             return redirect(url_for('user.user_home'))
         else:
             flash("Invalid password", "danger")
