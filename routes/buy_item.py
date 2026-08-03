@@ -49,9 +49,6 @@ def payment(item_type, item_id):
 @buyitem_bp.route('/process_payment/<item_type>/<int:item_id>', methods=['POST'])
 def process_payment(item_type, item_id):
     user_id = request.form['user_id']
-    username = request.form['username']
-    email = request.form['email']
-    mobile = request.form['mobile']
     order_type = request.form['order_type']
     order_typeid = request.form['order_typeid']
     price = request.form.get('price')
@@ -61,9 +58,9 @@ def process_payment(item_type, item_id):
     expire_date = start_date + timedelta(days=90)  # 3 months
 
     cursor.execute("""
-        INSERT INTO Orders (UserId,  Email, Mobile, CourseType, CourseId, PaymentMethod, StartDate, ExpireDate)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id,  email, mobile, order_type, order_typeid, method, start_date, expire_date))
+        INSERT INTO Orders (UserId,  order_type, order_typeid,amount PaymentMethod, orderdate, order_expiredate)
+        VALUES (?, ?, ?, ?, ?, ?, ? )
+    """, (user_id, order_type, order_typeid, price , method, start_date, expire_date))
     conn.commit()
 
     flash("Payment successful! Your course/test has been activated.")
