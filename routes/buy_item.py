@@ -17,7 +17,7 @@ buyitem_bp = Blueprint("buy", __name__, url_prefix="/buy")
 def buy_item(item_type, item_id):
     if not session.get('user_id'):
         # Not logged in → redirect to signup with "next"
-        return redirect(url_for('user.signup_form', next=url_for('buy.buy_item', item_type=item_type, item_id=item_id)))
+        return redirect(url_for('user.signup_form', next=url_for('buyitem.payment' ,item_type=item_type, item_id=item_id)))
     else:
         # Logged in → go straight to payment
         return redirect(url_for('buy.payment', item_type=item_type, item_id=item_id))
