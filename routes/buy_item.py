@@ -53,7 +53,7 @@ def process_payment(item_type, item_id):
     email = request.form['email']
     mobile = request.form['mobile']
     order_type = request.form['order_type']
-    order_typeid = request.form['order_id']
+    order_typeid = request.form['order_typeid']
     method = request.form['method']
 
     start_date = datetime.now()
