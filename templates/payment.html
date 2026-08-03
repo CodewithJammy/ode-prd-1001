@@ -19,7 +19,7 @@
         <p><strong>Description:</strong> {{ item.Description }}</p>
         <p><strong>Price:</strong> ₹{{ item.Price }}</p>
 
-        <form method="post" action="{{ url_for('process_payment', item_type=item_type, item_id=item.Id) }}">
+        <form method="post" action="{{ url_for('buy.process_payment', item_type=item_type, item_id=item.Id) }}">
           <!-- Hidden fields to capture user + item info -->
           <input type="hidden" name="user_id" value="{{ user.Id }}">
           <input type="hidden" name="username" value="{{ user.Username }}">
