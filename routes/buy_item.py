@@ -2,6 +2,7 @@ import os, random, time
 from flask import Blueprint, request, session, redirect, url_for, flash
 from datetime import datetime, timedelta
 from models.db_config import get_connection
+from models.db_helpers import row_to_dict
 
 
 # Create connection + cursor
