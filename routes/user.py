@@ -18,10 +18,16 @@ def user_dashboard():
     
 @user_bp.route('/signup', methods=['GET'])
 def signup_form():
-    return render_template('signup.html')
+    # Pass along "next" so we know where to go after signup
+    next_url = request.args.get('next')
+    return render_template('signup.html', next=next_url)
+
+
 @user_bp.route('/signup', methods=['POST'])
 def signup():
     email = request.form['email']
+    next_url = request.form.get('next')  # capture hidden field
+
     cursor.execute("SELECT Id FROM Users WHERE Email = ?", (email,))
     row = cursor.fetchone()
 
@@ -31,7 +37,9 @@ def signup():
     else:
         # Send OTP (your existing otp.send_otp logic)
         session['pending_email'] = email
+        session['next_url'] = next_url  # store next in session
         return redirect(url_for('otp.send_otp'))
+
   
 @user_bp.route('/login', methods=['POST'])
 def login():
