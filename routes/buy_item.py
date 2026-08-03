@@ -1,5 +1,8 @@
 import os, random, time
 from flask import Blueprint, request, session, redirect, url_for, flash
+from datetime import datetime, timedelta
+
+
 buyitem_bp = Blueprint("buy", __name__, url_prefix="/buy")
 
 @buyitem_bp.route('/buy/<item_type>/<int:item_id>')
@@ -12,7 +15,7 @@ def buy_item(item_type, item_id):
         return redirect(url_for('payment', item_type=item_type, item_id=item_id))
 
 
-from datetime import datetime, timedelta
+
 
 @buyitem_bp.route('/payment/<item_type>/<int:item_id>', methods=['GET', 'POST'])
 def payment(item_type, item_id):
@@ -35,7 +38,7 @@ def payment(item_type, item_id):
     return render_template('payment.html', item=item, item_type=item_type, user=user)
 
 
-@app.route('/process_payment/<item_type>/<int:item_id>', methods=['POST'])
+@buyitem_bp.route('/process_payment/<item_type>/<int:item_id>', methods=['POST'])
 def process_payment(item_type, item_id):
     user_id = request.form['user_id']
     username = request.form['username']
