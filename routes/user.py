@@ -115,7 +115,7 @@ def user_details():
     user_id = session.get('user_id')
 
     if tab == "orders":
-        cursor.execute("SELECT * FROM Orders WHERE UserId=?", (user_id,))
+        cursor.execute("SELECT * FROM vw_user_order WHERE UserId=?", (user_id,))
         orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
         return render_template('user_home.html', active_tab="orders", orders=orders)
     elif tab == "performance":
