@@ -72,7 +72,7 @@
               <p class="card-text">{{ test.Description }}</p>
               <p class="fw-bold">₹{{ test.Price }}</p>
               <p class="text-muted">Level: {{ test.Level }}</p>
-              <a href="/buy/{{ test.Id }}" class="btn btn-primary">Buy</a>
+              <a href="{{ url_for('buy.buy_item', item_type='test', item_id=test.Id) }}" class="btn btn-primary">Buy</a>
             </div>
           </div>
         </div>
