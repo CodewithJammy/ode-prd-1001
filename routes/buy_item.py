@@ -54,15 +54,16 @@ def process_payment(item_type, item_id):
     mobile = request.form['mobile']
     order_type = request.form['order_type']
     order_typeid = request.form['order_typeid']
-    method = request.form['method']
+    price = request.form.get('price')
+    method = request.form.get('method', 'cash')
 
     start_date = datetime.now()
     expire_date = start_date + timedelta(days=90)  # 3 months
 
     cursor.execute("""
-        INSERT INTO Orders (UserId, Username, Email, Mobile, CourseType, CourseId, PaymentMethod, StartDate, ExpireDate)
+        INSERT INTO Orders (UserId,  Email, Mobile, CourseType, CourseId, PaymentMethod, StartDate, ExpireDate)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id, username, email, mobile, order_type, order_typeid, method, start_date, expire_date))
+    """, (user_id,  email, mobile, order_type, order_typeid, method, start_date, expire_date))
     conn.commit()
 
     flash("Payment successful! Your course/test has been activated.")
