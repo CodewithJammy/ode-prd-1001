@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from models.db_config import get_connection
 from models.db_helpers import row_to_dict
+from werkzeug.security import generate_password_hash
 
 # Create connection + cursor
 conn = get_connection()
@@ -43,5 +44,5 @@ def tests():
     cursor.execute(query, params)
     rows = cursor.fetchall()
     tests = [row_to_dict(cursor, r) for r in rows]
-
+    template = 'user_tests.html' if session.get('user_id') else 'tests.html'
     return render_template('tests.html', tests=tests, categories=categories, levels=levels)
