@@ -1,8 +1,12 @@
 import os, random, time
 from flask import Blueprint, request, session, redirect, url_for, flash
 from datetime import datetime, timedelta
+from models.db_config import get_connection
 
 
+# Create connection + cursor
+conn = get_connection()
+cursor = conn.cursor()
 buyitem_bp = Blueprint("buy", __name__, url_prefix="/buy")
 
 @buyitem_bp.route('/buy/<item_type>/<int:item_id>')
