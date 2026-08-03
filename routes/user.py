@@ -12,17 +12,13 @@ cursor = conn.cursor()
 # Create blueprint
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 
-@user_bp.route('/signup', methods=['GET'])
-def signup_form():
-    return render_template('signup.html')
-
-
-
 @user_bp.route('/user_dash', methods=['GET'])
 def user_dashboard():
     return render_template('user_home.html')
-
-
+    
+@user_bp.route('/signup', methods=['GET'])
+def signup_form():
+    return render_template('signup.html')
 @user_bp.route('/signup', methods=['POST'])
 def signup():
     email = request.form['email']
