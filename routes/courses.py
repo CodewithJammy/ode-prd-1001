@@ -50,7 +50,7 @@ def course_details(course_id):
 
     course = row_to_dict(cursor, row)
 
-    cursor.execute("SELECT Id, Title, Description, OrderNo, Status, TestId FROM Topics WHERE CourseId=? ORDER BY OrderNo", (course_id,))
+    cursor.execute("SELECT Id, Title, Description, OrderNo, Status, TestId ,ContentPdfUrl FROM Topics WHERE CourseId=? ORDER BY OrderNo", (course_id,))
     topics = [row_to_dict(cursor, r) for r in cursor.fetchall()]
 
     return render_template('course_details.html', course=course, topics=topics)
