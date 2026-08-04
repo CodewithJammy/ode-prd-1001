@@ -59,8 +59,12 @@ def course_details(course_id):
 @courses_bp.route('/get_topic/<int:topic_id>')
 def get_topic(topic_id):
     cursor.execute("SELECT Title, Description FROM Topics WHERE Id=?", (topic_id,))
-    topic = row_to_dict(cursor.fetchone())
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({"error": "Topic not found"}), 404
+    topic = row_to_dict(cursor, row)
     return jsonify(topic)
+
 
 @courses_bp.route('/mark_topic_completed', methods=['POST'])
 def mark_topic_completed():
