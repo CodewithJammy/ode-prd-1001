@@ -49,14 +49,14 @@
         <div class="col-md-3 border-end">
           <div class="list-group" id="topicList">
             {% for topic in topics %}
-              <button class="list-group-item list-group-item-action {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
-                      onclick="loadTopic({{ topic.Id }})" id="topicBtn{{ topic.Id }}">
-                {{ topic.Title }}
+              <div class="list-group-item d-flex flex-column {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}" id="topicBtn{{ topic.Id }}">
+                <span class="fw-bold" onclick="loadTopic({{ topic.Id }})">{{ topic.Title }}</span>
                 <div class="mt-2 d-flex justify-content-between">
-                  <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-                  <a href="{{ url_for('tests.tests', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
+                <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
+                <a href="{{ url_for('tests.start_test', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
                 </div>
-              </button>
+              </div>
+
             {% endfor %}
           </div>
         </div>
