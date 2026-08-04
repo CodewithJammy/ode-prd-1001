@@ -74,7 +74,7 @@
           <p class="text-muted">{{ topic.Description }}</p>
           <div class="mt-2 d-flex justify-content-between">
             <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-            <a href="{{ url_for('tests.start_test', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
+            <a href="{{ url_for('tests.tests', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
           </div>
         </div>
       {% endfor %}
