@@ -44,30 +44,45 @@
 
     <!-- Learning Path -->
     <div class="tab-pane fade" id="path" role="tabpanel">
-      <div class="row">
-        <!-- Left pane: dynamic topics -->
-        <div class="col-md-3 border-end">
-          <div class="list-group" id="topicList">
-            {% for topic in topics %}
-              <div class="list-group-item d-flex flex-column {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}" id="topicBtn{{ topic.Id }}">
-                <span class="fw-bold" onclick="loadTopic({{ topic.Id }})">{{ topic.Title }}</span>
-                <div class="mt-2 d-flex justify-content-between">
-                <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-                <a href="{{ url_for('tests.tests', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
-                </div>
-              </div>
+        <div class="row">
+  <!-- Left pane: topics as tab list -->
+  <div class="col-md-3 border-end">
+    <div class="list-group" id="topicList" role="tablist">
+      {% for topic in topics %}
+        <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}
+                  {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
+           id="list-{{ topic.Id }}-list"
+           data-bs-toggle="list"
+           href="#list-{{ topic.Id }}"
+           role="tab"
+           aria-controls="list-{{ topic.Id }}">
+          {{ topic.Title }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
 
-            {% endfor %}
+  <!-- Right pane: tab content -->
+  <div class="col-md-9">
+    <div class="tab-content" id="nav-tabContent">
+      {% for topic in topics %}
+        <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+             id="list-{{ topic.Id }}"
+             role="tabpanel"
+             aria-labelledby="list-{{ topic.Id }}-list">
+          <h4>{{ topic.Title }}</h4>
+          <p class="text-muted">{{ topic.Description }}</p>
+          <div class="mt-2 d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
+            <a href="{{ url_for('tests.start_test', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
           </div>
         </div>
-
-        <!-- Right pane: topic content -->
-        <div class="col-md-9" id="topicContent">
-          <h4 id="topicTitle">Select a topic to view details</h4>
-          <p id="topicDesc" class="text-muted"></p>
-        </div>
-      </div>
+      {% endfor %}
     </div>
+  </div>
+</div>  
+</div>
+
 
     <!-- Test -->
     <div class="tab-pane fade" id="test" role="tabpanel">
