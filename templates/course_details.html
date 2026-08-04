@@ -71,7 +71,7 @@
              role="tabpanel"
              aria-labelledby="list-{{ topic.Id }}-list">
           <h4>{{ topic.Title }}</h4>
-          <p class="text-muted">{{ topic.Description }}</p>
+            <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
           <div class="mt-2 d-flex justify-content-between">
             <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
             <a href="{{ url_for('tests.tests', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
