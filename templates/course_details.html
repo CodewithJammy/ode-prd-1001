@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ course.Name }} - Course Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% include 'navbar.html' %}
+
+<div class="container-fluid my-4">
+  <!-- Course Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold">{{ course.Name }}</h3>
+      <p class="text-muted">{{ course.Description }}</p>
+    </div>
+    <div>
+      <span class="badge bg-primary fs-6">₹{{ course.Price }}</span>
+    </div>
+  </div>
+
+  <!-- Secondary Navbar -->
+  <ul class="nav nav-pills mb-3" id="courseTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="syllabus-tab" data-bs-toggle="pill" data-bs-target="#syllabus" type="button" role="tab">Syllabus</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="path-tab" data-bs-toggle="pill" data-bs-target="#path" type="button" role="tab">Learning Path</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="test-tab" data-bs-toggle="pill" data-bs-target="#test" type="button" role="tab">Test</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content" id="courseTabsContent">
+    <!-- Syllabus -->
+    <div class="tab-pane fade show active" id="syllabus" role="tabpanel">
+      <iframe src="{{ course.SyllabusPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
+    </div>
+
+    <!-- Learning Path -->
+    <div class="tab-pane fade" id="path" role="tabpanel">
+      <div class="row">
+        <!-- Left pane: dynamic topics -->
+        <div class="col-md-3 border-end">
+          <div class="list-group" id="topicList">
+            {% for topic in topics %}
+              <button class="list-group-item list-group-item-action {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
+                      onclick="loadTopic({{ topic.Id }})" id="topicBtn{{ topic.Id }}">
+                {{ topic.Title }}
+                <div class="mt-2 d-flex justify-content-between">
+                  <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
+                  <a href="{{ url_for('tests.start_test', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
+                </div>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Right pane: topic content -->
+        <div class="col-md-9" id="topicContent">
+          <h4 id="topicTitle">Select a topic to view details</h4>
+          <p id="topicDesc" class="text-muted"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test -->
+    <div class="tab-pane fade" id="test" role="tabpanel">
+      <p class="text-muted">Tests will appear here once assigned to this course.</p>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+function loadTopic(topicId) {
+  fetch(`/get_topic/${topicId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('topicTitle').textContent = data.title;
+      document.getElementById('topicDesc').textContent = data.description;
+    });
+}
+
+function markCompleted(topicId) {
+  fetch('/mark_topic_completed', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({topic_id: topicId})
+  }).then(() => {
+    let btn = document.getElementById('topicBtn' + topicId);
+    btn.classList.remove('list-group-item-secondary');
+    btn.classList.add('list-group-item-success');
+  });
+}
+</script>
+</body>
+</html>
