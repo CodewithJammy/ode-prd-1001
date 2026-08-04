@@ -41,7 +41,7 @@ def courses():
     template = 'user_courses.html' if session.get('user_id') else 'courses.html'
     return render_template(template, courses=courses, categories=categories)
 
-@course_bp.route('/courses/<int:course_id>')
+@courses_bp.route('/courses/<int:course_id>')
 def course_details(course_id):
     cursor.execute("SELECT Id, Name, Description, Price, SyllabusPdfUrl FROM Courses WHERE Id=?", (course_id,))
     course = row_to_dict(cursor.fetchone())
@@ -51,13 +51,13 @@ def course_details(course_id):
 
     return render_template('course_details.html', course=course, topics=topics)
 
-@course_bp.route('/get_topic/<int:topic_id>')
+@courses_bp.route('/get_topic/<int:topic_id>')
 def get_topic(topic_id):
     cursor.execute("SELECT Title, Description FROM Topics WHERE Id=?", (topic_id,))
     topic = row_to_dict(cursor.fetchone())
     return jsonify(topic)
 
-@course_bp.route('/mark_topic_completed', methods=['POST'])
+@courses_bp.route('/mark_topic_completed', methods=['POST'])
 def mark_topic_completed():
     data = request.get_json()
     topic_id = data['topic_id']
