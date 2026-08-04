@@ -43,13 +43,18 @@ def courses():
 
 @courses_bp.route('/courses/<int:course_id>')
 def course_details(course_id):
-    cursor.execute("SELECT Id, Name, Description, Price, SyllabusPdfUrl FROM Courses WHERE Id=?", (course_id,))
-    course = row_to_dict(cursor.fetchone())
+    cursor.execute("SELECT Id, Name, Description, Price, ImageUrl, SyllabusPdfUrl FROM Courses WHERE Id=?", (course_id,))
+    row = cursor.fetchone()
+    if not row:
+        return "Course not found", 404
 
-    cursor.execute("SELECT Id, Title, Description, TestId, Status FROM Topics WHERE CourseId=?", (course_id,))
-    topics = [row_to_dict(row) for row in cursor.fetchall()]
+    course = row_to_dict(cursor, row)
+
+    cursor.execute("SELECT Id, Title, Description, OrderNo, Status, TestId FROM Topics WHERE CourseId=? ORDER BY OrderNo", (course_id,))
+    topics = [row_to_dict(cursor, r) for r in cursor.fetchall()]
 
     return render_template('course_details.html', course=course, topics=topics)
+
 
 @courses_bp.route('/get_topic/<int:topic_id>')
 def get_topic(topic_id):
