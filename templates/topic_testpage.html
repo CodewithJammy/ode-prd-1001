@@ -1,0 +1,9 @@
+{% for q in questions %}
+  <div class="question-card">
+    <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
+    <label><input type="radio" name="q{{ q.QuestionId }}" value="A"> {{ q.OptionA }}</label><br>
+    <label><input type="radio" name="q{{ q.QuestionId }}" value="B"> {{ q.OptionB }}</label><br>
+    <label><input type="radio" name="q{{ q.QuestionId }}" value="C"> {{ q.OptionC }}</label><br>
+    <label><input type="radio" name="q{{ q.QuestionId }}" value="D"> {{ q.OptionD }}</label><br>
+  </div>
+{% endfor %}
