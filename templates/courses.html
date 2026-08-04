@@ -54,6 +54,10 @@
           <h5 class="card-title">{{ course.Name }}</h5>
           <p class="card-text">{{ course.Description }}</p>
           <p class="fw-bold">₹{{ course.Price }}</p>
+           <!-- View button -->
+        <a href="{{ url_for('courses.course_details', course_id=course.Id) }}" class="btn btn-outline-primary me-2">
+          View
+        </a>
           <a href="{{ url_for('buy.buy_item', item_type='course', item_id=course.Id) }}" class="btn btn-primary">Buy</a>
         </div>
       </div>
