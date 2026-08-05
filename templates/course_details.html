@@ -76,7 +76,10 @@
         <div id="content-{{ topic.Id }}">
           <div class="mt-2 d-flex justify-content-between">
             <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, {{ topic.TestId }})">Take Test</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
+             Take Test
+            </button>
+
           </div>
           <h4>{{ topic.Title }}</h4>
           <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
@@ -107,13 +110,12 @@
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
   <script>
-function openTest(topicId, testId) {
-  // Hide content, show test
+function openTest(topicId, testUrl) {
   document.getElementById('content-' + topicId).style.display = 'none';
   document.getElementById('test-' + topicId).style.display = 'block';
-  // Load test into iframe
-  document.getElementById('testFrame-' + topicId).src = `/tests/topic_testpage/${testId}/${topicId}`;
+  document.getElementById('testFrame-' + topicId).src = testUrl;
 }
+
 
 function backToContent(topicId) {
   // Hide test, show content
