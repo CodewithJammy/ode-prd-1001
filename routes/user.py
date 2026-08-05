@@ -32,7 +32,7 @@ def signup():
     row = cursor.fetchone()
 
     if row:
-        flash("User already exists, please login.")
+        flash("User already exists, please login." , "warning")
         return redirect(url_for('user.login_form'))
     else:
         # Send OTP (your existing otp.send_otp logic)
