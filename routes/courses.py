@@ -41,7 +41,7 @@ def courses():
     template = 'user_courses.html' if session.get('user_id') else 'courses.html'
     return render_template(template, courses=courses, categories=categories)
 
-@courses_bp.route('/courses/<int:course_id>')
+@courses_bp.route('/course_details/<int:course_id>')
 def course_details(course_id):
     cursor.execute("SELECT Id, Name, Description, Price, ImageUrl, SyllabusPdfUrl FROM Courses WHERE Id=?", (course_id,))
     row = cursor.fetchone()
