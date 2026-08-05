@@ -48,8 +48,12 @@ def tests():
     return render_template('tests.html', tests=tests, categories=categories, levels=levels)
 
 
-@tests_bp.route('/test/<int:test_id>')
-def topic_testpage(test_id):
-    questions = db.session.query(Questions).filter_by(TestId=test_id).all()
+@tests_bp.route('/test/<int:test_id>/topic/<int:topic_id>')
+def topic_testpage(test_id, topic_id):
+    questions = (
+        db.session.query(Questions)
+        .filter_by(TestId=test_id, TopicId=topic_id)
+        .all()
+    )
     return render_template('topic_testpage.html', questions=questions)
 
