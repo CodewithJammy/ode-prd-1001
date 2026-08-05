@@ -20,6 +20,18 @@ def buy_item(item_type, item_id):
         return redirect(url_for('user.signup_form', next=url_for('buy.payment' ,item_type=item_type, item_id=item_id)))
     else:
         # Logged in → go straight to payment
+        cursor.execute("""
+            SELECT 1 FROM Orders
+            WHERE UserId = ? AND CourseType = ? AND CourseId = ?
+        """, (user_id, item_type, item_id))
+        exists = cursor.fetchone()
+
+        if exists:
+            flash("You have already purchased this " + item_type + ".", "warning")
+            return redirect(url_for('user.user_dashboard'))
+
+        # Not purchased yet → go to payment
+    
         return redirect(url_for('buy.payment', item_type=item_type, item_id=item_id))
 
 
