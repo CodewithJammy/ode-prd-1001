@@ -1,9 +1,29 @@
-{% for q in questions %}
-  <div class="question-card">
-    <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
-    <label><input type="radio" name="q{{ q.QuestionId }}" value="A"> {{ q.OptionA }}</label><br>
-    <label><input type="radio" name="q{{ q.QuestionId }}" value="B"> {{ q.OptionB }}</label><br>
-    <label><input type="radio" name="q{{ q.QuestionId }}" value="C"> {{ q.OptionC }}</label><br>
-    <label><input type="radio" name="q{{ q.QuestionId }}" value="D"> {{ q.OptionD }}</label><br>
-  </div>
-{% endfor %}
+<div class="container my-4">
+  <h3 class="mb-4">Test Questions</h3>
+
+  {% for q in questions %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Q{{ loop.index }}: {{ q.QuestionText }}</h5>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="A" id="q{{ q.QuestionId }}A">
+          <label class="form-check-label" for="q{{ q.QuestionId }}A">{{ q.OptionA }}</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="B" id="q{{ q.QuestionId }}B">
+          <label class="form-check-label" for="q{{ q.QuestionId }}B">{{ q.OptionB }}</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="C" id="q{{ q.QuestionId }}C">
+          <label class="form-check-label" for="q{{ q.QuestionId }}C">{{ q.OptionC }}</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="D" id="q{{ q.QuestionId }}D">
+          <label class="form-check-label" for="q{{ q.QuestionId }}D">{{ q.OptionD }}</label>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+</div>
+
