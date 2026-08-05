@@ -57,9 +57,10 @@ def login():
             session['user_id'] = user_id
             flash("Login successful!", "success")
             next_url = request.form.get('next') or request.args.get('next')
-            if next_url:
+            if next_url and next_url != "None":
                 return redirect(next_url)
             return redirect(url_for('user.user_home'))
+
         else:
             flash("Invalid password", "danger")
     else:
