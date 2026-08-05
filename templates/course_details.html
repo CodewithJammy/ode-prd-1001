@@ -83,11 +83,16 @@
 </div>  
 </div>
 
+   <!-- Test -->
+<div class="tab-pane fade" id="test" role="tabpanel">
+  {% for topic in topics %}
+    <a href="{{ url_for('tests.topic_testpage', test_id=topic.test_id, topic_id=topic.id) }}"
+       class="btn btn-outline-primary">
+       {{ topic.name }}
+    </a>
+  {% endfor %}
+</div>
 
-    <!-- Test -->
-    <div class="tab-pane fade" id="test" role="tabpanel">
-      <p class="text-muted">Tests will appear here once assigned to this course.</p>
-    </div>
   </div>
 </div>
 
