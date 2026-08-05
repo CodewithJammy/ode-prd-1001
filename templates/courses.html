@@ -66,6 +66,16 @@
   </div>
 </div>
 
+    <div class="tab-pane fade" id="test" role="tabpanel">
+  {% for topic in topics %}
+    <a href="{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.TopicId) }}"
+   class="btn btn-sm btn-outline-primary">
+   Take Test
+</a>
+
+  {% endfor %}
+</div>
+
   </div>
 </div>
 
