@@ -11,7 +11,7 @@
   <!-- Questions Tab -->
   <div class="tab-pane fade show active" id="questions" role="tabpanel">
     <form id="testForm">
-      {% for q in topic.Questions %}
+      {% for q in Questions %}
         <div class="card mb-3 shadow-sm">
           <div class="card-body">
             <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
