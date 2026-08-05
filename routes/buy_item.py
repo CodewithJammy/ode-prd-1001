@@ -22,8 +22,8 @@ def buy_item(item_type, item_id):
         # Logged in → go straight to payment
         cursor.execute("""
             SELECT 1 FROM Orders
-            WHERE UserId = ? AND CourseType = ? AND CourseId = ?
-        """, (user_id, item_type, item_id))
+            WHERE order_type = ? AND order_typeId = ?
+        """, (item_type, item_id))
         exists = cursor.fetchone()
 
         if exists:
