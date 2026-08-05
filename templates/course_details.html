@@ -74,7 +74,7 @@
             <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
           <div class="mt-2 d-flex justify-content-between">
             <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-            <a href="{{ url_for('tests.topic_testpage', test_id=topic.TestId) }}" class="btn btn-sm btn-outline-primary">Take Test</a>
+            <a href="{{ url_for('tests.topic_testpage', test_id=topic.test_id, topic_id=topic.id) }}"class="btn btn-outline-primary">Take Test</a>
           </div>
         </div>
       {% endfor %}
@@ -84,14 +84,7 @@
 </div>
 
    <!-- Test -->
-<div class="tab-pane fade" id="test" role="tabpanel">
-  {% for topic in topics %}
-    <a href="{{ url_for('tests.topic_testpage', test_id=topic.test_id, topic_id=topic.id) }}"
-       class="btn btn-outline-primary">
-       {{ topic.name }}
-    </a>
-  {% endfor %}
-</div>
+
 
   </div>
 </div>
