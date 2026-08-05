@@ -50,10 +50,12 @@ def tests():
 
 @tests_bp.route('/test/<int:test_id>/topic/<int:topic_id>')
 def topic_testpage(test_id, topic_id):
-    questions = (
-        db.session.query(Questions)
-        .filter_by(TestId=test_id, TopicId=topic_id)
-        .all()
-    )
+    # Query Questions table for this test and topic
+    query = "SELECT * FROM Questions WHERE TestId=? AND TopicId=?"
+    cursor.execute(query, (test_id, topic_id))
+    rows = cursor.fetchall()
+    questions = [row_to_dict(cursor, r) for r in rows]
+
     return render_template('topic_testpage.html', questions=questions)
+
 
