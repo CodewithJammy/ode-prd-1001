@@ -6,27 +6,22 @@
     <form id="testForm">
       {% for q in questions %}
         <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="A">
-              <label class="form-check-label">{{ q.OptionA }}</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="B">
-              <label class="form-check-label">{{ q.OptionB }}</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="C">
-              <label class="form-check-label">{{ q.OptionC }}</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="q{{ q.QuestionId }}" value="D">
-              <label class="form-check-label">{{ q.OptionD }}</label>
-            </div>
-            <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
-          </div>
-        </div>
+  <div class="card-body">
+    <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
+    <div class="d-grid gap-2">
+      <button type="button" class="btn btn-outline-primary option-btn"
+              data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
+      <button type="button" class="btn btn-outline-primary option-btn"
+              data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
+      <button type="button" class="btn btn-outline-primary option-btn"
+              data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
+      <button type="button" class="btn btn-outline-primary option-btn"
+              data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
+    </div>
+    <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
+    <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
+  </div>
+</div>
       {% endfor %}
       <div class="text-center mt-3">
         <button type="button" class="btn btn-success" onclick="submitTest()">Finish Test</button>
@@ -46,49 +41,59 @@
 </div>
 
 <script>
+// Handle option selection
+document.querySelectorAll('.option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let qid = btn.dataset.qid;
+    // Reset styles for all options of this question
+    document.querySelectorAll(`[data-qid="${qid}"]`).forEach(b => b.classList.remove('btn-primary','text-white'));
+    // Highlight chosen
+    btn.classList.add('btn-primary','text-white');
+    // Save choice
+    document.getElementById('chosen'+qid).value = btn.dataset.value;
+  });
+});
+
 function submitTest() {
-  let total = document.querySelectorAll('#questions .card').length;
+  let total = document.querySelectorAll('.card').length;
   let correct = 0;
+  let wrong = 0;
   let resultsHTML = "";
 
-  document.querySelectorAll('#questions .card').forEach((card, idx) => {
-    let radios = card.querySelectorAll('input[type=radio]');
-    let chosen = Array.from(radios).find(r => r.checked);
-    let qid = radios[0].name.replace('q','');
+  document.querySelectorAll('.card').forEach(card => {
+    let qid = card.querySelector('input[type=hidden]').id.replace('ans','');
+    let chosen = document.getElementById('chosen'+qid).value;
     let correctAns = document.getElementById('ans'+qid).value;
 
-    if (chosen && chosen.value === correctAns) {
+    if (chosen === correctAns) {
       correct++;
+    } else if (chosen) {
+      wrong++;
     }
 
-    // Build results view with correct answer highlighted
     let qText = card.querySelector('p').innerHTML;
     resultsHTML += `<div class="card mb-3"><div class="card-body">
       <p><b>${qText}</b></p>
-      <p class="text-success">Correct Answer: ${correctAns}</p>
+      <p class="${chosen===correctAns ? 'text-success' : 'text-danger'}">
+        Your Answer: ${chosen || 'Not Attempted'} | Correct: ${correctAns}
+      </p>
     </div></div>`;
   });
 
-  let score = (correct / total) * 100;
+  let accuracy = ((correct / total) * 100).toFixed(0);
   let scoreBox = document.getElementById('scoreBox');
-  if (score >= 80) {
-    scoreBox.innerHTML = `<h5>Your Score: ${score.toFixed(0)}% ✅ Passed</h5>`;
-  } else {
-    scoreBox.innerHTML = `<h5>Your Score: ${score.toFixed(0)}% ❌ Failed</h5>
-                          <p class="text-danger">Score needs 80%, please retry.</p>`;
-  }
+  scoreBox.innerHTML = `
+    <div class="alert ${accuracy>=80 ? 'alert-success' : 'alert-danger'}">
+      <h4>${accuracy}% Accuracy</h4>
+      <p>${correct} Correct, ${wrong} Wrong</p>
+      <p>${accuracy>=80 ? '✅ Passed' : '❌ Failed — Needs 80%'}</p>
+    </div>
+  `;
 
-  // Activate Results tab
   document.getElementById('resultsContent').innerHTML = resultsHTML;
   let resultsTab = new bootstrap.Tab(document.querySelector('#results-tab'));
   resultsTab.show();
 }
 
-function retryTest() {
-  document.querySelectorAll('#questions input[type=radio]').forEach(r => r.checked = false);
-  document.getElementById('scoreBox').innerHTML = "";
-  let questionsTab = new bootstrap.Tab(document.querySelector('#questions-tab'));
-  questionsTab.show();
-}
 </script>
 
