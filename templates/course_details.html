@@ -70,7 +70,7 @@
               {% else %}
                 <!-- Other topics: locked -->
                 <a class="list-group-item list-group-item-action list-group-item-secondary"
-                   href="{{ url_for('auth.login') }}">
+                   href="{{ url_for('user.signup_form') }}">
                   🔒 {{ topic.Title }} (Login required)
                 </a>
               {% endif %}
@@ -114,7 +114,7 @@
                      role="tabpanel"
                      aria-labelledby="list-{{ topic.Id }}-list">
                   <div class="alert alert-warning mt-3">
-                    🔒 Please <a href="{{ url_for('auth.login') }}">login</a> or <a href="{{ url_for('auth.signup') }}">signup</a> to access {{ topic.Title }}.
+                    🔒 Please <a href="{{ url_for('user.signup_form') }}">login</a> or <a href="{{ url_for('auth.signup') }}">signup</a> to access {{ topic.Title }}.
                   </div>
                 </div>
               {% endif %}
