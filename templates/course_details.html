@@ -53,19 +53,27 @@
           </button>
         </div>
 
-        <!-- Sidebar: static on desktop, collapsible on mobile -->
+        <!-- Sidebar -->
         <div class="col-md-3 border-end collapse d-md-block" id="topicSidebar">
           <div class="list-group" id="topicList" role="tablist">
             {% for topic in topics %}
-              <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}
-                        {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
-                 id="list-{{ topic.Id }}-list"
-                 data-bs-toggle="list"
-                 href="#list-{{ topic.Id }}"
-                 role="tab"
-                 aria-controls="list-{{ topic.Id }}">
-                {{ topic.Title }}
-              </a>
+              {% if loop.first %}
+                <!-- First topic: accessible -->
+                <a class="list-group-item list-group-item-action active"
+                   id="list-{{ topic.Id }}-list"
+                   data-bs-toggle="list"
+                   href="#list-{{ topic.Id }}"
+                   role="tab"
+                   aria-controls="list-{{ topic.Id }}">
+                  {{ topic.Title }}
+                </a>
+              {% else %}
+                <!-- Other topics: locked -->
+                <a class="list-group-item list-group-item-action list-group-item-secondary"
+                   href="{{ url_for('auth.login') }}">
+                  🔒 {{ topic.Title }} (Login required)
+                </a>
+              {% endif %}
             {% endfor %}
           </div>
         </div>
@@ -74,32 +82,42 @@
         <div class="col-md-9">
           <div class="tab-content" id="nav-tabContent">
             {% for topic in topics %}
-              <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
-                   id="list-{{ topic.Id }}"
-                   role="tabpanel"
-                   aria-labelledby="list-{{ topic.Id }}-list">
+              {% if loop.first %}
+                <!-- First topic content -->
+                <div class="tab-pane fade show active"
+                     id="list-{{ topic.Id }}"
+                     role="tabpanel"
+                     aria-labelledby="list-{{ topic.Id }}-list">
 
-                <!-- Content View -->
-                <div id="content-{{ topic.Id }}">
-                  <div class="mt-2 d-flex justify-content-between">
-                    <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-                    <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
-                      Take Test
-                    </button>
+                  <div id="content-{{ topic.Id }}">
+                    <div class="mt-2 d-flex justify-content-between">
+                      <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
+                      <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
+                        Take Test
+                      </button>
+                    </div>
+                    <h4>{{ topic.Title }}</h4>
+                    <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
                   </div>
-                  <h4>{{ topic.Title }}</h4>
-                  <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
-                </div>
 
-                <!-- Test View -->
-                <div id="test-{{ topic.Id }}" style="display:none;">
-                  <div class="d-flex justify-content-between mb-2">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="backToContent({{ topic.Id }})">← Back to Content</button>
+                  <div id="test-{{ topic.Id }}" style="display:none;">
+                    <div class="d-flex justify-content-between mb-2">
+                      <button class="btn btn-sm btn-outline-secondary" onclick="backToContent({{ topic.Id }})">← Back to Content</button>
+                    </div>
+                    <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
                   </div>
-                  <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
                 </div>
-
-              </div>
+              {% else %}
+                <!-- Locked topics content -->
+                <div class="tab-pane fade"
+                     id="list-{{ topic.Id }}"
+                     role="tabpanel"
+                     aria-labelledby="list-{{ topic.Id }}-list">
+                  <div class="alert alert-warning mt-3">
+                    🔒 Please <a href="{{ url_for('auth.login') }}">login</a> or <a href="{{ url_for('auth.signup') }}">signup</a> to access {{ topic.Title }}.
+                  </div>
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         </div>
@@ -136,8 +154,10 @@ function markCompleted(topicId) {
     body: JSON.stringify({topic_id: topicId})
   }).then(() => {
     let btn = document.getElementById('list-' + topicId + '-list');
-    btn.classList.remove('list-group-item-secondary');
-    btn.classList.add('list-group-item-success');
+    if (btn) {
+      btn.classList.remove('list-group-item-secondary');
+      btn.classList.add('list-group-item-success');
+    }
   });
 }
 
