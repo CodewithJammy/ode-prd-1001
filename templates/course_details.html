@@ -87,7 +87,7 @@
         {% else %}
           <!-- User not logged in: locked -->
           <a class="list-group-item list-group-item-action list-group-item-secondary"
-             href="{{ url_for('user.login') }}">
+             href="="{{ url_for('user.signup_form') }}">
             🔒 {{ topic.Title }} 
           </a>
         {% endif %}
@@ -138,8 +138,7 @@
           {% else %}
             <!-- If not logged in, show alert -->
             <div class="alert alert-warning mt-3">
-              🔒 Please <a href="{{ url_for('user.login') }}">login</a> or 
-              <a href="{{ url_for('user.signup') }}">signup</a> to access {{ topic.Title }}.
+              🔒 Please   <a href="{{ url_for('user.signup_form') }}">signup/login</a> to access {{ topic.Title }}.
             </div>
           {% endif %}
         </div>
