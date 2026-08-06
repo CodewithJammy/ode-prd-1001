@@ -27,7 +27,7 @@
       <p class="fw-bold">₹{{ order.amount }}</p>
 
       {% if order.Order_Type == 'course' %}
-        <a href="{{ url_for('courses.course_details', order.Order_TypeId) }}" class="btn btn-primary">View</a>
+        <a href="{{ url_for('courses.course_details', course_id=order.Order_TypeId) }}" class="btn btn-primary">View</a>
       {% elif order.Order_Type == 'test' %}
         <a href="/tests/{{ order.Order_TypeId }}" class="btn btn-primary">View</a>
       {% endif %}
