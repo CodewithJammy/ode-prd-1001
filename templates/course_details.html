@@ -59,29 +59,42 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="col-md-3 border-end collapse d-md-block" id="topicSidebar">
-          <div class="list-group" id="topicList" role="tablist">
-            {% for topic in topics %}
-              {% if loop.first %}
-                <!-- First topic: accessible -->
-                <a class="list-group-item list-group-item-action active"
-                   id="list-{{ topic.Id }}-list"
-                   data-bs-toggle="list"
-                   href="#list-{{ topic.Id }}"
-                   role="tab"
-                   aria-controls="list-{{ topic.Id }}">
-                  {{ topic.Title }}
-                </a>
-              {% else %}
-                <!-- Other topics: locked -->
-                <a class="list-group-item list-group-item-action list-group-item-secondary"
-                   href="{{ url_for('user.signup_form') }}">
-                  🔒 {{ topic.Title }} (Login required)
-                </a>
-              {% endif %}
-            {% endfor %}
-          </div>
-        </div>
+        <!-- Sidebar -->
+<div class="col-md-3 border-end collapse d-md-block" id="topicSidebar">
+  <div class="list-group" id="topicList" role="tablist">
+    {% for topic in topics %}
+      {% if loop.first %}
+        <!-- First topic: always accessible -->
+        <a class="list-group-item list-group-item-action active"
+           id="list-{{ topic.Id }}-list"
+           data-bs-toggle="list"
+           href="#list-{{ topic.Id }}"
+           role="tab"
+           aria-controls="list-{{ topic.Id }}">
+          {{ topic.Title }}
+        </a>
+      {% else %}
+        {% if session.get('user_id') %}
+          <!-- User logged in: allow access -->
+          <a class="list-group-item list-group-item-action list-group-item-secondary"
+             id="list-{{ topic.Id }}-list"
+             data-bs-toggle="list"
+             href="#list-{{ topic.Id }}"
+             role="tab"
+             aria-controls="list-{{ topic.Id }}">
+            {{ topic.Title }}
+          </a>
+        {% else %}
+          <!-- User not logged in: locked -->
+          <a class="list-group-item list-group-item-action list-group-item-secondary"
+             href="{{ url_for('user.login') }}">
+            🔒 {{ topic.Title }} (Login required)
+          </a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
 
         <!-- Content -->
         <div class="col-md-9">
