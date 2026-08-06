@@ -46,7 +46,18 @@
     <div class="tab-pane fade" id="path" role="tabpanel">
         <div class="row">
   <!-- Left pane: topics as tab list -->
-  <div class="col-md-3 border-end">
+            <!-- Toggle button (visible on mobile) -->
+<button class="btn btn-primary d-md-none mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topicSidebar">
+  Topics
+</button>
+
+<!-- Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start d-md-block border-end" tabindex="-1" id="topicSidebar">
+  <div class="offcanvas-header d-md-none">
+    <h5 class="offcanvas-title">Topics</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0">
     <div class="list-group" id="topicList" role="tablist">
       {% for topic in topics %}
         <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}
@@ -61,6 +72,8 @@
       {% endfor %}
     </div>
   </div>
+</div>
+
 
   <!-- Right pane: tab content -->
  <!-- Right pane: tab content -->
