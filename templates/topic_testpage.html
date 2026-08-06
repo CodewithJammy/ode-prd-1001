@@ -1,39 +1,44 @@
-<div class="tab-content mt-3">
-  <!-- Questions Tab -->
-  <div class="tab-pane fade show active" id="questions" role="tabpanel">
-    <form id="testForm">
-      {% for q in questions %}
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <p class="fw-bold">Q{{ loop.index }}: {{ q.QuestionText }}</p>
-
-            <!-- Options as toggle buttons -->
-            <div class="d-flex flex-column gap-2">
-              <button type="button" class="btn btn-outline-primary option-btn w-100"
-                      data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
-              <button type="button" class="btn btn-outline-primary option-btn w-100"
-                      data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
-              <button type="button" class="btn btn-outline-primary option-btn w-100"
-                      data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
-              <button type="button" class="btn btn-outline-primary option-btn w-100"
-                      data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
-            </div>
-
-            <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
-            <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
-          </div>
-        </div>
-      {% endfor %}
-
-      <div class="text-center mt-3">
-        <button type="button" class="btn btn-success btn-lg px-5" onclick="submitTest()">Finish Test</button>
-      </div>
-    </form>
-    <div id="scoreBox" class="mt-3 text-center"></div>
+<div class="container my-4">
+  <!-- Progress bar -->
+  <div class="progress mb-3">
+    <div id="quizProgress" class="progress-bar bg-info" role="progressbar" style="width:0%">
+      0%
+    </div>
   </div>
 
-  <!-- Results Tab -->
-  <div class="tab-pane fade" id="results" role="tabpanel">
+  <!-- Questions -->
+  <div id="questionsPane">
+    {% for q in questions %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <p class="fw-bold">Q{{ loop.index }}: {{ q.QuestionText }}</p>
+
+          <!-- Options -->
+          <div class="d-flex flex-column gap-2">
+            <button type="button" class="btn btn-outline-primary option-btn w-100"
+                    data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
+            <button type="button" class="btn btn-outline-primary option-btn w-100"
+                    data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
+            <button type="button" class="btn btn-outline-primary option-btn w-100"
+                    data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
+            <button type="button" class="btn btn-outline-primary option-btn w-100"
+                    data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
+          </div>
+
+          <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
+          <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="text-center mt-3">
+      <button type="button" class="btn btn-success btn-lg px-5" onclick="submitTest()">Finish Test</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsPane" style="display:none;">
+    <div id="scoreBox" class="mb-4 text-center"></div>
     <h4 class="mb-3">Results Summary</h4>
     <div id="resultsContent"></div>
     <div class="text-center mt-3">
@@ -53,16 +58,29 @@ document.querySelectorAll('.option-btn').forEach(btn => {
     btn.classList.add('btn-primary','text-white');
     // Save choice
     document.getElementById('chosen'+qid).value = btn.dataset.value;
+
+    // Update progress
+    updateProgress();
   });
 });
 
+function updateProgress() {
+  let total = document.querySelectorAll('.card').length;
+  let answered = 0;
+  document.querySelectorAll('[id^=chosen]').forEach(h => { if(h.value) answered++; });
+  let percent = Math.round((answered/total)*100);
+  let bar = document.getElementById('quizProgress');
+  bar.style.width = percent+"%";
+  bar.textContent = percent+"%";
+}
+
 function submitTest() {
-  let total = document.querySelectorAll('#questions .card').length;
+  let total = document.querySelectorAll('.card').length;
   let correct = 0;
   let wrong = 0;
   let resultsHTML = "";
 
-  document.querySelectorAll('#questions .card').forEach(card => {
+  document.querySelectorAll('.card').forEach(card => {
     let qid = card.querySelector('input[id^=ans]').id.replace('ans','');
     let chosen = document.getElementById('chosen'+qid).value;
     let correctAns = document.getElementById('ans'+qid).value;
@@ -75,7 +93,6 @@ function submitTest() {
 
     let qText = card.querySelector('p').innerHTML;
 
-    // Build result card
     resultsHTML += `
       <div class="card mb-3 shadow-sm">
         <div class="card-body">
@@ -99,17 +116,22 @@ function submitTest() {
   `;
 
   document.getElementById('resultsContent').innerHTML = resultsHTML;
-  let resultsTab = new bootstrap.Tab(document.querySelector('#results-tab'));
-  resultsTab.show();
+
+  // Switch panes
+  document.getElementById('questionsPane').style.display = 'none';
+  document.getElementById('resultsPane').style.display = 'block';
 }
 
 function retryTest() {
   document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('btn-primary','text-white'));
   document.querySelectorAll('[id^=chosen]').forEach(h => h.value = "");
   document.getElementById('scoreBox').innerHTML = "";
-  let questionsTab = new bootstrap.Tab(document.querySelector('#questions-tab'));
-  questionsTab.show();
+  document.getElementById('resultsContent').innerHTML = "";
+  document.getElementById('quizProgress').style.width = "0%";
+  document.getElementById('quizProgress').textContent = "0%";
+
+  // Switch back
+  document.getElementById('resultsPane').style.display = 'none';
+  document.getElementById('questionsPane').style.display = 'block';
 }
-
 </script>
-
