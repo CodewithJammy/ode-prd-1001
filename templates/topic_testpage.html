@@ -103,6 +103,7 @@ function updateProgress() {
   bar.style.width = percent+"%";
   bar.textContent = percent+"%";
 }
+
 function submitTest() {
   let total = document.querySelectorAll('#questionsPane .card').length;
   let correct = 0;
@@ -122,18 +123,31 @@ function submitTest() {
 
     let qText = card.querySelector('p').innerHTML;
 
-    // Build result card in same pattern as question
+    // Get actual option texts from the original card
+    let opts = card.querySelectorAll('.option-btn');
+    let optionMap = {};
+    opts.forEach(btn => {
+      optionMap[btn.dataset.value] = btn.textContent;
+    });
+
+    // Build result card with actual option text
     resultsHTML += `
       <div class="card mb-4 shadow-sm">
         <div class="card-body">
           <p class="fw-bold">${qText}</p>
           <div class="d-flex flex-column gap-2">
-            <button type="button" class="btn w-100 rounded-pill ${chosen==='A' ? (chosen===correctAns ? 'btn-success' : 'btn-danger') : 'btn-outline-secondary'}">A</button>
-            <button type="button" class="btn w-100 rounded-pill ${chosen==='B' ? (chosen===correctAns ? 'btn-success' : 'btn-danger') : 'btn-outline-secondary'}">B</button>
-            <button type="button" class="btn w-100 rounded-pill ${chosen==='C' ? (chosen===correctAns ? 'btn-success' : 'btn-danger') : 'btn-outline-secondary'}">C</button>
-            <button type="button" class="btn w-100 rounded-pill ${chosen==='D' ? (chosen===correctAns ? 'btn-success' : 'btn-danger') : 'btn-outline-secondary'}">D</button>
+            ${['A','B','C','D'].map(letter => {
+              let text = optionMap[letter];
+              let classes = "btn w-100 rounded-pill ";
+              if (chosen === letter) {
+                classes += (chosen === correctAns) ? "btn-success" : "btn-danger";
+              } else {
+                classes += "btn-outline-secondary";
+              }
+              return `<button type="button" class="${classes}" disabled>${text}</button>`;
+            }).join('')}
           </div>
-          <p class="mt-2 text-success fw-bold">Correct Answer: ${correctAns}</p>
+          <p class="mt-2 text-success fw-bold">Correct Answer: ${optionMap[correctAns]}</p>
         </div>
       </div>`;
   });
@@ -152,6 +166,8 @@ function submitTest() {
   document.getElementById('questionsPane').style.display = 'none';
   document.getElementById('resultsPane').style.display = 'block';
 }
+
+  
 function retryTest() {
   document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('btn-primary','text-white'));
   document.querySelectorAll('[id^=chosen]').forEach(h => h.value = "");
