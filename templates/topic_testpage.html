@@ -1,30 +1,30 @@
-
-
 <div class="tab-content mt-3">
   <!-- Questions Tab -->
   <div class="tab-pane fade show active" id="questions" role="tabpanel">
     <form id="testForm">
       {% for q in questions %}
         <div class="card mb-3 shadow-sm">
-  <div class="card-body">
-    <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
-<div class="d-flex flex-column gap-2">
-  <button type="button" class="btn btn-outline-primary option-btn w-100"
-          data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
-  <button type="button" class="btn btn-outline-primary option-btn w-100"
-          data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
-  <button type="button" class="btn btn-outline-primary option-btn w-100"
-          data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
-  <button type="button" class="btn btn-outline-primary option-btn w-100"
-          data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
-</div>
+          <div class="card-body">
+            <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
 
+            <!-- Options in 4 rows -->
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-primary option-btn w-100"
+                      data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
+              <button type="button" class="btn btn-outline-primary option-btn w-100"
+                      data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
+              <button type="button" class="btn btn-outline-primary option-btn w-100"
+                      data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
+              <button type="button" class="btn btn-outline-primary option-btn w-100"
+                      data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
+            </div>
 
-    <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
-    <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
-  </div>
-</div>
+            <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
+            <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
+          </div>
+        </div>
       {% endfor %}
+
       <div class="text-center mt-3">
         <button type="button" class="btn btn-success" onclick="submitTest()">Finish Test</button>
       </div>
@@ -34,7 +34,7 @@
 
   <!-- Results Tab -->
   <div class="tab-pane fade" id="results" role="tabpanel">
-    <h4>Correct Answers</h4>
+    <h4 class="mb-3">Results</h4>
     <div id="resultsContent"></div>
     <div class="text-center mt-3">
       <button type="button" class="btn btn-secondary" onclick="retryTest()">Retry</button>
@@ -57,13 +57,13 @@ document.querySelectorAll('.option-btn').forEach(btn => {
 });
 
 function submitTest() {
-  let total = document.querySelectorAll('.card').length;
+  let total = document.querySelectorAll('#questions .card').length;
   let correct = 0;
   let wrong = 0;
   let resultsHTML = "";
 
-  document.querySelectorAll('.card').forEach(card => {
-    let qid = card.querySelector('input[type=hidden]').id.replace('ans','');
+  document.querySelectorAll('#questions .card').forEach(card => {
+    let qid = card.querySelector('input[id^=ans]').id.replace('ans','');
     let chosen = document.getElementById('chosen'+qid).value;
     let correctAns = document.getElementById('ans'+qid).value;
 
@@ -74,12 +74,18 @@ function submitTest() {
     }
 
     let qText = card.querySelector('p').innerHTML;
-    resultsHTML += `<div class="card mb-3"><div class="card-body">
-      <p><b>${qText}</b></p>
-      <p class="${chosen===correctAns ? 'text-success' : 'text-danger'}">
-        Your Answer: ${chosen || 'Not Attempted'} | Correct: ${correctAns}
-      </p>
-    </div></div>`;
+
+    // Highlight correct answer in green, wrong in red
+    resultsHTML += `
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <p><b>${qText}</b></p>
+          <p class="${chosen===correctAns ? 'text-success' : 'text-danger'}">
+            Your Answer: ${chosen || 'Not Attempted'}
+          </p>
+          <p class="text-success">Correct Answer: ${correctAns}</p>
+        </div>
+      </div>`;
   });
 
   let accuracy = ((correct / total) * 100).toFixed(0);
@@ -97,5 +103,11 @@ function submitTest() {
   resultsTab.show();
 }
 
+function retryTest() {
+  document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('btn-primary','text-white'));
+  document.querySelectorAll('[id^=chosen]').forEach(h => h.value = "");
+  document.getElementById('scoreBox').innerHTML = "";
+  let questionsTab = new bootstrap.Tab(document.querySelector('#questions-tab'));
+  questionsTab.show();
+}
 </script>
-
