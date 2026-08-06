@@ -1,6 +1,16 @@
+<!-- Tab Navigation -->
+<ul class="nav nav-tabs" id="testTabs" role="tablist">
+  <li class="nav-item">
+    <button class="nav-link active" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab">Questions</button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab">Results</button>
+  </li>
+</ul>
+
 <div class="tab-content mt-3">
   <!-- Questions Tab -->
-  <div class="tab-pane fade show active" id="questions" role="tabpanel">
+  <div class="tab-pane fade show active" id="questions" role="tabpanel" aria-labelledby="questions-tab">
     <form id="testForm">
       {% for q in questions %}
         <div class="card mb-3 shadow-sm">
@@ -33,7 +43,7 @@
   </div>
 
   <!-- Results Tab -->
-  <div class="tab-pane fade" id="results" role="tabpanel">
+  <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
     <h4 class="mb-3">Results</h4>
     <div id="resultsContent"></div>
     <div class="text-center mt-3">
@@ -75,7 +85,6 @@ function submitTest() {
 
     let qText = card.querySelector('p').innerHTML;
 
-    // Highlight correct answer in green, wrong in red
     resultsHTML += `
       <div class="card mb-3 shadow-sm">
         <div class="card-body">
