@@ -44,93 +44,88 @@
 
     <!-- Learning Path -->
     <div class="tab-pane fade" id="path" role="tabpanel">
-        <div class="row">
-  <!-- Left pane: topics as tab list -->
-  <div class="col-md-3 border-end">
-    <div class="list-group" id="topicList" role="tablist">
-      {% for topic in topics %}
-        <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}
-                  {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
-           id="list-{{ topic.Id }}-list"
-           data-bs-toggle="list"
-           href="#list-{{ topic.Id }}"
-           role="tab"
-           aria-controls="list-{{ topic.Id }}">
-          {{ topic.Title }}
-        </a>
-      {% endfor %}
+      <div class="row">
+        
+        <!-- Mobile toggle button -->
+        <div class="d-md-none mb-2">
+          <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#topicSidebar">
+            Topics
+          </button>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-3 border-end collapse d-md-block" id="topicSidebar">
+          <div class="list-group" id="topicList" role="tablist">
+            {% for topic in topics %}
+              <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}
+                        {% if topic.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}"
+                 id="list-{{ topic.Id }}-list"
+                 data-bs-toggle="list"
+                 href="#list-{{ topic.Id }}"
+                 role="tab"
+                 aria-controls="list-{{ topic.Id }}">
+                {{ topic.Title }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-md-9">
+          <div class="tab-content" id="nav-tabContent">
+            {% for topic in topics %}
+              <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+                   id="list-{{ topic.Id }}"
+                   role="tabpanel"
+                   aria-labelledby="list-{{ topic.Id }}-list">
+
+                <!-- Content View -->
+                <div id="content-{{ topic.Id }}">
+                  <div class="mt-2 d-flex justify-content-between">
+                    <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
+                      Take Test
+                    </button>
+                  </div>
+                  <h4>{{ topic.Title }}</h4>
+                  <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
+                </div>
+
+                <!-- Test View -->
+                <div id="test-{{ topic.Id }}" style="display:none;">
+                  <div class="d-flex justify-content-between mb-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="backToContent({{ topic.Id }})">← Back to Content</button>
+                  </div>
+                  <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
+                </div>
+
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>  
     </div>
-  </div>
 
-  <!-- Right pane: tab content -->
- <!-- Right pane: tab content -->
-<div class="col-md-9">
-  <div class="tab-content" id="nav-tabContent">
-    {% for topic in topics %}
-      <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
-           id="list-{{ topic.Id }}"
-           role="tabpanel"
-           aria-labelledby="list-{{ topic.Id }}-list">
-
-        <!-- Content View -->
-        <div id="content-{{ topic.Id }}">
-          <div class="mt-2 d-flex justify-content-between">
-            <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
-             Take Test
-            </button>
-
-          </div>
-          <h4>{{ topic.Title }}</h4>
-          <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
-        </div>
-
-        <!-- Test View -->
-        <div id="test-{{ topic.Id }}" style="display:none;">
-          <div class="d-flex justify-content-between mb-2">
-            <button class="btn btn-sm btn-outline-secondary" onclick="backToContent({{ topic.Id }})">← Back to Content</button>
-          </div>
-          <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
-        </div>
-
-      </div>
-    {% endfor %}
-  </div>
-</div>
-
-</div>  
-</div>
-
-   <!-- Test -->
-
-
+    <!-- Test -->
+    <div class="tab-pane fade" id="test" role="tabpanel">
+      <p class="text-muted">Select a topic to take its test.</p>
+    </div>
   </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
-  <script>
+<script>
 function openTest(topicId, testUrl) {
   document.getElementById('content-' + topicId).style.display = 'none';
   document.getElementById('test-' + topicId).style.display = 'block';
   document.getElementById('testFrame-' + topicId).src = testUrl;
 }
 
-
 function backToContent(topicId) {
-  // Hide test, show content
   document.getElementById('test-' + topicId).style.display = 'none';
   document.getElementById('content-' + topicId).style.display = 'block';
-}
-  
-
-function loadTopic(topicId) {
-  fetch(`/get_topic/${topicId}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('topicTitle').textContent = data.title;
-      document.getElementById('topicDesc').textContent = data.description;
-    });
 }
 
 function markCompleted(topicId) {
@@ -139,7 +134,7 @@ function markCompleted(topicId) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({topic_id: topicId})
   }).then(() => {
-    let btn = document.getElementById('topicBtn' + topicId);
+    let btn = document.getElementById('list-' + topicId + '-list');
     btn.classList.remove('list-group-item-secondary');
     btn.classList.add('list-group-item-success');
   });
