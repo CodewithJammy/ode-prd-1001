@@ -8,16 +8,25 @@
         <div class="card mb-3 shadow-sm">
   <div class="card-body">
     <p><b>Q{{ loop.index }}: {{ q.QuestionText }}</b></p>
-    <div class="d-grid gap-2">
-      <button type="button" class="btn btn-outline-primary option-btn"
-              data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
-      <button type="button" class="btn btn-outline-primary option-btn"
-              data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
-      <button type="button" class="btn btn-outline-primary option-btn"
-              data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
-      <button type="button" class="btn btn-outline-primary option-btn"
-              data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
-    </div>
+    <div class="row g-2">
+  <div class="col-12">
+    <button type="button" class="btn btn-outline-primary w-100 option-btn"
+            data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
+  </div>
+  <div class="col-12">
+    <button type="button" class="btn btn-outline-primary w-100 option-btn"
+            data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
+  </div>
+  <div class="col-12">
+    <button type="button" class="btn btn-outline-primary w-100 option-btn"
+            data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
+  </div>
+  <div class="col-12">
+    <button type="button" class="btn btn-outline-primary w-100 option-btn"
+            data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
+  </div>
+</div>
+
     <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
     <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
   </div>
