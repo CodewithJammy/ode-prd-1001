@@ -36,20 +36,34 @@
 
   <!-- Questions -->
   <div id="questionsPane">
-    <!-- Example questions (replace with Jinja loop in Flask) -->
+  {% for q in questions %}
     <div class="card mb-4 shadow-sm">
       <div class="card-body">
-        <p class="fw-bold">Q1: Which of the following is an input device?</p>
+        <p class="fw-bold">Q{{ loop.index }}: {{ q.QuestionText }}</p>
+
+        <!-- Options -->
         <div class="d-flex flex-column gap-2">
-          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="A">Monitor</button>
-          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="B">Keyboard</button>
-          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="C">Printer</button>
-          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="D">Speaker</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill"
+                  data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill"
+                  data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill"
+                  data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill"
+                  data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
         </div>
-        <input type="hidden" id="ans1" value="B">
-        <input type="hidden" id="chosen1" value="">
+
+        <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
+        <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
       </div>
     </div>
+  {% endfor %}
+
+  <div class="text-center mt-3">
+    <button type="button" class="btn btn-success btn-lg px-5 rounded-pill" onclick="submitTest()">Finish Test</button>
+  </div>
+</div>
+
 
     <!-- Add more questions here -->
 
