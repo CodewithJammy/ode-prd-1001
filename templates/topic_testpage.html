@@ -1,3 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz App</title>
+
+  <!-- Bootstrap CSS (CDN) -->
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Custom CSS -->
+  <style>
+    .option-btn {
+      transition: all 0.2s ease-in-out;
+    }
+    .option-btn:hover {
+      transform: scale(1.03);
+    }
+    .option-btn.btn-primary {
+      background: linear-gradient(90deg, #0d6efd, #6610f2);
+      border: none;
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
 <div class="container my-4">
   <!-- Progress bar -->
   <div class="progress mb-3">
@@ -8,31 +36,25 @@
 
   <!-- Questions -->
   <div id="questionsPane">
-    {% for q in questions %}
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-          <p class="fw-bold">Q{{ loop.index }}: {{ q.QuestionText }}</p>
-
-          <!-- Options -->
-          <div class="d-flex flex-column gap-2">
-            <button type="button" class="btn btn-outline-primary option-btn w-100"
-                    data-qid="{{ q.QuestionId }}" data-value="A">{{ q.OptionA }}</button>
-            <button type="button" class="btn btn-outline-primary option-btn w-100"
-                    data-qid="{{ q.QuestionId }}" data-value="B">{{ q.OptionB }}</button>
-            <button type="button" class="btn btn-outline-primary option-btn w-100"
-                    data-qid="{{ q.QuestionId }}" data-value="C">{{ q.OptionC }}</button>
-            <button type="button" class="btn btn-outline-primary option-btn w-100"
-                    data-qid="{{ q.QuestionId }}" data-value="D">{{ q.OptionD }}</button>
-          </div>
-
-          <input type="hidden" id="ans{{ q.QuestionId }}" value="{{ q.CorrectAnswer }}">
-          <input type="hidden" id="chosen{{ q.QuestionId }}" value="">
+    <!-- Example questions (replace with Jinja loop in Flask) -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <p class="fw-bold">Q1: Which of the following is an input device?</p>
+        <div class="d-flex flex-column gap-2">
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="A">Monitor</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="B">Keyboard</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="C">Printer</button>
+          <button type="button" class="btn btn-outline-primary option-btn w-100 rounded-pill" data-qid="1" data-value="D">Speaker</button>
         </div>
+        <input type="hidden" id="ans1" value="B">
+        <input type="hidden" id="chosen1" value="">
       </div>
-    {% endfor %}
+    </div>
+
+    <!-- Add more questions here -->
 
     <div class="text-center mt-3">
-      <button type="button" class="btn btn-success btn-lg px-5" onclick="submitTest()">Finish Test</button>
+      <button type="button" class="btn btn-success btn-lg px-5 rounded-pill" onclick="submitTest()">Finish Test</button>
     </div>
   </div>
 
@@ -42,30 +64,28 @@
     <h4 class="mb-3">Results Summary</h4>
     <div id="resultsContent"></div>
     <div class="text-center mt-3">
-      <button type="button" class="btn btn-secondary" onclick="retryTest()">Retry</button>
+      <button type="button" class="btn btn-secondary rounded-pill" onclick="retryTest()">Retry</button>
     </div>
   </div>
 </div>
+
+<!-- Bootstrap Bundle JS (CDN, includes Popper) -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
 <script>
 // Handle option selection
 document.querySelectorAll('.option-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     let qid = btn.dataset.qid;
-    // Reset styles for all options of this question
     document.querySelectorAll(`[data-qid="${qid}"]`).forEach(b => b.classList.remove('btn-primary','text-white'));
-    // Highlight chosen
     btn.classList.add('btn-primary','text-white');
-    // Save choice
     document.getElementById('chosen'+qid).value = btn.dataset.value;
-
-    // Update progress
     updateProgress();
   });
 });
 
 function updateProgress() {
-  let total = document.querySelectorAll('.card').length;
+  let total = document.querySelectorAll('#questionsPane .card').length;
   let answered = 0;
   document.querySelectorAll('[id^=chosen]').forEach(h => { if(h.value) answered++; });
   let percent = Math.round((answered/total)*100);
@@ -75,12 +95,12 @@ function updateProgress() {
 }
 
 function submitTest() {
-  let total = document.querySelectorAll('.card').length;
+  let total = document.querySelectorAll('#questionsPane .card').length;
   let correct = 0;
   let wrong = 0;
   let resultsHTML = "";
 
-  document.querySelectorAll('.card').forEach(card => {
+  document.querySelectorAll('#questionsPane .card').forEach(card => {
     let qid = card.querySelector('input[id^=ans]').id.replace('ans','');
     let chosen = document.getElementById('chosen'+qid).value;
     let correctAns = document.getElementById('ans'+qid).value;
@@ -116,8 +136,6 @@ function submitTest() {
   `;
 
   document.getElementById('resultsContent').innerHTML = resultsHTML;
-
-  // Switch panes
   document.getElementById('questionsPane').style.display = 'none';
   document.getElementById('resultsPane').style.display = 'block';
 }
@@ -129,9 +147,9 @@ function retryTest() {
   document.getElementById('resultsContent').innerHTML = "";
   document.getElementById('quizProgress').style.width = "0%";
   document.getElementById('quizProgress').textContent = "0%";
-
-  // Switch back
   document.getElementById('resultsPane').style.display = 'none';
   document.getElementById('questionsPane').style.display = 'block';
 }
 </script>
+</body>
+</html>
