@@ -8,7 +8,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-{% include 'navbar.html' %}
+{% if session.get('user_id') %}
+  {% include 'user_navbar.html' %}
+{% else %}
+  {% include 'navbar.html' %}
+{% endif %}
+
 
 <div class="container-fluid my-4">
   <!-- Course Header -->
