@@ -49,11 +49,11 @@
         <!-- Mobile toggle button -->
         <div class="d-md-none mb-2">
           <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#topicSidebar">
-            Topics
+            Show Topics
           </button>
         </div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar: static on desktop, collapsible on mobile -->
         <div class="col-md-3 border-end collapse d-md-block" id="topicSidebar">
           <div class="list-group" id="topicList" role="tablist">
             {% for topic in topics %}
