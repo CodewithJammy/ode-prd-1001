@@ -15,6 +15,7 @@ buyitem_bp = Blueprint("buy", __name__, url_prefix="/buy")
 
 @buyitem_bp.route('/buy/<item_type>/<int:item_id>')
 def buy_item(item_type, item_id):
+    user_id = session.get('user_id')
     if not session.get('user_id'):
         # Not logged in → redirect to signup with "next"
         return redirect(url_for('user.signup_form', next=url_for('buy.payment' ,item_type=item_type, item_id=item_id)))
@@ -22,8 +23,8 @@ def buy_item(item_type, item_id):
         # Logged in → go straight to payment
         cursor.execute("""
             SELECT 1 FROM Orders
-            WHERE order_type = ? AND order_typeId = ?
-        """, (item_type, item_id))
+            WHERE order_type = ? AND order_typeId = ? AND userid=?
+        """, (item_type, item_id , user_id))
         exists = cursor.fetchone()
 
         if exists:
