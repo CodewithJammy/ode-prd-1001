@@ -118,14 +118,18 @@ def user_details():
     tab = request.args.get('tab', 'orders')  # default orders
     user_id = session.get('user_id')
 
+    # fetch user once
+    cursor.execute("SELECT * FROM Users WHERE Id=?", (user_id,))
+    user = row_to_dict(cursor, cursor.fetchone())
+
     if tab == "orders":
         cursor.execute("SELECT * FROM vw_user_order WHERE UserId=?", (user_id,))
         orders = [row_to_dict(cursor, r) for r in cursor.fetchall()]
-        return render_template('user_home.html', active_tab="orders", orders=orders)
+        return render_template('user_home.html', active_tab="orders",user=user , orders=orders)
     elif tab == "performance":
         cursor.execute("SELECT * FROM Performance WHERE UserId=?", (user_id,))
         perf = [row_to_dict(cursor, r) for r in cursor.fetchall()]
-        return render_template('user_home.html', active_tab="performance", performance=perf)
+        return render_template('user_home.html', active_tab="performance",,user=user, performance=perf)
     elif tab == "details":
         cursor.execute("SELECT * FROM Users WHERE Id=?", (user_id,))
         user = row_to_dict(cursor, cursor.fetchone())
