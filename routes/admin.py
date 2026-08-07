@@ -14,15 +14,15 @@ cursor = conn.cursor()
 
 def dashboard():
     # Fetch courses
-    cursor.execute("SELECT Id, Name FROM Courses")
+    cursor.execute("SELECT * FROM Courses")
     courses = cursor.fetchall()
 
     # Fetch tests
-    cursor.execute("SELECT Id, Name FROM Tests")
+    cursor.execute("SELECT * FROM Tests")
     tests = cursor.fetchall()
 
     # Fetch topics
-    cursor.execute("SELECT Id, Title FROM Topics")
+    cursor.execute("SELECT * FROM Topics")
     topics = cursor.fetchall()
 
     return render_template(
