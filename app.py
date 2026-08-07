@@ -12,6 +12,7 @@ from routes.user import user_bp
 from routes.courses import courses_bp
 from routes.tests import tests_bp
 from routes.buy_item import buyitem_bp
+from routes.admin import admin_bp
 
 app = Flask(__name__)
 
@@ -21,6 +22,7 @@ app.register_blueprint(user_bp)
 app.register_blueprint(courses_bp)
 app.register_blueprint(tests_bp)
 app.register_blueprint(buyitem_bp)
+app.register_blueprint(admin_bp)
 
 @app.route('/')
 def index():
