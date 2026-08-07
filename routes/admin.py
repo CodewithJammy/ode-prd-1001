@@ -22,7 +22,7 @@ def dashboard():
     tests = cursor.fetchall()
 
     # Fetch topics
-    cursor.execute("SELECT Id, Name FROM Topics")
+    cursor.execute("SELECT Id, Title FROM Topics")
     topics = cursor.fetchall()
 
     return render_template(
@@ -64,7 +64,7 @@ def add_test():
 def add_topic():
     test_id = request.form['test_id']
     topic_name = request.form['topic_name']
-    cursor.execute("INSERT INTO Topics (TestId, Name) VALUES (?, ?)", (test_id, topic_name))
+    cursor.execute("INSERT INTO Topics (TestId, Title) VALUES (?, ?)", (test_id, topic_name))
     conn.commit()
     flash("Topic added successfully!", "success")
     return redirect(url_for('admin.dashboard'))
