@@ -8,6 +8,7 @@
 <body>
 
 {% include 'navbar.html' %}
+{% include 'alert_message.html' %}
 
 <div class="container my-4">
   <h2 class="fw-bold mb-4">Admin Dashboard</h2>
@@ -93,7 +94,47 @@
         <button type="submit" class="btn btn-primary">Add Topic</button>
       </form>
     </div>
+  <!-- questions -->
+     <div class="tab-pane fade" id="topics" role="tabpanel">
+       <form method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label>Course</label>
+    <select name="course_id" class="form-select">
+      {% for course in courses %}
+        <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
+  <div class="mb-3">
+    <label>Test</label>
+    <select name="test_id" class="form-select">
+      {% for test in tests %}
+        <option value="{{ test.TestId }}">{{ test.TestName }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Topic</label>
+    <select name="topic_id" class="form-select">
+      {% for topic in topics %}
+        <option value="{{ topic.TopicId }}">{{ topic.TopicName }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Upload Questions (CSV/Excel)</label>
+    <input type="file" name="questions_file" class="form-control" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Validate File</button>
+</form>
+
+
+
+      </div> 
   </div>
 </div>
 
