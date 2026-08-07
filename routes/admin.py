@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 import pyodbc
+from models.db_config import get_connection
 
 # Create blueprint
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # Database connection (adjust for your SQL Server)
-conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};Server=YOUR_SERVER;Database=YOUR_DB;Trusted_Connection=yes;")
+conn = get_connection()
 cursor = conn.cursor()
 
 # Admin dashboard route
