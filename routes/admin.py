@@ -11,8 +11,27 @@ cursor = conn.cursor()
 
 # Admin dashboard route
 @admin_bp.route('/dashboard', methods=['GET'])
+
 def dashboard():
-    return render_template('admin.html')
+    # Fetch courses
+    cursor.execute("SELECT Id, Name FROM Courses")
+    courses = cursor.fetchall()
+
+    # Fetch tests
+    cursor.execute("SELECT Id, Name FROM Tests")
+    tests = cursor.fetchall()
+
+    # Fetch topics
+    cursor.execute("SELECT Id, Name FROM Topics")
+    topics = cursor.fetchall()
+
+    return render_template(
+        'admin.html',
+        courses=courses,
+        tests=tests,
+        topics=topics
+    )
+
 
 
 # Add Course
