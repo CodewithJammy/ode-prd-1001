@@ -108,10 +108,12 @@ def user_home():
                 WHERE Id=?
             """, (username, password, mobile, gender, user_id))
             conn.commit()
-            return redirect(url_for('user.user_dashboard'))
+            return redirect(url_for('user.user_details', tab='orders'))
+           
         return render_template('UserProfileUpdate.html', user=user , next=next_url)
     # Existing user   
-    return  render_template('user_home.html', user=user)
+    return  redirect(url_for('user.user_details', tab='orders'))
+    
 
 @user_bp.route('/user-details')
 def user_details():
