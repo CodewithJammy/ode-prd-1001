@@ -50,7 +50,7 @@
           <label>Course</label>
           <select name="course_id" class="form-select">
             {% for course in courses %}
-              <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
+              <option value="{{ course.Id }}">{{ course.CourseName }}</option>
             {% endfor %}
           </select>
         </div>
@@ -82,7 +82,7 @@
           <label>Test</label>
           <select name="test_id" class="form-select">
             {% for test in tests %}
-              <option value="{{ test.TestId }}">{{ test.TestName }}</option>
+              <option value="{{ test.Id }}">{{ test.TestName }}</option>
             {% endfor %}
           </select>
         </div>
