@@ -17,6 +17,8 @@
   <div class="alert alert-success">
     Hey, {{ user.Username }} — welcome here!
   </div>
+    <p>DEBUG: active_tab = {{ active_tab }}</p>
+
   {% if active_tab == 'orders' %}
     <h2 class="mb-4">My Orders</h2>
     {% if orders %}
