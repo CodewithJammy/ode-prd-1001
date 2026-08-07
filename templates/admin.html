@@ -62,10 +62,9 @@
         <div class="mb-3">
           <label>Test Type</label>
           <select name="test_type" class="form-select">
-            <option value="Mock">Mock</option>
-            <option value="Full">Full</option>
-            <option value="TopicWise">Topic Wise</option>
-            <option value="PreviousYear">Previous Year</option>
+             {% for test in tests %}
+              <option value="{{ test.Id }}">{{ test.test_type }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="mb-3">
