@@ -18,7 +18,7 @@ def dashboard():
     cursor.execute("SELECT * FROM Tests")
     tests = cursor.fetchall()
 
-    return render_template('admin_dashboard.html', courses=courses, tests=tests)
+    return render_template('admin.html', courses=courses, tests=tests)
 
 
 # Add Course
