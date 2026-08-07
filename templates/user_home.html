@@ -13,6 +13,10 @@
 {% include 'alert_message.html' %}
 <!-- Main Body -->
 <div class="container my-4">
+  <div class="container my-4">
+  <div class="alert alert-success">
+    Hey, {{ user.Username }} — welcome here!
+  </div>
   {% if active_tab == 'orders' %}
     <h2 class="mb-4">My Orders</h2>
     {% if orders %}
