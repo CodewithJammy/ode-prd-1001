@@ -129,7 +129,7 @@ def user_details():
     elif tab == "performance":
         cursor.execute("SELECT * FROM Performance WHERE UserId=?", (user_id,))
         perf = [row_to_dict(cursor, r) for r in cursor.fetchall()]
-        return render_template('user_home.html', active_tab="performance",,user=user, performance=perf)
+        return render_template('user_home.html', active_tab="performance", user=user, performance=perf)
     elif tab == "details":
         cursor.execute("SELECT * FROM Users WHERE Id=?", (user_id,))
         user = row_to_dict(cursor, cursor.fetchone())
