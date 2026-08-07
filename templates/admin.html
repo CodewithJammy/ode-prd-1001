@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="container my-4">
+  <h2 class="fw-bold mb-4">Admin Dashboard</h2>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button">Courses</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="tests-tab" data-bs-toggle="tab" data-bs-target="#tests" type="button">Tests</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics" type="button">Topics</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content mt-3">
+
+    <!-- Courses -->
+    <div class="tab-pane fade show active" id="courses" role="tabpanel">
+      <form method="POST" action="{{ url_for('admin.add_course') }}">
+        <div class="mb-3">
+          <label>Course Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Description</label>
+          <textarea name="description" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Course</button>
+      </form>
+    </div>
+
+    <!-- Tests -->
+    <div class="tab-pane fade" id="tests" role="tabpanel">
+      <form method="POST" action="{{ url_for('admin.add_test') }}">
+        <div class="mb-3">
+          <label>Course</label>
+          <select name="course_id" class="form-select">
+            {% for course in courses %}
+              <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Test Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Test Type</label>
+          <select name="test_type" class="form-select">
+            <option value="Mock">Mock</option>
+            <option value="Full">Full</option>
+            <option value="TopicWise">Topic Wise</option>
+            <option value="PreviousYear">Previous Year</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Year (optional)</label>
+          <input type="number" name="year" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Test</button>
+      </form>
+    </div>
+
+    <!-- Topics -->
+    <div class="tab-pane fade" id="topics" role="tabpanel">
+      <form method="POST" action="{{ url_for('admin.add_topic') }}">
+        <div class="mb-3">
+          <label>Test</label>
+          <select name="test_id" class="form-select">
+            {% for test in tests %}
+              <option value="{{ test.TestId }}">{{ test.TestName }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Topic Name</label>
+          <input type="text" name="topic_name" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Topic</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
