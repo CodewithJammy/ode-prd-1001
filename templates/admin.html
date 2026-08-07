@@ -51,7 +51,7 @@
           <label>Course</label>
           <select name="course_id" class="form-select">
             {% for course in courses %}
-              <option value="{{ course.Id }}">{{ course.CourseName }}</option>
+              <option value="{{ course.Id }}">{{ course.Name }}</option>
             {% endfor %}
           </select>
         </div>
@@ -83,7 +83,7 @@
           <label>Test</label>
           <select name="test_id" class="form-select">
             {% for test in tests %}
-              <option value="{{ test.Id }}">{{ test.TestName }}</option>
+              <option value="{{ test.Id }}">{{ test.Name }}</option>
             {% endfor %}
           </select>
         </div>
@@ -101,7 +101,7 @@
     <label>Course</label>
     <select name="course_id" class="form-select">
       {% for course in courses %}
-        <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
+        <option value="{{ course.Id }}">{{ course.Name }}</option>
       {% endfor %}
     </select>
   </div>
@@ -110,7 +110,7 @@
     <label>Test</label>
     <select name="test_id" class="form-select">
       {% for test in tests %}
-        <option value="{{ test.TestId }}">{{ test.TestName }}</option>
+        <option value="{{ test.Id }}">{{ test.TestName }}</option>
       {% endfor %}
     </select>
   </div>
@@ -119,7 +119,7 @@
     <label>Topic</label>
     <select name="topic_id" class="form-select">
       {% for topic in topics %}
-        <option value="{{ topic.TopicId }}">{{ topic.TopicName }}</option>
+        <option value="{{ topic.Id }}">{{ topic.Title }}</option>
       {% endfor %}
     </select>
   </div>
