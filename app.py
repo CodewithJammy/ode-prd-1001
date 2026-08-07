@@ -1,4 +1,4 @@
-from flask import Flask,  Response, render_template, redirect ,request
+from flask import Flask,  Response, render_template, redirect ,request, session
 import logging
 import os
 from flask_cors import CORS
@@ -22,9 +22,10 @@ app.register_blueprint(courses_bp)
 app.register_blueprint(tests_bp)
 app.register_blueprint(buyitem_bp)
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    user_id = session.get('user_id')
+    return render_template('index.html', is_logged_in=bool(user_id))
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.args.get('q')  # get search term from URL
