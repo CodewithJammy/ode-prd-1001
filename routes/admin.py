@@ -12,13 +12,7 @@ cursor = conn.cursor()
 # Admin dashboard route
 @admin_bp.route('/dashboard', methods=['GET'])
 def dashboard():
-    cursor.execute("SELECT * FROM Courses")
-    courses = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM Tests")
-    tests = cursor.fetchall()
-
-    return render_template('admin.html', courses=courses, tests=tests)
+    return render_template('admin.html')
 
 
 # Add Course
@@ -26,7 +20,7 @@ def dashboard():
 def add_course():
     name = request.form['name']
     desc = request.form['description']
-    cursor.execute("INSERT INTO Courses (CourseName, Description) VALUES (?, ?)", (name, desc))
+    cursor.execute("INSERT INTO Courses (Name, Description) VALUES (?, ?)", (name, desc))
     conn.commit()
     flash("Course added successfully!", "success")
     return redirect(url_for('admin.dashboard'))
@@ -39,7 +33,7 @@ def add_test():
     name = request.form['name']
     test_type = request.form['test_type']
     year = request.form.get('year')
-    cursor.execute("INSERT INTO Tests (CourseId, TestName, TestType, Year) VALUES (?, ?, ?, ?)",
+    cursor.execute("INSERT INTO Tests (CourseId, Name, Test_Type, Year) VALUES (?, ?, ?, ?)",
                    (course_id, name, test_type, year))
     conn.commit()
     flash("Test added successfully!", "success")
@@ -51,7 +45,7 @@ def add_test():
 def add_topic():
     test_id = request.form['test_id']
     topic_name = request.form['topic_name']
-    cursor.execute("INSERT INTO Topics (TestId, TopicName) VALUES (?, ?)", (test_id, topic_name))
+    cursor.execute("INSERT INTO Topics (TestId, Name) VALUES (?, ?)", (test_id, topic_name))
     conn.commit()
     flash("Topic added successfully!", "success")
     return redirect(url_for('admin.dashboard'))
