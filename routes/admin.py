@@ -62,7 +62,7 @@ def add_test():
 
     cursor.execute("""
         INSERT INTO Tests (CourseId, Name, Price, Test_Type)
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?)
     """, (course_id, name, price, test_type))
     conn.commit()
     flash("Test added successfully!", "success")
