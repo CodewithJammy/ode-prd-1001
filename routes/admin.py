@@ -100,9 +100,13 @@ def get_tests(course_id):
 
 @admin_bp.route('/get-topics/<int:test_id>', methods=['GET'])
 def get_topics(test_id):
-    cursor.execute("SELECT Id, Title FROM Topics WHERE TestId = ?", (test_id,))
+    cursor.execute("SELECT Id, Title, TestId, CourseId FROM Topics WHERE TestId = ?", (test_id,))
     topics = cursor.fetchall()
-    return jsonify([{"id": t.Id, "title": t.Title} for t in topics])
+    return jsonify([
+        {"id": t.Id, "title": t.Title, "testId": t.TestId, "courseId": t.CourseId}
+        for t in topics
+    ])
+
 
 
 
