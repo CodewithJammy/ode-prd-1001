@@ -125,23 +125,24 @@
 
 <div class="tab-pane fade" id="topics" role="tabpanel">
   <form method="POST" action="{{ url_for('admin.add_topic') }}">
-    <div class="mb-3">
-      <label>Course</label>
-      <select name="course_id" class="form-select" required>
-        {% for course in courses %}
-          <option value="{{ course.Id }}">{{ course.Name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+<div class="mb-3">
+  <label>Course</label>
+  <select name="course_id" id="topicCourseSelect" class="form-select" required>
+    {% for course in courses %}
+      <option value="{{ course.Id }}">{{ course.Name }}</option>
+    {% endfor %}
+  </select>
+</div>
 
-    <div class="mb-3">
-      <label>Test</label>
-      <select name="test_id" class="form-select" required>
-        {% for test in tests %}
-          <option value="{{ test.Id }}">{{ test.Name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+<div class="mb-3">
+  <label>Test</label>
+  <select name="test_id" id="topicTestSelect" class="form-select" required>
+    {% for test in tests %}
+      <option value="{{ test.Id }}" data-course-id="{{ test.CourseId }}">{{ test.Name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 
     <div id="topicsContainer">
       <div class="mb-3 topic-item">
@@ -196,6 +197,29 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const courseSelect = document.getElementById("topicCourseSelect");
+  const testSelect = document.getElementById("topicTestSelect");
+
+  function filterTests() {
+    const selectedCourseId = courseSelect.value;
+    for (let option of testSelect.options) {
+      if (option.getAttribute("data-course-id") === selectedCourseId) {
+        option.style.display = "block";
+      } else {
+        option.style.display = "none";
+      }
+    }
+    // Reset selection to first visible option
+    testSelect.selectedIndex = [...testSelect.options].findIndex(opt => opt.style.display === "block");
+  }
+
+  courseSelect.addEventListener("change", filterTests);
+  filterTests(); // run once on page load
+});
+</script>
 
   <script>
   document.addEventListener("DOMContentLoaded", function() {
