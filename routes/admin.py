@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash ,jsonify
 import pyodbc
 from models.db_config import get_connection
 import pandas as pd
