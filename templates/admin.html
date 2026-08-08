@@ -183,7 +183,7 @@
   <label>Topic</label>
   <select name="topic_id" id="questionTopicSelect" class="form-select" required>
     {% for topic in topics %}
-      <option value="{{ topic.Id }}" data-test-id="{{ topic.testid }}">{{ topic.Title }}</option>
+      <option value="{{ topic.Id }}" data-test-id="{{ topic.testid }}" data-course-id="{{ topic.courseid }}">{{ topic.Title }}</option>
     {% endfor %}
   </select>
 </div>
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 // ---- questions ---->>
-  document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
   const courseSelect = document.getElementById("questionCourseSelect");
   const testSelect = document.getElementById("questionTestSelect");
   const topicSelect = document.getElementById("questionTopicSelect");
@@ -287,9 +287,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function filterTopics() {
+    const selectedCourseId = courseSelect.value;
     const selectedTestId = testSelect.value;
     for (let option of topicSelect.options) {
-      option.style.display = (option.getAttribute("data-test-id") === selectedTestId) ? "block" : "none";
+      const courseMatch = option.getAttribute("data-course-id") === selectedCourseId;
+      const testMatch = option.getAttribute("data-test-id") === selectedTestId;
+      option.style.display = (courseMatch && testMatch) ? "block" : "none";
     }
     topicSelect.selectedIndex = [...topicSelect.options].findIndex(opt => opt.style.display === "block");
   }
@@ -299,6 +302,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   filterTests(); // run once on page load
 });
+
 
   </script>
 </body>
