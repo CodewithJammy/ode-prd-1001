@@ -25,7 +25,7 @@
       <button class="nav-link" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics" type="button">Topics</button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button">questions</button>
+      <button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button">Questions</button>
     </li>
   </ul>
 
@@ -43,6 +43,30 @@
           <label>Description</label>
           <textarea name="description" class="form-control"></textarea>
         </div>
+        <div class="mb-3">
+          <label>Image URL</label>
+          <input type="text" name="image_url" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Price</label>
+          <input type="number" step="0.01" name="price" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Category</label>
+          <input type="text" name="category" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Duration</label>
+          <input type="text" name="duration" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Level</label>
+          <input type="text" name="level" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Syllabus PDF URL</label>
+          <input type="text" name="syllabus_pdf_url" class="form-control">
+        </div>
         <button type="submit" class="btn btn-primary">Add Course</button>
       </form>
     </div>
@@ -52,28 +76,47 @@
       <form method="POST" action="{{ url_for('admin.add_test') }}">
         <div class="mb-3">
           <label>Course</label>
-          <select name="course_id" class="form-select">
+          <select name="course_id" id="courseSelect" class="form-select" required>
             {% for course in courses %}
-              <option value="{{ course.Id }}">{{ course.Name }}</option>
+              <option value="{{ course.Id }}" 
+                      data-name="{{ course.Name }}" 
+                      data-price="{{ course.Price }}" 
+                      data-category="{{ course.Category }}" 
+                      data-duration="{{ course.Duration }}" 
+                      data-level="{{ course.Level }}" 
+                      data-image="{{ course.ImageUrl }}" 
+                      data-syllabus="{{ course.SyllabusPdfUrl }}">
+                {{ course.Name }}
+              </option>
             {% endfor %}
           </select>
         </div>
+
         <div class="mb-3">
           <label>Test Name</label>
-          <input type="text" name="name" class="form-control" required>
+          <input type="text" name="name" id="testName" class="form-control" required>
         </div>
+
+        <div class="mb-3">
+          <label>Price</label>
+          <input type="text" name="price" id="testPrice" class="form-control" readonly>
+        </div>
+
         <div class="mb-3">
           <label>Test Type</label>
           <select name="test_type" class="form-select">
-             {% for test in tests %}
-              <option value="{{ test.Id }}">{{ test.test_type }}</option>
-            {% endfor %}
+            <option value="Mock">Mock</option>
+            <option value="Full">Full</option>
+            <option value="TopicWise">Topic Wise</option>
+            <option value="PreviousYear">Previous Year</option>
           </select>
         </div>
+
         <div class="mb-3">
           <label>Year (optional)</label>
           <input type="number" name="year" class="form-control">
         </div>
+
         <button type="submit" class="btn btn-primary">Add Test</button>
       </form>
     </div>
@@ -96,50 +139,65 @@
         <button type="submit" class="btn btn-primary">Add Topic</button>
       </form>
     </div>
-  <!-- questions -->
-     <div class="tab-pane fade" id="questions" role="tabpanel">
-       <form method="POST" enctype="multipart/form-data">
-  <div class="mb-3">
-    <label>Course</label>
-    <select name="course_id" class="form-select">
-      {% for course in courses %}
-        <option value="{{ course.Id }}">{{ course.Name }}</option>
-      {% endfor %}
-    </select>
-  </div>
 
-  <div class="mb-3">
-    <label>Test</label>
-    <select name="test_id" class="form-select">
-      {% for test in tests %}
-        <option value="{{ test.Id }}">{{ test.Name }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <!-- Questions -->
+    <div class="tab-pane fade" id="questions" role="tabpanel">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label>Course</label>
+          <select name="course_id" class="form-select">
+            {% for course in courses %}
+              <option value="{{ course.Id }}">{{ course.Name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Test</label>
+          <select name="test_id" class="form-select">
+            {% for test in tests %}
+              <option value="{{ test.Id }}">{{ test.Name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Topic</label>
+          <select name="topic_id" class="form-select">
+            {% for topic in topics %}
+              <option value="{{ topic.Id }}">{{ topic.Title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Upload Questions (CSV/Excel)</label>
+          <input type="file" name="questions_file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Validate File</button>
+      </form>
+    </div>
 
-  <div class="mb-3">
-    <label>Topic</label>
-    <select name="topic_id" class="form-select">
-      {% for topic in topics %}
-        <option value="{{ topic.Id }}">{{ topic.Title }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="mb-3">
-    <label>Upload Questions (CSV/Excel)</label>
-    <input type="file" name="questions_file" class="form-control" required>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Validate File</button>
-</form>
-
-
-
-      </div> 
   </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const courseSelect = document.getElementById("courseSelect");
+    const testName = document.getElementById("testName");
+    const testPrice = document.getElementById("testPrice");
+
+    courseSelect.addEventListener("change", function() {
+      const selectedOption = courseSelect.options[courseSelect.selectedIndex];
+      const courseName = selectedOption.getAttribute("data-name");
+      const coursePrice = selectedOption.getAttribute("data-price");
+
+      // Auto-fill Test fields
+      testName.value = courseName + " Test";
+      testPrice.value = coursePrice;
+    });
+
+    // Trigger once on page load for default selection
+    courseSelect.dispatchEvent(new Event("change"));
+  });
+</script>
 </body>
 </html>
