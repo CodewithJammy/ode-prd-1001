@@ -122,32 +122,31 @@
     </div>
 
     <!-- Topics -->
-
+<!-- Topics -->
 <div class="tab-pane fade" id="topics" role="tabpanel">
   <form method="POST" action="{{ url_for('admin.add_topic') }}">
-<div class="mb-3">
-  <label>Course</label>
-  <select name="course_id" id="topicCourseSelect" class="form-select" required>
-    {% for course in courses %}
-      <option value="{{ course.Id }}">{{ course.Name }}</option>
-    {% endfor %}
-  </select>
-</div>
+    <div class="mb-3">
+      <label>Course</label>
+      <select name="course_id" id="topicCourseSelect" class="form-select" required>
+        {% for course in courses %}
+          <option value="{{ course.Id }}">{{ course.Name }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-<div class="mb-3">
-  <label>Test</label>
-  <select name="test_id" id="topicTestSelect" class="form-select" required>
-    {% for test in tests %}
-      <option value="{{ test.Id }}" data-course-id="{{ test.courseid }}">{{ test.Name }}</option>
-    {% endfor %}
-  </select>
-</div>
-
+    <div class="mb-3">
+      <label>Test</label>
+      <select name="test_id" id="topicTestSelect" class="form-select" required>
+        {% for test in tests %}
+          <option value="{{ test.Id }}" data-course-id="{{ test.courseid }}">{{ test.Name }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
     <div id="topicsContainer">
-      <div class="mb-3 topic-item">
-        <label>Topic Name</label>
-        <input type="text" name="topic_name[]" class="form-control" required>
+      <div class="mb-3 topic-item d-flex align-items-center">
+        <input type="text" name="topic_name[]" class="form-control me-2" placeholder="Topic Name" required>
+        <button type="button" class="btn btn-danger btn-sm removeTopicBtn">X</button>
       </div>
     </div>
 
@@ -155,6 +154,7 @@
     <button type="submit" class="btn btn-primary">Add Topics</button>
   </form>
 </div>
+
 
 
 
@@ -201,7 +201,31 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+ 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const addBtn = document.getElementById("addTopicBtn");
+    const container = document.getElementById("topicsContainer");
 
+    // Add new topic input with remove button
+    addBtn.addEventListener("click", function() {
+      const newTopic = document.createElement("div");
+      newTopic.classList.add("mb-3", "topic-item", "d-flex", "align-items-center");
+      newTopic.innerHTML = `
+        <input type="text" name="topic_name[]" class="form-control me-2" placeholder="Topic Name" required>
+        <button type="button" class="btn btn-danger btn-sm removeTopicBtn">X</button>
+      `;
+      container.appendChild(newTopic);
+    });
+
+    // Delegate remove button click
+    container.addEventListener("click", function(e) {
+      if (e.target.classList.contains("removeTopicBtn")) {
+        e.target.parentElement.remove();
+      }
+    });
+  });
+</script>
   <script>
 document.addEventListener("DOMContentLoaded", function() {
   const courseSelect = document.getElementById("topicCourseSelect");
@@ -225,23 +249,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const addBtn = document.getElementById("addTopicBtn");
-    const container = document.getElementById("topicsContainer");
-
-    addBtn.addEventListener("click", function() {
-      const newTopic = document.createElement("div");
-      newTopic.classList.add("mb-3", "topic-item");
-      newTopic.innerHTML = `
-        <label>Topic Name</label>
-        <input type="text" name="topic_name[]" class="form-control" required>
-      `;
-      container.appendChild(newTopic);
-    });
-  });
-</script>
-
+ 
   
 <script>
   document.addEventListener("DOMContentLoaded", function() {
