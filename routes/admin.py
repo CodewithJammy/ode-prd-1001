@@ -92,11 +92,18 @@ def add_topic():
     return redirect(url_for('admin.dashboard'))
 
 
+@admin_bp.route('/get-tests/<int:course_id>', methods=['GET'])
+def get_tests(course_id):
+    cursor.execute("SELECT Id, Name FROM Tests WHERE CourseId = ?", (course_id,))
+    tests = cursor.fetchall()
+    return jsonify([{"id": t.Id, "name": t.Name} for t in tests])
+
 @admin_bp.route('/get-topics/<int:test_id>', methods=['GET'])
 def get_topics(test_id):
     cursor.execute("SELECT Id, Title FROM Topics WHERE TestId = ?", (test_id,))
     topics = cursor.fetchall()
     return jsonify([{"id": t.Id, "title": t.Title} for t in topics])
+
 
 
 
