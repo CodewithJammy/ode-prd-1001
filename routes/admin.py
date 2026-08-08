@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 import pyodbc
 from models.db_config import get_connection
+import pandas as pd
 
 # Create blueprint
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -133,6 +134,54 @@ def upload_questions():
 
     flash("Questions uploaded successfully!", "success")
     return redirect(url_for('admin.dashboard'))
+
+
+
+
+
+
+@admin_bp.route('/validate-questions', methods=['POST'])
+def validate_questions():
+    course_id = request.form['course_id']
+    test_id = request.form['test_id']
+    topic_id = request.form['topic_id']
+    file = request.files['questions_file']
+
+    # Read file
+    if file.filename.endswith('.csv'):
+        df = pd.read_csv(file)
+    elif file.filename.endswith(('.xls', '.xlsx')):
+        df = pd.read_excel(file)
+    else:
+        flash("Unsupported file type", "danger")
+        return redirect(url_for('admin.dashboard'))
+
+    # Add validation flag
+    df['ValidFlag'] = df.apply(
+        lambda row: int(
+            str(row['CourseId']) == str(course_id) and
+            str(row['TestId']) == str(test_id) and
+            str(row['TopicId']) == str(topic_id)
+        ),
+        axis=1
+    )
+
+    # Preview first 10 rows
+    preview = df.head(10).to_dict(orient='records')
+
+    # Check if all rows valid
+    all_valid = df['ValidFlag'].all()
+
+    return render_template(
+        'preview_questions.html',
+        preview=preview,
+        all_valid=all_valid,
+        course_id=course_id,
+        test_id=test_id,
+        topic_id=topic_id,
+        file=file.filename
+    )
+
 
 
 
