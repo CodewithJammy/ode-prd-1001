@@ -92,6 +92,14 @@ def add_topic():
     return redirect(url_for('admin.dashboard'))
 
 
+@admin_bp.route('/get-topics/<int:test_id>', methods=['GET'])
+def get_topics(test_id):
+    cursor.execute("SELECT Id, Title FROM Topics WHERE TestId = ?", (test_id,))
+    topics = cursor.fetchall()
+    return jsonify([{"id": t.Id, "title": t.Title} for t in topics])
+
+
+
 @admin_bp.route('/upload-questions', methods=['POST'])
 def upload_questions():
     course_id = request.form['course_id']
