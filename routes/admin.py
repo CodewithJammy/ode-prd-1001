@@ -61,9 +61,9 @@ def add_test():
     year = request.form.get('year')
 
     cursor.execute("""
-        INSERT INTO Tests (CourseId, Name, Price, Test_Type, Year)
+        INSERT INTO Tests (CourseId, Name, Price, Test_Type)
         VALUES (?, ?, ?, ?, ?)
-    """, (course_id, name, price, test_type, year))
+    """, (course_id, name, price, test_type))
     conn.commit()
     flash("Test added successfully!", "success")
     return redirect(url_for('admin.dashboard'))
