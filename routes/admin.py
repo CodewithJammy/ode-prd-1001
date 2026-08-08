@@ -72,9 +72,12 @@ def add_test():
 @admin_bp.route('/add-topic', methods=['POST'])
 def add_topic():
     test_id = request.form['test_id']
-    topic_name = request.form['topic_name']
+    topic_names = request.form.getlist('topic_name[]')  # collect all topic inputs
 
-    cursor.execute("INSERT INTO Topics (TestId, Title) VALUES (?, ?)", (test_id, topic_name))
+    for topic_name in topic_names:
+        cursor.execute("INSERT INTO Topics (TestId, Title) VALUES (?, ?)", (test_id, topic_name))
+
     conn.commit()
-    flash("Topic added successfully!", "success")
+    flash(f"{len(topic_names)} topic(s) added successfully!", "success")
     return redirect(url_for('admin.dashboard'))
+
