@@ -275,15 +275,34 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 document.addEventListener("DOMContentLoaded", function() {
+  const courseSelect = document.getElementById("questionCourseSelect");
   const testSelect = document.getElementById("questionTestSelect");
   const topicSelect = document.getElementById("questionTopicSelect");
 
+  // Load tests when course changes
+  courseSelect.addEventListener("change", function() {
+    const courseId = courseSelect.value;
+    fetch(`/admin/get-tests/${courseId}`)
+      .then(response => response.json())
+      .then(data => {
+        testSelect.innerHTML = "";
+        data.forEach(test => {
+          const opt = document.createElement("option");
+          opt.value = test.id;
+          opt.textContent = test.name;
+          testSelect.appendChild(opt);
+        });
+        topicSelect.innerHTML = ""; // clear topics when course changes
+      });
+  });
+
+  // Load topics when test changes
   testSelect.addEventListener("change", function() {
     const testId = testSelect.value;
     fetch(`/admin/get-topics/${testId}`)
       .then(response => response.json())
       .then(data => {
-        topicSelect.innerHTML = ""; // clear old options
+        topicSelect.innerHTML = "";
         data.forEach(topic => {
           const opt = document.createElement("option");
           opt.value = topic.id;
@@ -293,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function() {
       });
   });
 });
-
 
   </script>
 </body>
