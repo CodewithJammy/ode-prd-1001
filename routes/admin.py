@@ -73,14 +73,20 @@ def add_test():
 def add_topic():
     course_id = request.form['course_id']
     test_id = request.form['test_id']
-    topic_names = request.form.getlist('topic_name[]')  # multiple topics
+    topic_names = request.form.getlist('topic_name[]')
 
     for topic_name in topic_names:
+        # Increment OrderNo per course+test
+        cursor.execute("SELECT ISNULL(MAX(OrderNo), 0) FROM Topics WHERE CourseId = ? AND TestId = ?", (course_id, test_id))
+        max_order_no = cursor.fetchone()[0]
+        new_order_no = max_order_no + 1
+
         cursor.execute(
-            "INSERT INTO Topics (CourseId, TestId, Title) VALUES (?, ?, ?)",
-            (course_id, test_id, topic_name)
+            "INSERT INTO Topics (CourseId, TestId, Title, OrderNo) VALUES (?, ?, ?, ?)",
+            (course_id, test_id, topic_name, new_order_no)
         )
 
     conn.commit()
-    flash(f"{len(topic_names)} topic(s) added successfully!", "success")
+    flash(f"{len(topic_names)} topic(s) added successfully with order numbers!", "success")
     return redirect(url_for('admin.dashboard'))
+
