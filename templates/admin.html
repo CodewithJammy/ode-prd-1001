@@ -272,35 +272,26 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 // ---- questions ---->>
+
+
 document.addEventListener("DOMContentLoaded", function() {
-  const courseSelect = document.getElementById("questionCourseSelect");
   const testSelect = document.getElementById("questionTestSelect");
   const topicSelect = document.getElementById("questionTopicSelect");
 
-  function filterTests() {
-    const selectedCourseId = courseSelect.value;
-    for (let option of testSelect.options) {
-      option.style.display = (option.getAttribute("data-course-id") === selectedCourseId) ? "block" : "none";
-    }
-    testSelect.selectedIndex = [...testSelect.options].findIndex(opt => opt.style.display === "block");
-    filterTopics(); // reset topics too
-  }
-
-  function filterTopics() {
-    const selectedCourseId = courseSelect.value;
-    const selectedTestId = testSelect.value;
-    for (let option of topicSelect.options) {
-      const courseMatch = option.getAttribute("data-course-id") === selectedCourseId;
-      const testMatch = option.getAttribute("data-test-id") === selectedTestId;
-      option.style.display = (courseMatch && testMatch) ? "block" : "none";
-    }
-    topicSelect.selectedIndex = [...topicSelect.options].findIndex(opt => opt.style.display === "block");
-  }
-
-  courseSelect.addEventListener("change", filterTests);
-  testSelect.addEventListener("change", filterTopics);
-
-  filterTests(); // run once on page load
+  testSelect.addEventListener("change", function() {
+    const testId = testSelect.value;
+    fetch(`/admin/get-topics/${testId}`)
+      .then(response => response.json())
+      .then(data => {
+        topicSelect.innerHTML = ""; // clear old options
+        data.forEach(topic => {
+          const opt = document.createElement("option");
+          opt.value = topic.id;
+          opt.textContent = topic.title;
+          topicSelect.appendChild(opt);
+        });
+      });
+  });
 });
 
 
