@@ -90,3 +90,50 @@ def add_topic():
     flash(f"{len(topic_names)} topic(s) added successfully with order numbers!", "success")
     return redirect(url_for('admin.dashboard'))
 
+
+@admin_bp.route('/upload-questions', methods=['POST'])
+def upload_questions():
+    course_id = request.form['course_id']
+    test_id = request.form['test_id']
+    topic_id = request.form['topic_id']
+    file = request.files['questions_file']
+
+    errors = []
+    df = None
+
+    if file.filename.endswith('.csv'):
+        df = pd.read_csv(file)
+    elif file.filename.endswith(('.xls', '.xlsx')):
+        df = pd.read_excel(file)
+    else:
+        flash("Unsupported file type", "danger")
+        return redirect(url_for('admin.dashboard'))
+
+    for i, row in df.iterrows():
+        if str(row['CourseId']) != course_id:
+            errors.append(f"Row {i+2}: CourseId mismatch")
+        if str(row['TestId']) != test_id:
+            errors.append(f"Row {i+2}: TestId mismatch")
+        if str(row['TopicId']) != topic_id:
+            errors.append(f"Row {i+2}: TopicId mismatch")
+
+    if errors:
+        for e in errors:
+            flash(e, "danger")
+        flash("Validation failed. Fix file before upload.", "danger")
+        return redirect(url_for('admin.dashboard'))
+
+    # If validation passes, insert into Questions table
+    for i, row in df.iterrows():
+        cursor.execute("""
+            INSERT INTO Questions (TestId, TopicId, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (test_id, topic_id, row['QuestionText'], row['OptionA'], row['OptionB'], row['OptionC'], row['OptionD'], row['CorrectAnswer']))
+    conn.commit()
+
+    flash("Questions uploaded successfully!", "success")
+    return redirect(url_for('admin.dashboard'))
+
+
+
+
