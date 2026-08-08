@@ -138,7 +138,7 @@
   <label>Test</label>
   <select name="test_id" id="topicTestSelect" class="form-select" required>
     {% for test in tests %}
-      <option value="{{ test.Id }}" data-course-id="{{ test.CourseId }}">{{ test.Name }}</option>
+      <option value="{{ test.Id }}" data-course-id="{{ courseid }}">{{ test.Name }}</option>
     {% endfor %}
   </select>
 </div>
