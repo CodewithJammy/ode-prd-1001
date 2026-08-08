@@ -183,7 +183,7 @@
   <label>Topic</label>
   <select name="topic_id" id="questionTopicSelect" class="form-select" required>
     {% for topic in topics %}
-      <option value="{{ topic.Id }}" data-test-id="{{ topic.testid }}" data-course-id="{{ topic.CourseId }}">{{ topic.Title }}</option>
+      <option value="{{ topic.Id }}" data-test-id="{{ topic.TestId }}" data-course-id="{{ topic.CourseId }}">{{ topic.Title }}</option>
     {% endfor %}
   </select>
 </div>
