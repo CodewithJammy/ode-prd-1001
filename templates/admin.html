@@ -192,6 +192,8 @@
           <input type="file" name="questions_file" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Validate File</button>
+        <button type="submit" class="btn btn-primary" {% if not validated %}disabled{% endif %}>Upload</button>
+
       </form>
     </div>
 
