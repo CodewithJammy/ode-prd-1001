@@ -161,30 +161,32 @@
     <!-- Questions -->
     <div class="tab-pane fade" id="questions" role="tabpanel">
       <form method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-          <label>Course</label>
-          <select name="course_id" class="form-select">
-            {% for course in courses %}
-              <option value="{{ course.Id }}">{{ course.Name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="mb-3">
-          <label>Test</label>
-          <select name="test_id" class="form-select">
-            {% for test in tests %}
-              <option value="{{ test.Id }}">{{ test.Name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="mb-3">
-          <label>Topic</label>
-          <select name="topic_id" class="form-select">
-            {% for topic in topics %}
-              <option value="{{ topic.Id }}">{{ topic.Title }}</option>
-            {% endfor %}
-          </select>
-        </div>
+       <div class="mb-3">
+  <label>Course</label>
+  <select name="course_id" id="questionCourseSelect" class="form-select" required>
+    {% for course in courses %}
+      <option value="{{ course.Id }}">{{ course.Name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="mb-3">
+  <label>Test</label>
+  <select name="test_id" id="questionTestSelect" class="form-select" required>
+    {% for test in tests %}
+      <option value="{{ test.Id }}" data-course-id="{{ test.courseid }}">{{ test.Name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="mb-3">
+  <label>Topic</label>
+  <select name="topic_id" id="questionTopicSelect" class="form-select" required>
+    {% for topic in topics %}
+      <option value="{{ topic.Id }}" data-test-id="{{ topic.testid }}">{{ topic.Title }}</option>
+    {% endfor %}
+  </select>
+</div>
         <div class="mb-3">
           <label>Upload Questions (CSV/Excel)</label>
           <input type="file" name="questions_file" class="form-control" required>
@@ -258,6 +260,36 @@ document.addEventListener("DOMContentLoaded", function() {
     // Trigger once on page load for default selection
     courseSelect.dispatchEvent(new Event("change"));
   });
-</script>
+
+// ---- questions ---->>
+  document.addEventListener("DOMContentLoaded", function() {
+  const courseSelect = document.getElementById("questionCourseSelect");
+  const testSelect = document.getElementById("questionTestSelect");
+  const topicSelect = document.getElementById("questionTopicSelect");
+
+  function filterTests() {
+    const selectedCourseId = courseSelect.value;
+    for (let option of testSelect.options) {
+      option.style.display = (option.getAttribute("data-course-id") === selectedCourseId) ? "block" : "none";
+    }
+    testSelect.selectedIndex = [...testSelect.options].findIndex(opt => opt.style.display === "block");
+    filterTopics(); // reset topics too
+  }
+
+  function filterTopics() {
+    const selectedTestId = testSelect.value;
+    for (let option of topicSelect.options) {
+      option.style.display = (option.getAttribute("data-test-id") === selectedTestId) ? "block" : "none";
+    }
+    topicSelect.selectedIndex = [...topicSelect.options].findIndex(opt => opt.style.display === "block");
+  }
+
+  courseSelect.addEventListener("change", filterTests);
+  testSelect.addEventListener("change", filterTopics);
+
+  filterTests(); // run once on page load
+});
+
+  </script>
 </body>
 </html>
