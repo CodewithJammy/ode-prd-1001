@@ -122,9 +122,18 @@
     </div>
 
     <!-- Topics -->
-   <!-- Topics -->
+
 <div class="tab-pane fade" id="topics" role="tabpanel">
   <form method="POST" action="{{ url_for('admin.add_topic') }}">
+    <div class="mb-3">
+      <label>Course</label>
+      <select name="course_id" class="form-select" required>
+        {% for course in courses %}
+          <option value="{{ course.Id }}">{{ course.Name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
     <div class="mb-3">
       <label>Test</label>
       <select name="test_id" class="form-select" required>
@@ -145,7 +154,6 @@
     <button type="submit" class="btn btn-primary">Add Topics</button>
   </form>
 </div>
-
 
 
 
@@ -189,7 +197,7 @@
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 
- <script>
+  <script>
   document.addEventListener("DOMContentLoaded", function() {
     const addBtn = document.getElementById("addTopicBtn");
     const container = document.getElementById("topicsContainer");
@@ -205,6 +213,7 @@
     });
   });
 </script>
+
   
 <script>
   document.addEventListener("DOMContentLoaded", function() {
