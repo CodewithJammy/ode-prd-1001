@@ -76,9 +76,8 @@
       <form method="POST" action="{{ url_for('admin.add_test') }}">
         <div class="mb-3">
           <label>Course</label>
-          <select name="course_id" id="courseSelect" class="form-select" required>
-          
-          </select>
+          <!-- Tests tab -->
+            <select name="course_id" id="testsCourseSelect" class="form-select" required></select>
         </div>
 
         <div class="mb-3">
@@ -174,43 +173,62 @@
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  // --- Topics form ---
-  const topicsCourseSelect = document.getElementById("topicsCourseSelect");
-  const topicsTestSelect = document.getElementById("topicsTestSelect");
+// Tests tab
+const testsCourseSelect = document.getElementById("testsCourseSelect");
+const testName = document.getElementById("testName");
+const testPrice = document.getElementById("testPrice");
 
-  // Load courses for Topics
-  fetch("/admin/get-courses")
+fetch("/admin/get-courses")
+  .then(r => r.json())
+  .then(data => {
+    testsCourseSelect.innerHTML = "";
+    data.forEach(course => {
+      const opt = document.createElement("option");
+      opt.value = course.id;
+      opt.textContent = course.name;
+      opt.setAttribute("data-price", course.price);
+      testsCourseSelect.appendChild(opt);
+    });
+    testsCourseSelect.dispatchEvent(new Event("change"));
+  });
+
+testsCourseSelect.addEventListener("change", function() {
+  const selectedOption = testsCourseSelect.options[testsCourseSelect.selectedIndex];
+  testName.value = selectedOption.textContent + " Test";
+  testPrice.value = selectedOption.getAttribute("data-price");
+});
+
+  // Topics tab
+const topicsCourseSelect = document.getElementById("topicsCourseSelect");
+const topicsTestSelect = document.getElementById("topicsTestSelect");
+
+fetch("/admin/get-courses")
+  .then(r => r.json())
+  .then(data => {
+    topicsCourseSelect.innerHTML = "";
+    data.forEach(course => {
+      const opt = document.createElement("option");
+      opt.value = course.id;
+      opt.textContent = course.name;
+      topicsCourseSelect.appendChild(opt);
+    });
+    topicsCourseSelect.dispatchEvent(new Event("change"));
+  });
+
+topicsCourseSelect.addEventListener("change", function() {
+  const courseId = topicsCourseSelect.value;
+  fetch(`/admin/get-tests/${courseId}`)
     .then(r => r.json())
     .then(data => {
-      topicsCourseSelect.innerHTML = "";
-      data.forEach(course => {
+      topicsTestSelect.innerHTML = "";
+      data.forEach(test => {
         const opt = document.createElement("option");
-        opt.value = course.id;
-        opt.textContent = course.name;
-        topicsCourseSelect.appendChild(opt);
+        opt.value = test.id;
+        opt.textContent = test.name;
+        topicsTestSelect.appendChild(opt);
       });
-      topicsCourseSelect.dispatchEvent(new Event("change"));
     });
-
-  topicsCourseSelect.addEventListener("change", function() {
-    const courseId = topicsCourseSelect.value;
-    fetch(`/admin/get-tests/${courseId}`)
-      .then(r => r.json())
-      .then(data => {
-        topicsTestSelect.innerHTML = "";
-        data.forEach(test => {
-          const opt = document.createElement("option");
-          opt.value = test.id;
-          opt.textContent = test.name;
-          topicsTestSelect.appendChild(opt);
-        });
-        // ✅ Trigger change for first test automatically
-      if (topicsTestSelect.options.length > 0) {
-        topicsTestSelect.dispatchEvent(new Event("change"));
-      }
-      });
-  });
+});
 
   // --- Questions form ---
   const questionsCourseSelect = document.getElementById("questionsCourseSelect");
