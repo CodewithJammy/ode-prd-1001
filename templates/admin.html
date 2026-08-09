@@ -182,9 +182,7 @@
 <div class="mb-3">
   <label>Topic</label>
   <select name="topic_id" id="questionTopicSelect" class="form-select" required>
-    {% for topic in topics %}
-      <option value="{{ topic.Id }}" data-test-id="{{ topic.TestId }}" data-course-id="{{ topic.CourseId }}">{{ topic.Title }}</option>
-    {% endfor %}
+    
   </select>
 </div>
         <div class="mb-3">
@@ -226,29 +224,7 @@
     });
   });
 </script>
-  <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const courseSelect = document.getElementById("topicCourseSelect");
-  const testSelect = document.getElementById("topicTestSelect");
-
-  function filterTests() {
-    const selectedCourseId = courseSelect.value;
-    for (let option of testSelect.options) {
-      if (option.getAttribute("data-course-id") === selectedCourseId) {
-        option.style.display = "block";
-      } else {
-        option.style.display = "none";
-      }
-    }
-    // Reset selection to first visible option
-    testSelect.selectedIndex = [...testSelect.options].findIndex(opt => opt.style.display === "block");
-  }
-
-  courseSelect.addEventListener("change", filterTests);
-  filterTests(); // run once on page load
-});
-</script>
-
+ 
  
   
 <script>
