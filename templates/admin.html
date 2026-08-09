@@ -308,6 +308,7 @@ topicsCourseSelect.addEventListener("change", function() {
   })
   .then(r => r.json())
   .then(data => {
+    console.log("Form values:", data.form_values);
     if (data.validated) {
       document.getElementById("uploadBtn").disabled = false;
       document.getElementById("successMsg").style.display = "block";
