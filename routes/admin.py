@@ -203,11 +203,16 @@ def validate_questions():
 
     # Check if all rows valid
     all_valid = df['ValidFlag'].all()
-    return jsonify({"validated": bool(all_valid) ,"form_values": {
-            "course_id": course_id,
-            "test_id": test_id,
-            "topic_id": topic_id
-        }})
+    # Collect first 5 rows of IDs for debugging
+    file_ids = df[['CourseId','TestId','TopicId']].head().to_dict(orient='records')
+    return jsonify({"validated": bool(all_valid) ,
+                    "form_values": {
+                            "course_id": course_id,
+                            "test_id": test_id,
+                            "topic_id": topic_id
+                     },
+                    "file_ids": file_ids
+                   })
 
 
 
