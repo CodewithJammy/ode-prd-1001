@@ -188,9 +188,9 @@ def validate_questions():
     # Add validation flag
     df['ValidFlag'] = df.apply(
         lambda row: int(
-            str(row['CourseId']) == str(course_id) and
-            str(row['TestId']) == str(test_id) and
-            str(row['TopicId']) == str(topic_id)
+            int(row['CourseId']) == int(course_id) and
+            int(row['TestId']) == int(test_id) and
+            int(row['TopicId']) == int(topic_id)
         ),
         axis=1
     )
