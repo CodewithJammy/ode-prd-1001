@@ -163,12 +163,18 @@
           <label>Upload Questions (CSV/Excel)</label>
           <input type="file" name="questions_file" class="form-control" required>
         </div>
-<button id="validateBtn" class="btn btn-primary">Validate File</button>
-<button type="submit" formaction="{{ url_for('admin.upload_questions') }}" 
+        <button id="validateBtn" class="btn btn-primary">Validate File</button>
+        <button type="submit" formaction="{{ url_for('admin.upload_questions') }}" 
         class="btn btn-success" id="uploadBtn" disabled>
-  Upload
-</button>
-
+            Upload
+        </button>
+<!-- Alerts -->
+<div id="successMsg" class="alert alert-success mt-2" style="display:none;">
+  File validated successfully! You can now upload.
+</div>
+<div id="errorMsg" class="alert alert-danger mt-2" style="display:none;">
+  Validation failed. Please check your file.
+</div>
 
 
       </form>
