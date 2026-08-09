@@ -317,6 +317,11 @@ topicsCourseSelect.addEventListener("change", function() {
       document.getElementById("uploadBtn").disabled = true;
       document.getElementById("successMsg").style.display = "none";
       document.getElementById("errorMsg").style.display = "block";
+
+      document.getElementById("errorMsg").innerHTML =
+        `<strong>Validation failed.</strong><br>
+         Form IDs: Course=${data.form_values.course_id}, Test=${data.form_values.test_id}, Topic=${data.form_values.topic_id}<br>
+         `;
     }
   })
   .catch(err => {
