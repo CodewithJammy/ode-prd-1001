@@ -104,7 +104,7 @@ def get_courses():
 
 @admin_bp.route('/get-tests/<int:course_id>', methods=['GET'])
 def get_tests(course_id):
-    cursor.execute("SELECT Id, Name FROM Tests WHERE CourseId = ?", (course_id,))
+    cursor.execute("SELECT Id, Name FROM Tests WHERE courseid = ?", (course_id,))
     tests = cursor.fetchall()
     return jsonify([{"id": t.Id, "name": t.Name} for t in tests])
 
