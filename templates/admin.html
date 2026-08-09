@@ -77,18 +77,7 @@
         <div class="mb-3">
           <label>Course</label>
           <select name="course_id" id="courseSelect" class="form-select" required>
-            {% for course in courses %}
-              <option value="{{ course.Id }}" 
-                      data-name="{{ course.Name }}" 
-                      data-price="{{ course.Price }}" 
-                      data-category="{{ course.Category }}" 
-                      data-duration="{{ course.Duration }}" 
-                      data-level="{{ course.Level }}" 
-                      data-image="{{ course.ImageUrl }}" 
-                      data-syllabus="{{ course.SyllabusPdfUrl }}">
-                {{ course.Name }}
-              </option>
-            {% endfor %}
+          
           </select>
         </div>
 
@@ -121,24 +110,19 @@
       </form>
     </div>
 
-    <!-- Topics -->
+   
 <!-- Topics -->
 <div class="tab-pane fade" id="topics" role="tabpanel">
   <form method="POST" action="{{ url_for('admin.add_topic') }}">
     <div class="mb-3">
       <label>Course</label>
-      <select name="course_id" id="topicCourseSelect" class="form-select" required>
-        {% for course in courses %}
-          <option value="{{ course.Id }}">{{ course.Name }}</option>
-        {% endfor %}
-      </select>
+     <!-- Topics form -->
+<select name="course_id" id="topicsCourseSelect" class="form-select" required></select>
     </div>
 
     <div class="mb-3">
       <label>Test</label>
-      <select name="test_id" id="topicTestSelect" class="form-select" required>
-       
-      </select>
+      <select name="test_id" id="topicsTestSelect" class="form-select" required></select>
     </div>
 
     <div id="topicsContainer">
@@ -160,26 +144,18 @@
     <div class="tab-pane fade" id="questions" role="tabpanel">
       <form method="POST" enctype="multipart/form-data">
        <div class="mb-3">
-  <label>Course</label>
-  <select name="course_id" id="questionCourseSelect" class="form-select" required>
-    {% for course in courses %}
-      <option value="{{ course.Id }}">{{ course.Name }}</option>
-    {% endfor %}
-  </select>
-</div>
+         <label>Course</label>
+          <select name="course_id" id="questionsCourseSelect" class="form-select" required></select>
+        </div>
 
 <div class="mb-3">
   <label>Test</label>
-  <select name="test_id" id="questionTestSelect" class="form-select" required>
-    {% for test in tests %}
-      <option value="{{ test.Id }}" data-course-id="{{ test.courseid }}">{{ test.Name }}</option>
-    {% endfor %}
-  </select>
+  <select name="test_id" id="questionsTestSelect" class="form-select" required></select>
 </div>
 
 <div class="mb-3">
   <label>Topic</label>
-  <select name="topic_id" id="questionTopicSelect" class="form-select" required>
+  <select name="topic_id" id="questionsTopicSelect" class="form-select" required></select>
     
   </select>
 </div>
@@ -197,99 +173,99 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
- 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const addBtn = document.getElementById("addTopicBtn");
-    const container = document.getElementById("topicsContainer");
-
-    // Add new topic input with remove button
-    addBtn.addEventListener("click", function() {
-      const newTopic = document.createElement("div");
-      newTopic.classList.add("mb-3", "topic-item", "d-flex", "align-items-center");
-      newTopic.innerHTML = `
-        <input type="text" name="topic_name[]" class="form-control me-2" placeholder="Topic Name" required>
-        <button type="button" class="btn btn-danger btn-sm removeTopicBtn">X</button>
-      `;
-      container.appendChild(newTopic);
-    });
-
-    // Delegate remove button click
-    container.addEventListener("click", function(e) {
-      if (e.target.classList.contains("removeTopicBtn")) {
-        e.target.parentElement.remove();
-      }
-    });
-  });
-</script>
- 
- 
-  
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const courseSelect = document.getElementById("courseSelect");
-    const testName = document.getElementById("testName");
-    const testPrice = document.getElementById("testPrice");
-
-    courseSelect.addEventListener("change", function() {
-      const selectedOption = courseSelect.options[courseSelect.selectedIndex];
-      const courseName = selectedOption.getAttribute("data-name");
-      const coursePrice = selectedOption.getAttribute("data-price");
-
-      // Auto-fill Test fields
-      testName.value = courseName + " Test";
-      testPrice.value = coursePrice;
-    });
-
-    // Trigger once on page load for default selection
-    courseSelect.dispatchEvent(new Event("change"));
-  });
-
-// ---- questions ---->>
-
-
 document.addEventListener("DOMContentLoaded", function() {
-  const courseSelect = document.getElementById("questionCourseSelect");
-  const testSelect = document.getElementById("questionTestSelect");
-  const topicSelect = document.getElementById("questionTopicSelect");
+  // --- Topics form ---
+  const topicsCourseSelect = document.getElementById("topicsCourseSelect");
+  const topicsTestSelect = document.getElementById("topicsTestSelect");
 
-  // Load tests when course changes
-  courseSelect.addEventListener("change", function() {
-    const courseId = courseSelect.value;
+  // Load courses for Topics
+  fetch("/admin/get-courses")
+    .then(r => r.json())
+    .then(data => {
+      topicsCourseSelect.innerHTML = "";
+      data.forEach(course => {
+        const opt = document.createElement("option");
+        opt.value = course.id;
+        opt.textContent = course.name;
+        topicsCourseSelect.appendChild(opt);
+      });
+      topicsCourseSelect.dispatchEvent(new Event("change"));
+    });
+
+  topicsCourseSelect.addEventListener("change", function() {
+    const courseId = topicsCourseSelect.value;
     fetch(`/admin/get-tests/${courseId}`)
-      .then(response => response.json())
+      .then(r => r.json())
       .then(data => {
-        testSelect.innerHTML = "";
+        topicsTestSelect.innerHTML = "";
         data.forEach(test => {
           const opt = document.createElement("option");
           opt.value = test.id;
           opt.textContent = test.name;
-          testSelect.appendChild(opt);
+          topicsTestSelect.appendChild(opt);
         });
-        topicSelect.innerHTML = ""; // clear topics when course changes
+        // ✅ Trigger change for first test automatically
+      if (topicsTestSelect.options.length > 0) {
+        topicsTestSelect.dispatchEvent(new Event("change"));
+      }
       });
   });
 
-  // Load topics when test changes
-  testSelect.addEventListener("change", function() {
-  const testId = testSelect.value;
-  fetch(`/admin/get-topics/${testId}`)
-    .then(response => response.json())
+  // --- Questions form ---
+  const questionsCourseSelect = document.getElementById("questionsCourseSelect");
+  const questionsTestSelect = document.getElementById("questionsTestSelect");
+  const questionsTopicSelect = document.getElementById("questionsTopicSelect");
+
+  // Load courses for Questions
+  fetch("/admin/get-courses")
+    .then(r => r.json())
     .then(data => {
-      topicSelect.innerHTML = "";
-      data.forEach(topic => {
+      questionsCourseSelect.innerHTML = "";
+      data.forEach(course => {
         const opt = document.createElement("option");
-        opt.value = topic.id;
-        opt.textContent = topic.title;
-        opt.setAttribute("data-test-id", topic.testId);
-        opt.setAttribute("data-course-id", topic.courseId);
-        topicSelect.appendChild(opt);
+        opt.value = course.id;
+        opt.textContent = course.name;
+        questionsCourseSelect.appendChild(opt);
       });
+      questionsCourseSelect.dispatchEvent(new Event("change"));
     });
+
+  questionsCourseSelect.addEventListener("change", function() {
+    const courseId = questionsCourseSelect.value;
+    fetch(`/admin/get-tests/${courseId}`)
+      .then(r => r.json())
+      .then(data => {
+        questionsTestSelect.innerHTML = "";
+        data.forEach(test => {
+          const opt = document.createElement("option");
+          opt.value = test.id;
+          opt.textContent = test.name;
+          questionsTestSelect.appendChild(opt);
+        });
+        questionsTopicSelect.innerHTML = "";
+        if (questionsTestSelect.options.length > 0) {
+          questionsTestSelect.dispatchEvent(new Event("change"));
+        }
+      });
+  });
+
+  questionsTestSelect.addEventListener("change", function() {
+    const testId = questionsTestSelect.value;
+    fetch(`/admin/get-topics/${testId}`)
+      .then(r => r.json())
+      .then(data => {
+        questionsTopicSelect.innerHTML = "";
+        data.forEach(topic => {
+          const opt = document.createElement("option");
+          opt.value = topic.id;
+          opt.textContent = topic.title;
+          questionsTopicSelect.appendChild(opt);
+        });
+      });
+  });
 });
 
-});
-
-  </script>
+</script>
 </body>
 </html>
