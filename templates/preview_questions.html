@@ -1,0 +1,10 @@
+{% if all_valid %}
+  <div class="alert alert-success">
+    File validated successfully! You can now upload.
+  </div>
+  <button type="submit" class="btn btn-primary">Upload</button>
+{% else %}
+  <div class="alert alert-danger">
+    Validation failed. Please fix errors in your file.
+  </div>
+{% endif %}
