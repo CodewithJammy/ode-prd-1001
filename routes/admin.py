@@ -178,9 +178,10 @@ def validate_questions():
 
     # Read file
     if file.filename.endswith('.csv'):
-        df = pd.read_csv(file)
+        df = pd.read_csv(file, dtype={"CourseId": str, "TestId": str, "TopicId": str})
     elif file.filename.endswith(('.xls', '.xlsx')):
-        df = pd.read_excel(file)
+        df = pd.read_excel(file, dtype={"CourseId": str, "TestId": str, "TopicId": str})
+
     else:
         flash("Unsupported file type", "danger")
         return redirect(url_for('admin.dashboard'))
@@ -188,9 +189,9 @@ def validate_questions():
     # Add validation flag
     df['ValidFlag'] = df.apply(
         lambda row: int(
-            int(row['CourseId']) == int(course_id) and
-            int(row['TestId']) == int(test_id) and
-            int(row['TopicId']) == int(topic_id)
+            row['CourseId'].strip() == course_id.strip() and
+            row['TestId'].strip() == test_id.strip() and
+            row['TopicId'].strip() == topic_id.strip()
         ),
         axis=1
     )
