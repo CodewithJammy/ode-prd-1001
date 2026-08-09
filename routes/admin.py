@@ -203,7 +203,11 @@ def validate_questions():
 
     # Check if all rows valid
     all_valid = df['ValidFlag'].all()
-    return jsonify({"validated": bool(all_valid)})
+    return jsonify({"validated": bool(all_valid) ,"form_values": {
+            "course_id": course_id,
+            "test_id": test_id,
+            "topic_id": topic_id
+        }})
 
 
 
