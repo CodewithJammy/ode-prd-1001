@@ -292,7 +292,8 @@ topicsCourseSelect.addEventListener("change", function() {
   });
 
  // validation
- document.getElementById("validateBtn").addEventListener("click", function(e) {
+
+document.getElementById("validateBtn").addEventListener("click", function(e) {
   e.preventDefault();
 
   const formData = new FormData(document.querySelector("form"));
@@ -303,36 +304,43 @@ topicsCourseSelect.addEventListener("change", function() {
   })
   .then(r => r.json())
   .then(data => {
-  if (data.validated) {
-    document.getElementById("uploadBtn").disabled = false;
-    document.getElementById("successMsg").style.display = "block";
-    document.getElementById("errorMsg").style.display = "none";
-  } else {
-    document.getElementById("uploadBtn").disabled = true;
-    document.getElementById("successMsg").style.display = "none";
+    if (data.validated) {
+      // Success case
+      document.getElementById("uploadBtn").disabled = false;
+      document.getElementById("successMsg").style.display = "block";
+      document.getElementById("errorMsg").style.display = "none";
+    } else {
+      // Failure case
+      document.getElementById("uploadBtn").disabled = true;
+      document.getElementById("successMsg").style.display = "none";
 
-    let msg = "<strong>Validation failed.</strong><br>";
-    msg += `Form IDs → Course=${data.form_values.course_id}, 
-            Test=${data.form_values.test_id}, 
-            Topic=${data.form_values.topic_id}<br>`;
+      let msg = "<strong>Validation failed.</strong><br>";
+      if (data.form_values) {
+        msg += `Form IDs → Course=${data.form_values.course_id}, 
+                Test=${data.form_values.test_id}, 
+                Topic=${data.form_values.topic_id}<br>`;
+      }
+      if (data.file_ids) {
+        msg += "File IDs (first rows):<br>";
+        data.file_ids.forEach((row, i) => {
+          msg += `Row ${i+1}: Course=${row.CourseId}, Test=${row.TestId}, Topic=${row.TopicId}<br>`;
+        });
+      }
+      if (data.error) {
+        msg += `Error: ${data.error}`;
+      }
 
-    if (data.file_ids) {
-      msg += "File IDs (first rows):<br>";
-      data.file_ids.forEach((row, i) => {
-        msg += `Row ${i+1}: Course=${row.CourseId}, Test=${row.TestId}, Topic=${row.TopicId}<br>`;
-      });
+      document.getElementById("errorMsg").innerHTML = msg;
+      document.getElementById("errorMsg").style.display = "block";
     }
-
-    document.getElementById("errorMsg").innerHTML = msg;
-    document.getElementById("errorMsg").style.display = "block";
-  }
-})
-
+  })
   .catch(err => {
     console.error(err);
+    document.getElementById("errorMsg").innerHTML = "Unexpected error: " + err;
     document.getElementById("errorMsg").style.display = "block";
   });
 });
+
 
 
 </script>
