@@ -33,7 +33,8 @@
   <div class="tab-content mt-3">
 
     <!-- Courses -->
-    <div class="tab-pane fade show active" id="courses" role="tabpanel">
+    
+    <div class="tab-pane fade {% if active_tab == 'courses' %}show active{% endif %}" id="courses" role="tabpanel">  
       <form method="POST" action="{{ url_for('admin.add_course') }}">
         <div class="mb-3">
           <label>Course Name</label>
@@ -72,7 +73,7 @@
     </div>
 
     <!-- Tests -->
-    <div class="tab-pane fade" id="tests" role="tabpanel">
+    <div class="tab-pane fade {% if active_tab == 'tests' %}show active{% endif %}" id="tests" role="tabpanel">
       <form method="POST" action="{{ url_for('admin.add_test') }}">
         <div class="mb-3">
           <label>Course</label>
@@ -111,7 +112,7 @@
 
    
 <!-- Topics -->
-<div class="tab-pane fade" id="topics" role="tabpanel">
+<div class="tab-pane fade {% if active_tab == 'topics' %}show active{% endif %}" id="topics" role="tabpanel">    
   <form method="POST" action="{{ url_for('admin.add_topic') }}">
     <div class="mb-3">
       <label>Course</label>
@@ -140,7 +141,7 @@
 
 
     <!-- Questions -->
-    <div class="tab-pane fade" id="questions" role="tabpanel">
+    <div class="tab-pane fade {% if active_tab == 'questions' %}show active{% endif %}" id="questions" role="tabpanel">
       <form method="POST" enctype="multipart/form-data" >
        <div class="mb-3">
          <label>Course</label>
