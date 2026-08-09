@@ -141,7 +141,7 @@
 
     <!-- Questions -->
     <div class="tab-pane fade" id="questions" role="tabpanel">
-      <form method="POST" enctype="multipart/form-data">
+      <form method="POST" enctype="multipart/form-data" href={{ url_for('admin.validate_questions') }}>
        <div class="mb-3">
          <label>Course</label>
           <select name="course_id" id="questionsCourseSelect" class="form-select" required></select>
