@@ -204,7 +204,7 @@ def validate_questions():
     return render_template(
         'admin.html',
         active_tab='questions',
-        all_valid=all_valid,
+        validated=all_valid,
         course_id=course_id,
         test_id=test_id,
         topic_id=topic_id,
