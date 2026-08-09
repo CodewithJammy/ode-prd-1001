@@ -133,7 +133,7 @@
              aria-labelledby="list-{{ topic.Id }}-list">
           {% if session.get('user_id') %}
             <!-- If logged in, show content -->
-            <div id="content-{{ topic.Id }}">
+           
             <div class="mt-2 d-flex justify-content-between">
               <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
               <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
