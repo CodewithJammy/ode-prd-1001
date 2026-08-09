@@ -141,7 +141,7 @@
 
     <!-- Questions -->
     <div class="tab-pane fade" id="questions" role="tabpanel">
-      <form method="POST" enctype="multipart/form-data" href={{ url_for('admin.validate_questions') }}>
+      <form method="POST" enctype="multipart/form-data" >
        <div class="mb-3">
          <label>Course</label>
           <select name="course_id" id="questionsCourseSelect" class="form-select" required></select>
@@ -162,8 +162,19 @@
           <label>Upload Questions (CSV/Excel)</label>
           <input type="file" name="questions_file" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Validate File</button>
-        <button type="submit" class="btn btn-primary" {% if not validated %}disabled{% endif %}>Upload</button>
+<button type="submit" formaction="{{ url_for('admin.validate_questions') }}" 
+        class="btn btn-primary">Validate File</button>
+
+<button type="submit" formaction="{{ url_for('admin.upload_questions') }}" 
+        class="btn btn-success" {% if not validated %}disabled{% endif %}>
+  Upload
+</button>
+
+{% if validated %}
+  <div class="alert alert-success mt-2">
+    File validated successfully! You can now upload.
+  </div>
+{% endif %}
 
       </form>
     </div>
