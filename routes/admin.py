@@ -196,7 +196,9 @@ def validate_questions():
     )
 
     # Preview first 10 rows
-    
+    print(df[['CourseId','TestId','TopicId']].head())
+    print(course_id, test_id, topic_id)
+
 
     # Check if all rows valid
     all_valid = df['ValidFlag'].all()
