@@ -96,17 +96,22 @@
   </div>
 </div>
 
-        <!-- Content -->
-        <div class="col-md-9">
+  <!-- Content -->
+     <div class="col-md-9">
   <div class="tab-content" id="nav-tabContent">
     {% for topic in topics %}
-      {% if loop.first %}
-        <!-- First topic content -->
-        <div class="tab-pane fade show active"
-             id="list-{{ topic.Id }}"
-             role="tabpanel"
-             aria-labelledby="list-{{ topic.Id }}-list">
+      <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+           id="list-{{ topic.Id }}"
+           role="tabpanel"
+           aria-labelledby="list-{{ topic.Id }}-list">
 
+        {% if not session.get('user_id') and not loop.first %}
+          <!-- Not logged in and not the first topic -->
+          <div class="alert alert-warning mt-3">
+            🔒 Please <a href="{{ url_for('user.signup_form') }}">signup/login</a> to access {{ topic.Title }}.
+          </div>
+        {% else %}
+          <!-- Show content (first topic always public, or all topics if logged in) -->
           <div id="content-{{ topic.Id }}">
             <div class="mt-2 d-flex justify-content-between">
               <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
@@ -124,50 +129,11 @@
             </div>
             <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
           </div>
-        </div>
-      {% else %}
-        <!-- Locked topics -->
-      
-          {% if session.get('user_id') %}
-            <!-- If logged in, show content -->
-            <div class="tab-pane"
-             id="list-{{ topic.Id }}"
-             role="tabpanel"
-             aria-labelledby="list-{{ topic.Id }}-list">
-
-          <div id="content-{{ topic.Id }}">
-            <div class="mt-2 d-flex justify-content-between">
-              <button class="btn btn-sm btn-outline-success" onclick="markCompleted({{ topic.Id }})">Mark Completed</button>
-              <button class="btn btn-sm btn-outline-primary" onclick="openTest({{ topic.Id }}, '{{ url_for('tests.topic_testpage', test_id=topic.TestId, topic_id=topic.Id) }}')">
-                Take Test
-              </button>
-            </div>
-            <h4>{{ topic.Title }}</h4>
-            <iframe src="{{ topic.ContentPdfUrl }}" width="100%" height="600px" style="border:none;"></iframe>
-          </div>
-
-          <div id="test-{{ topic.Id }}" style="display:none;">
-            <div class="d-flex justify-content-between mb-2">
-              <button class="btn btn-sm btn-outline-secondary" onclick="backToContent({{ topic.Id }})">← Back to Content</button>
-            </div>
-            <iframe id="testFrame-{{ topic.Id }}" src="" width="100%" height="600px" style="border:none;"></iframe>
-          </div>
-        </div>
-
-          {% else %}
-            <!-- If not logged in, show alert -->
-            <div class="alert alert-warning mt-3">
-              🔒 Please   <a href="{{ url_for('user.signup_form') }}">signup/login</a> to access {{ topic.Title }}.
-            </div>
-          {% endif %}
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
 </div>
-
-      </div>  
-    </div>
 
     <!-- Test -->
     <div class="tab-pane fade" id="test" role="tabpanel">
