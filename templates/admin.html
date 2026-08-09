@@ -34,7 +34,7 @@
 
     <!-- Courses -->
     
-    <div class="tab-pane fade {% if active_tab == 'courses' %}show active{% endif %}" id="courses" role="tabpanel">  
+    <div class="tab-pane" id="courses" role="tabpanel">  
       <form method="POST" action="{{ url_for('admin.add_course') }}">
         <div class="mb-3">
           <label>Course Name</label>
