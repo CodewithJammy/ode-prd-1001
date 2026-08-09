@@ -196,20 +196,11 @@ def validate_questions():
     )
 
     # Preview first 10 rows
-    preview = df.head(10).to_dict(orient='records')
+    
 
     # Check if all rows valid
     all_valid = df['ValidFlag'].all()
-
-    return render_template(
-        'admin.html',
-        active_tab='questions',
-        validated=all_valid,
-        course_id=course_id,
-        test_id=test_id,
-        topic_id=topic_id,
-        file=file.filename
-    )
+    return jsonify({"validated": bool(all_valid)})
 
 
 
