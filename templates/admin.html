@@ -163,19 +163,15 @@
           <label>Upload Questions (CSV/Excel)</label>
           <input type="file" name="questions_file" class="form-control" required>
         </div>
-<button type="submit" formaction="{{ url_for('admin.validate_questions') }}" 
-        class="btn btn-primary">Validate File</button>
-
+<button id="validateBtn" class="btn btn-primary">Validate File</button>
 <button type="submit" formaction="{{ url_for('admin.upload_questions') }}" 
-        class="btn btn-success" {% if not validated %}disabled{% endif %}>
+        class="btn btn-success" id="uploadBtn" disabled>
   Upload
 </button>
 
-{% if validated %}
-  <div class="alert alert-success mt-2">
-    File validated successfully! You can now upload.
-  </div>
-{% endif %}
+<div id="successMsg" class="alert alert-success mt-2" style="display:none;">
+  File validated successfully! You can now upload.
+</div>
 
       </form>
     </div>
@@ -185,6 +181,8 @@
 
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script>
+
+  
 // Tests tab
 const testsCourseSelect = document.getElementById("testsCourseSelect");
 const testName = document.getElementById("testName");
@@ -295,6 +293,26 @@ topicsCourseSelect.addEventListener("change", function() {
       });
   });
 
+ // validation
+  document.getElementById("validateBtn").addEventListener("click", function(e) {
+  e.preventDefault(); // stop full form submit
+
+  const formData = new FormData(document.querySelector("form"));
+
+  fetch("/admin/validate-questions", {
+    method: "POST",
+    body: formData
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.validated) {
+      document.getElementById("uploadBtn").disabled = false;
+      document.getElementById("successMsg").style.display = "block";
+    } else {
+      alert("Validation failed");
+    }
+  });
+});
 
 </script>
 </body>
