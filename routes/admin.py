@@ -202,7 +202,7 @@ def validate_questions():
     all_valid = df['ValidFlag'].all()
 
     return render_template(
-        'preview_questions.html',
+        'admin.html',
         all_valid=all_valid,
         course_id=course_id,
         test_id=test_id,
