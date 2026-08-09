@@ -172,6 +172,9 @@
 <div id="successMsg" class="alert alert-success mt-2" style="display:none;">
   File validated successfully! You can now upload.
 </div>
+<div id="errorMsg" class="alert alert-danger mt-2" style="display:none;">
+  Validation failed. Please check your file.
+</div>
 
       </form>
     </div>
@@ -294,8 +297,8 @@ topicsCourseSelect.addEventListener("change", function() {
   });
 
  // validation
-  document.getElementById("validateBtn").addEventListener("click", function(e) {
-  e.preventDefault(); // stop full form submit
+ document.getElementById("validateBtn").addEventListener("click", function(e) {
+  e.preventDefault();
 
   const formData = new FormData(document.querySelector("form"));
 
@@ -308,11 +311,19 @@ topicsCourseSelect.addEventListener("change", function() {
     if (data.validated) {
       document.getElementById("uploadBtn").disabled = false;
       document.getElementById("successMsg").style.display = "block";
+      document.getElementById("errorMsg").style.display = "none";
     } else {
-      alert("Validation failed");
+      document.getElementById("uploadBtn").disabled = true;
+      document.getElementById("successMsg").style.display = "none";
+      document.getElementById("errorMsg").style.display = "block";
     }
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("errorMsg").style.display = "block";
   });
 });
+
 
 </script>
 </body>
