@@ -142,7 +142,7 @@
 
     <!-- Questions -->
     <div class="tab-pane fade {% if active_tab == 'questions' %}show active{% endif %}" id="questions" role="tabpanel">
-      <form method="POST" enctype="multipart/form-data" >
+      <form id="questionsForm" method="POST" enctype="multipart/form-data" >
        <div class="mb-3">
          <label>Course</label>
           <select name="course_id" id="questionsCourseSelect" class="form-select" required></select>
@@ -169,12 +169,8 @@
             Upload
         </button>
 <!-- Alerts -->
-<div id="successMsg" class="alert alert-success mt-2" style="display:none;">
-  File validated successfully! You can now upload.
-</div>
-<div id="errorMsg" class="alert alert-danger mt-2" style="display:none;">
-  Validation failed. Please check your file.
-</div>
+<div id="successMsg" class="alert alert-success mt-2" style="display:none;"></div>
+  <div id="errorMsg" class="alert alert-danger mt-2" style="display:none;"></div>
 
 
       </form>
@@ -298,11 +294,10 @@ topicsCourseSelect.addEventListener("change", function() {
   });
 
  // validation
-
 document.getElementById("validateBtn").addEventListener("click", function(e) {
   e.preventDefault();
 
-  const formData = new FormData(document.querySelector("form"));
+  const formData = new FormData(document.getElementById("questionsForm"));
 
   fetch("/admin/validate-questions", {
     method: "POST",
@@ -310,21 +305,20 @@ document.getElementById("validateBtn").addEventListener("click", function(e) {
   })
   .then(r => r.json())
   .then(data => {
+    console.log("Response from backend:", data); // Debug
+
     if (data.validated) {
-      // Success case
       document.getElementById("uploadBtn").disabled = false;
+      document.getElementById("successMsg").innerHTML = "File validated successfully! You can now upload.";
       document.getElementById("successMsg").style.display = "block";
       document.getElementById("errorMsg").style.display = "none";
     } else {
-      // Failure case
       document.getElementById("uploadBtn").disabled = true;
       document.getElementById("successMsg").style.display = "none";
 
       let msg = "<strong>Validation failed.</strong><br>";
       if (data.form_values) {
-        msg += `Form IDs → Course=${data.form_values.course_id}, 
-                Test=${data.form_values.test_id}, 
-                Topic=${data.form_values.topic_id}<br>`;
+        msg += `Form IDs → Course=${data.form_values.course_id}, Test=${data.form_values.test_id}, Topic=${data.form_values.topic_id}<br>`;
       }
       if (data.file_ids) {
         msg += "File IDs (first rows):<br>";
@@ -346,7 +340,6 @@ document.getElementById("validateBtn").addEventListener("click", function(e) {
     document.getElementById("errorMsg").style.display = "block";
   });
 });
-
 
 
 </script>
