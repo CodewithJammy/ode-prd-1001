@@ -96,38 +96,46 @@
       <h2 class="mb-4">Choose Your Level</h2>
       <div class="row g-4">
         <div class="col-md-3">
+	     <a href="{{ url_for('test.test_page', module='school') }}" class="text-decoration-none">		
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>School Level</h5>
               <p>Class 6–12</p>
             </div>
           </div>
+		 </a>
         </div>
         <div class="col-md-3">
+			<a href="{{ url_for('test.test_page', module='certification') }}" class="text-decoration-none">
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>Certification</h5>
               <p>CCC And Basic Computer</p>
             </div>
           </div>
+			</a>
         </div>
         
         <div class="col-md-3">
+			<a href="{{ url_for('test.test_page', module='skilldev') }}" class="text-decoration-none">
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>Skill Development</h5>
               <p>Aptitude / English / Reasoning</p>
             </div>
           </div>
+			</a>
         </div>
 
 		 <div class="col-md-3">
+			 <a href="{{ url_for('test.test_page', module='oneday') }}" class="text-decoration-none">
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>One Day Exam</h5>
               <p>PET / TET / SSC</p>
             </div>
           </div>
+			 </a>		 
         </div> 
       </div>
     </div>
