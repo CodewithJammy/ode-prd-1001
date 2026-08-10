@@ -13,7 +13,7 @@ from routes.courses import courses_bp
 from routes.tests import tests_bp
 from routes.buy_item import buyitem_bp
 from routes.admin import admin_bp
-from routes.upload_json import upload_bp
+from routes.upload import upload_bp
 from routes.demo_test import demotest_bp
 
 
