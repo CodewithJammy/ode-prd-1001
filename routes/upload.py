@@ -1,4 +1,4 @@
-```python
+
 import os
 import json
 
@@ -559,4 +559,4 @@ def get_subjects_api(
     return {
         "subjects": subjects
     }
-```
+
