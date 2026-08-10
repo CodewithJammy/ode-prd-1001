@@ -364,7 +364,7 @@ def load_questions(
 # CATEGORY PAGE
 # ============================================================
 
-@test_bp.route(
+@demotest_bp.route(
     "/category/<category_id>"
 )
 def subcategories(category_id):
@@ -394,7 +394,7 @@ def subcategories(category_id):
 # SUBJECT PAGE
 # ============================================================
 
-@test_bp.route(
+@demotest_bp.route(
     "/category/<category_id>/<subcategory_id>"
 )
 def subjects(
@@ -437,7 +437,7 @@ def subjects(
 # SET PAGE
 # ============================================================
 
-@test_bp.route(
+@demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>"
 )
 def sets(
@@ -493,7 +493,7 @@ def sets(
 # TEST PAGE
 # ============================================================
 
-@test_bp.route(
+@demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>/<set_name>",
     methods=["GET", "POST"]
 )
