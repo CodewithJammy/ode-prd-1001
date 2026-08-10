@@ -1,0 +1,123 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ subcategory.NameEnglish }}</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f5f7fb;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
+        .subject-card {
+            transition: 0.2s;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        }
+
+        .subject-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container page-container">
+
+    <div class="mb-4">
+
+        <h2>
+            {{ subcategory.NameEnglish }}
+        </h2>
+
+        <p class="text-muted">
+            Select a subject
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        {% for subject in subjects %}
+
+        <div class="col-md-4">
+
+            <a
+                class="subject-link"
+                href="{{
+                    url_for(
+                        'test.sets',
+                        category_id=category.CategoryId,
+                        subcategory_id=subcategory.SubCategoryId,
+                        subject_id=subject.SubjectId
+                    )
+                }}"
+            >
+
+                <div class="card subject-card shadow-sm">
+
+                    <div class="card-body p-4">
+
+                        <h5>
+                            {{ subject.NameEnglish }}
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            {{ subject.NameHindi }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-warning">
+            No subjects available.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+```
