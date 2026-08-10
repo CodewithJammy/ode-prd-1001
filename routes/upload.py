@@ -512,9 +512,21 @@ def upload_file():
     # GET
     # ========================================================
 
+    # categories = load_categories()
+    # print("CATEGORIES:", categories)
+    # print("COUNT:", len(categories))
+    current_app.logger.error("******** UPLOAD GET ROUTE STARTED ********")
+
     categories = load_categories()
-    print("CATEGORIES:", categories)
-    print("COUNT:", len(categories))
+
+    current_app.logger.error(
+        f"******** CATEGORIES = {categories} ********"
+    )
+
+    current_app.logger.error(
+        f"******** COUNT = {len(categories)} ********"
+    )
+
     return render_template(
         "upload.html",
         categories=categories
