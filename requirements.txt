@@ -6,5 +6,7 @@ gunicorn==22.0.0
 Flask-Mail
 azure-communication-email
 pandas==2.2.2
+azure-storage-blob==12.20.0
+
 
 
