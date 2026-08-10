@@ -215,16 +215,11 @@
 
                     {% for category in categories %}
 
-                    <option
-                        value="{{ category.CategoryId }}"
-                    >
-
-                        {{ category.NameEnglish }}
-
-                        -
-                        {{ category.NameHindi }}
-
-                    </option>
+                     <option value="{{ category['CategoryId'] }}">
+                {{ category['NameEnglish'] }}
+                - 
+                {{ category['NameHindi'] }}
+            </option>
 
                     {% endfor %}
 
