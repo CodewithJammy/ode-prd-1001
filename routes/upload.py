@@ -515,22 +515,11 @@ def upload_file():
     # categories = load_categories()
     # print("CATEGORIES:", categories)
     # print("COUNT:", len(categories))
-    current_app.logger.error("******** UPLOAD GET ROUTE STARTED ********")
-
-    categories = load_categories()
-
     current_app.logger.error(
-        f"******** CATEGORIES = {categories} ********"
+    "************* UPLOAD ROUTE TEST *************"
     )
 
-    current_app.logger.error(
-        f"******** COUNT = {len(categories)} ********"
-    )
-
-    return render_template(
-        "upload.html",
-        categories=categories
-    )
+    return "UPLOAD ROUTE IS WORKING"
 
 
 # ============================================================
