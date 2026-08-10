@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
+
 from werkzeug.utils import secure_filename
 from azure.storage.blob import BlobServiceClient
 
@@ -27,20 +28,20 @@ def upload_file():
     return render_template("upload.html", config_base_url=config_base_url)
 
 def save_data_file(category, subcategory, subject, file):
-    # Ensure safe filename
     filename = secure_filename(file.filename)
-
-    # Build Blob path (category/subcategory/subject/filename)
     blob_path = f"{category}/{subcategory}/{subject}/{filename}"
 
-    # Connect to Azure Blob
     blob_service_client = BlobServiceClient.from_connection_string(
         os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     )
     container_name = os.getenv("AZURE_DATA_CONTAINER")
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_path)
 
-    # Upload directly from file stream
-    blob_client.upload_blob(file, overwrite=True)
+    try:
+        blob_client.upload_blob(file.stream, overwrite=True)
+        current_app.logger.info(f"✅ Uploaded {blob_path}")
+    except Exception as e:
+        current_app.logger.error(f"❌ Upload failed: {e}")
+        raise
 
     return blob_path
