@@ -561,3 +561,8 @@ def get_subjects_api(
         "subjects": subjects
     }
 
+#==============test method ==========================
+#====================================================
+@upload_bp.route("/deployment-test")
+def deployment_test():
+    return "DEPLOYMENT TEST - NEW UPLOAD.PY"
