@@ -9,19 +9,22 @@ upload_bp = Blueprint("upload", __name__, url_prefix="/upload")
 @upload_bp.route("/", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
-        category = request.form["category"]
-        subcategory = request.form["subcategory"]
-        subject = request.form["subject"]
-        file = request.files["questions_file"]
+        try:
+            category = request.form["category"]
+            subcategory = request.form["subcategory"]
+            subject = request.form["subject"]
+            file = request.files["questions_file"]
 
-        # Save directly to Blob
-        blob_path = save_data_file(category, subcategory, subject, file)
-        return f"File uploaded to {blob_path}"
+            blob_path = save_data_file(category, subcategory, subject, file)
+            flash(f"✅ File uploaded to {blob_path}", "success")
+            return redirect(url_for("upload.upload_file"))
+        except Exception as e:
+            app.logger.error(f"Upload failed: {e}")
+            flash(f"❌ Upload failed: {e}", "danger")
+            return redirect(url_for("upload.upload_file"))
 
-    # Pass config base URL to template
     config_base_url = f"https://{os.getenv('AZURE_STORAGE_ACCOUNT')}.blob.core.windows.net/{os.getenv('AZURE_CONFIG_CONTAINER')}"
     return render_template("upload.html", config_base_url=config_base_url)
-
 
 def save_data_file(category, subcategory, subject, file):
     # Ensure safe filename
