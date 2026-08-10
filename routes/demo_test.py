@@ -111,7 +111,7 @@ def load_json_file(filename):
 def load_categories():
 
     data = load_json_file(
-        "Categories.json"
+        "categories.json"
     )
 
     return data.get(
@@ -123,7 +123,7 @@ def load_categories():
 def load_subcategories():
 
     data = load_json_file(
-        "SubCategories.json"
+        "subcategories.json"
     )
 
     return data.get(
@@ -135,7 +135,7 @@ def load_subcategories():
 def load_subjects():
 
     data = load_json_file(
-        "Subjects.json"
+        "subjects.json"
     )
 
     return data.get(
