@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Question File</title>
+</head>
+<body>
+    <h2>Upload Question File</h2>
+    <form method="POST" enctype="multipart/form-data" action="/upload">
+        <label for="categorySelect">Category</label>
+        <select name="category" id="categorySelect"></select>
+
+        <label for="subCategorySelect">SubCategory</label>
+        <select name="subcategory" id="subCategorySelect"></select>
+
+        <label for="subjectSelect">Subject</label>
+        <select name="subject" id="subjectSelect"></select>
+
+        <label for="questions_file">Upload File</label>
+        <input type="file" name="questions_file" id="questions_file" required>
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        async function loadConfigs() {
+            // Environment variables will be injected in Flask and passed to JS
+            const baseUrl = "{{ config_base_url }}"; // e.g. https://examportalstorage.blob.core.windows.net/configs
+
+            const categories = await fetch(baseUrl + "/categories.json").then(r => r.json());
+            const subcategories = await fetch(baseUrl + "/subcategories.json").then(r => r.json());
+            const subjects = await fetch(baseUrl + "/subjects.json").then(r => r.json());
+
+            const categorySelect = document.getElementById("categorySelect");
+            const subCategorySelect = document.getElementById("subCategorySelect");
+            const subjectSelect = document.getElementById("subjectSelect");
+
+            // Populate categories
+            categories.Categories.forEach(cat => {
+                let opt = document.createElement("option");
+                opt.value = cat.CategoryId;
+                opt.textContent = cat.NameEnglish;
+                categorySelect.appendChild(opt);
+            });
+
+            // Populate subcategories when category changes
+            categorySelect.addEventListener("change", () => {
+                subCategorySelect.innerHTML = "";
+                const selectedCat = categorySelect.value;
+                subcategories.SubCategories.filter(sc => sc.CategoryId === selectedCat).forEach(sc => {
+                    let opt = document.createElement("option");
+                    opt.value = sc.SubCategoryId;
+                    opt.textContent = sc.NameEnglish;
+                    subCategorySelect.appendChild(opt);
+                });
+                subjectSelect.innerHTML = ""; // reset subjects
+            });
+
+            // Populate subjects when subcategory changes
+            subCategorySelect.addEventListener("change", () => {
+                subjectSelect.innerHTML = "";
+                const selectedSub = subCategorySelect.value;
+                subjects.Subjects.filter(s => s.SubCategoryId === selectedSub).forEach(s => {
+                    let opt = document.createElement("option");
+                    opt.value = s.SubjectId;
+                    opt.textContent = s.NameEnglish;
+                    subjectSelect.appendChild(opt);
+                });
+            });
+        }
+
+        loadConfigs();
+    </script>
+</body>
+</html>
