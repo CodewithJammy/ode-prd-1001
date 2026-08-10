@@ -20,7 +20,7 @@ def upload_file():
             flash(f"✅ File uploaded to {blob_path}", "success")
             return redirect(url_for("upload.upload_file"))
         except Exception as e:
-            app.logger.error(f"Upload failed: {e}")
+            current_app.logger.error(f"Upload failed: {e}")
             flash(f"❌ Upload failed: {e}", "danger")
             return redirect(url_for("upload.upload_file"))
 
@@ -34,14 +34,15 @@ def save_data_file(category, subcategory, subject, file):
     blob_service_client = BlobServiceClient.from_connection_string(
         os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     )
-    container_name = os.getenv("AZURE_DATA_CONTAINER")
+    container_name = os.getenv("AZURE_DATA_CONTAINER")  # should be 'ode'
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_path)
 
     try:
-        blob_client.upload_blob(file.stream, overwrite=True)
+        blob_client.upload_blob(file.read(), overwrite=True)
         current_app.logger.info(f"✅ Uploaded {blob_path}")
     except Exception as e:
         current_app.logger.error(f"❌ Upload failed: {e}")
         raise
 
     return blob_path
+
