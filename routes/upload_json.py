@@ -21,8 +21,7 @@ upload_bp = Blueprint(
 )
 
 
-@upload_bp.route("/", methods=["GET", "POST"])
-def upload_file():
+
 @upload_bp.route("/", methods=["GET", "POST"])
 def upload_file():
 
