@@ -23,84 +23,22 @@ upload_bp = Blueprint(
 
 @upload_bp.route("/", methods=["GET", "POST"])
 def upload_file():
+@upload_bp.route("/", methods=["GET", "POST"])
+def upload_file():
+
+    print("========== UPLOAD ROUTE HIT ==========")
+    print("METHOD:", request.method)
 
     if request.method == "POST":
+        print("========== POST RECEIVED ==========")
 
-        try:
-            # -----------------------------
-            # Get form values
-            # -----------------------------
-            category = request.form.get("category", "").strip()
-            subcategory = request.form.get("subcategory", "").strip()
-            subject = request.form.get("subject", "").strip()
+        print("FORM:", request.form)
+        print("FILES:", request.files)
 
-            uploaded_file = request.files.get("questions_file")
+        # TEMPORARILY STOP HERE
+        return "POST RECEIVED"
 
-            current_app.logger.info(
-                f"Upload request received: "
-                f"category={category}, "
-                f"subcategory={subcategory}, "
-                f"subject={subject}, "
-                f"file={uploaded_file.filename if uploaded_file else None}"
-            )
-
-            # -----------------------------
-            # Validate form
-            # -----------------------------
-            if not category:
-                flash("Category is required.", "danger")
-                return redirect(url_for("upload.upload_file"))
-
-            if not subcategory:
-                flash("Subcategory is required.", "danger")
-                return redirect(url_for("upload.upload_file"))
-
-            if not subject:
-                flash("Subject is required.", "danger")
-                return redirect(url_for("upload.upload_file"))
-
-            if not uploaded_file:
-                flash("Please select a file.", "danger")
-                return redirect(url_for("upload.upload_file"))
-
-            if uploaded_file.filename == "":
-                flash("Please select a file.", "danger")
-                return redirect(url_for("upload.upload_file"))
-
-            # -----------------------------
-            # Save to Azure Blob
-            # -----------------------------
-            blob_path = save_data_file(
-                category,
-                subcategory,
-                subject,
-                uploaded_file
-            )
-
-            current_app.logger.info(
-                f"SUCCESS: File uploaded: {blob_path}"
-            )
-
-            flash(
-                f"✅ File uploaded successfully: {blob_path}",
-                "success"
-            )
-
-            return redirect(url_for("upload.upload_file"))
-
-        except Exception as e:
-
-            current_app.logger.exception(
-                "ERROR while uploading file"
-            )
-
-            flash(
-                f"❌ Upload failed: {str(e)}",
-                "danger"
-            )
-
-            return redirect(url_for("upload.upload_file"))
-
+    return render_template("upload.html")
     # -----------------------------
     # GET request
     # -----------------------------
