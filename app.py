@@ -13,6 +13,7 @@ from routes.courses import courses_bp
 from routes.tests import tests_bp
 from routes.buy_item import buyitem_bp
 from routes.admin import admin_bp
+from routes.upload_json import upload_bp
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ app.register_blueprint(courses_bp)
 app.register_blueprint(tests_bp)
 app.register_blueprint(buyitem_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(upload_bp)
 
 @app.route('/')
 def index():
