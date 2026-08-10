@@ -1,7 +1,6 @@
 import os
 from flask import Blueprint, render_template, request, session, redirect, url_for,jsonify,Flask
 
-app = Flask(__name__)
 # Create blueprint
 upload_bp = Blueprint("upload", __name__, url_prefix="/upload")
 @upload_bp.route("/upload", methods=["GET", "POST"])
