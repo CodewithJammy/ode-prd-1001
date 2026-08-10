@@ -29,7 +29,7 @@ def upload_file():
 
 def save_data_file(category, subcategory, subject, file):
     filename = secure_filename(file.filename)
-    blob_path = f"{category}/{subcategory}/{subject}/{filename}"
+    blob_path = f"data/{category}/{subcategory}/{subject}/{filename}"
 
     blob_service_client = BlobServiceClient.from_connection_string(
         os.getenv("AZURE_STORAGE_CONNECTION_STRING")
