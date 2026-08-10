@@ -9,105 +9,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="bg-light">
-{% include 'navbar.html' %}
-{% include 'alert_message.html' %}
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+</div>
 
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Upload Question File</h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data" action="/upload">
-                    <div class="mb-3">
-                        <label for="categorySelect" class="form-label">Category</label>
-                        <select class="form-select" name="category" id="categorySelect"></select>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="subCategorySelect" class="form-label">SubCategory</label>
-                        <select class="form-select" name="subcategory" id="subCategorySelect"></select>
-                    </div>
+        <!-- Upload -->
 
-                    <div class="mb-3">
-                        <label for="subjectSelect" class="form-label">Subject</label>
-                        <select class="form-select" name="subject" id="subjectSelect"></select>
-                    </div>
+        <button
+            type="submit"
+            class="upload-button"
+        >
+            Upload Test File
+        </button>
 
-                    <div class="mb-3">
-                        <label for="questions_file" class="form-label">Upload File</label>
-                        <input type="file" class="form-control" name="questions_file" id="questions_file" required>
-                    </div>
+    </form>
 
-                    <button type="submit" class="btn btn-success">Upload</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <!-- Bootstrap JS -->
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</div>
 
-    <script>
-        let categories, subcategories, subjects;
 
-        async function loadConfigs() {
-            const baseUrl = "{{ config_base_url }}";
-
-            categories = await fetch(baseUrl + "/categories.json").then(r => r.json());
-            subcategories = await fetch(baseUrl + "/subcategories.json").then(r => r.json());
-            subjects = await fetch(baseUrl + "/subjects.json").then(r => r.json());
-
-            const categorySelect = document.getElementById("categorySelect");
-            const subCategorySelect = document.getElementById("subCategorySelect");
-            const subjectSelect = document.getElementById("subjectSelect");
-
-            // Populate categories
-            categories.Categories.forEach(cat => {
-                let opt = document.createElement("option");
-                opt.value = cat.CategoryId;
-                opt.textContent = cat.NameEnglish;
-                categorySelect.appendChild(opt);
-            });
-
-            // Populate subcategories when category changes
-            categorySelect.addEventListener("change", () => {
-                subCategorySelect.innerHTML = "";
-                subjectSelect.innerHTML = "";
-                const selectedCat = categorySelect.value;
-                subcategories.SubCategories
-                    .filter(sc => sc.CategoryId === selectedCat)
-                    .forEach(sc => {
-                        let opt = document.createElement("option");
-                        opt.value = sc.SubCategoryId;
-                        opt.textContent = sc.NameEnglish;
-                        subCategorySelect.appendChild(opt);
-                    });
-            });
-
-            // Populate subjects when subcategory changes
-            subCategorySelect.addEventListener("change", () => {
-                subjectSelect.innerHTML = "";
-                const selectedSub = subCategorySelect.value;
-                subjects.Subjects
-                    .filter(s => s.SubCategoryId === selectedSub)
-                    .forEach(s => {
-                        let opt = document.createElement("option");
-                        opt.value = s.SubjectId;
-                        opt.textContent = s.NameEnglish;
-                        subjectSelect.appendChild(opt);
-                    });
-            });
-        }
-
-        loadConfigs();
-    </script>
 </body>
+
 </html>
