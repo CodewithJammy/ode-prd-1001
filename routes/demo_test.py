@@ -1,4 +1,4 @@
-```python
+
 import json
 import csv
 import io
@@ -642,4 +642,4 @@ def test_page(
         percentage=percentage,
         results=results
     )
-```
+
