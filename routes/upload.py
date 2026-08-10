@@ -513,7 +513,8 @@ def upload_file():
     # ========================================================
 
     categories = load_categories()
-
+    print("CATEGORIES:", categories)
+    print("COUNT:", len(categories))
     return render_template(
         "upload.html",
         categories=categories
