@@ -96,7 +96,10 @@
       <h2 class="mb-4">Choose Your Level</h2>
       <div class="row g-4">
         <div class="col-md-3">
-	     <a href="{{ url_for('test.test_page', module='school') }}" class="text-decoration-none">		
+	     <a
+    href="{{ url_for('test.subcategories', category_id='School') }}"
+    class="text-decoration-none"
+>	
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>School Level</h5>
@@ -106,7 +109,10 @@
 		 </a>
         </div>
         <div class="col-md-3">
-			<a href="{{ url_for('test.test_page', module='certification') }}" class="text-decoration-none">
+			<a
+    href="{{ url_for('test.subcategories', category_id='Certifications') }}"
+    class="text-decoration-none"
+>
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>Certification</h5>
@@ -117,7 +123,10 @@
         </div>
         
         <div class="col-md-3">
-			<a href="{{ url_for('test.test_page', module='skilldev') }}" class="text-decoration-none">
+			<a
+    href="{{ url_for('test.subcategories', category_id='SkillDev') }}"
+    class="text-decoration-none"
+>
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>Skill Development</h5>
@@ -128,7 +137,10 @@
         </div>
 
 		 <div class="col-md-3">
-			 <a href="{{ url_for('test.test_page', module='oneday') }}" class="text-decoration-none">
+			 <a
+    href="{{ url_for('test.subcategories', category_id='OneDay') }}"
+    class="text-decoration-none"
+>
           <div class="card category-card shadow-sm">
             <div class="card-body">
               <h5>One Day Exam</h5>
