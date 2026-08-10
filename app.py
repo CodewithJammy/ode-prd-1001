@@ -16,7 +16,6 @@ from routes.admin import admin_bp
 from routes.upload_json import upload_bp
 from routes.demo_test import demotest_bp
 
-app.register_blueprint(test_bp)
 
 app = Flask(__name__)
 
