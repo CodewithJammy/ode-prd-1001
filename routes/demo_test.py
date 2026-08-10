@@ -23,7 +23,7 @@ from azure.storage.blob import BlobServiceClient
 # ============================================================
 
 test_bp = Blueprint(
-    "test",
+    "demo_test",
     __name__,
     url_prefix="/test"
 )
