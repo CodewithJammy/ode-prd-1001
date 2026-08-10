@@ -515,11 +515,17 @@ def upload_file():
     # categories = load_categories()
     # print("CATEGORIES:", categories)
     # print("COUNT:", len(categories))
+    # Load categories from Azure:
+    categories = load_categories()
+
     current_app.logger.error(
-    "************* UPLOAD ROUTE TEST *************"
+        f"UPLOAD PAGE: loaded {len(categories)} categories"
     )
 
-    return "UPLOAD ROUTE IS WORKING 2o26"
+    return render_template(
+        "upload.html",
+        categories=categories
+    )
 
 
 # ============================================================
