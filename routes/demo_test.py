@@ -555,7 +555,7 @@ def test_page(
         )
 
         return render_template(
-            "test.html",
+            "demotest.html",
             category=category,
             subcategory=subcategory,
             subject=subject,
