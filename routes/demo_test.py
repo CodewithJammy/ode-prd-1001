@@ -1,4 +1,3 @@
-
 import json
 import csv
 import io
@@ -145,6 +144,22 @@ def load_subjects():
 
 
 # ============================================================
+# NEW - LOAD CONTENT TYPES
+# ============================================================
+
+def load_contenttypes():
+
+    data = load_json_file(
+        "contenttype.json"
+    )
+
+    return data.get(
+        "Contenttype",
+        []
+    )
+
+
+# ============================================================
 # FIND ONE CATEGORY
 # ============================================================
 
@@ -217,13 +232,54 @@ def get_subject(
 
 
 # ============================================================
+# NEW - FIND CONTENT TYPES FOR SUBJECT
+# ============================================================
+
+def get_contenttypes(subject_id):
+
+    contenttypes = load_contenttypes()
+
+    return [
+        contenttype
+        for contenttype in contenttypes
+        if contenttype.get("SubjectId")
+        == subject_id
+    ]
+
+
+# ============================================================
+# NEW - FIND ONE CONTENT TYPE
+# ============================================================
+
+def get_contenttype(
+    subject_id,
+    contenttype_id
+):
+
+    contenttypes = get_contenttypes(
+        subject_id
+    )
+
+    for contenttype in contenttypes:
+
+        if (
+            contenttype.get("ContenttypeId")
+            == contenttype_id
+        ):
+            return contenttype
+
+    return None
+
+
+# ============================================================
 # LIST CSV SETS FROM AZURE
 # ============================================================
 
 def get_sets(
     category_id,
     subcategory_id,
-    subject_id
+    subject_id,
+    contenttype_id
 ):
 
     container = get_container_client()
@@ -233,6 +289,7 @@ def get_sets(
         f"{category_id}/"
         f"{subcategory_id}/"
         f"{subject_id}/"
+        f"{contenttype_id}/"
     )
 
     sets = []
@@ -269,8 +326,7 @@ def get_sets(
                 "blob_name": blob_name
             })
 
-        # Natural sorting:
-        # Set1, Set2, Set3, Set10
+        # Natural sorting
         sets.sort(
             key=lambda x: (
                 x["name"].lower()
@@ -298,6 +354,7 @@ def load_questions(
     category_id,
     subcategory_id,
     subject_id,
+    contenttype_id,
     set_name
 ):
 
@@ -311,11 +368,20 @@ def load_questions(
     ):
         abort(400)
 
+    # Protect content type path too
+    if (
+        "/" in contenttype_id
+        or "\\" in contenttype_id
+        or ".." in contenttype_id
+    ):
+        abort(400)
+
     blob_name = (
         f"{DATA_PREFIX}"
         f"{category_id}/"
         f"{subcategory_id}/"
         f"{subject_id}/"
+        f"{contenttype_id}/"
         f"{set_name}.csv"
     )
 
@@ -413,7 +479,7 @@ def subjects(
     if not category or not subcategory:
         abort(404)
 
-    # Make sure subcategory actually belongs
+    # Make sure subcategory belongs
     # to selected category
     if (
         subcategory.get("CategoryId")
@@ -434,13 +500,13 @@ def subjects(
 
 
 # ============================================================
-# SET PAGE
+# NEW - CONTENT TYPE PAGE
 # ============================================================
 
 @demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>"
 )
-def sets(
+def contenttypes(
     category_id,
     subcategory_id,
     subject_id
@@ -466,18 +532,80 @@ def sets(
     ):
         abort(404)
 
-    # Verify relationships
-
+    # Verify category relationship
     if (
         subcategory.get("CategoryId")
         != category_id
     ):
         abort(404)
 
+    # Get content types for subject
+    contenttypes_data = get_contenttypes(
+        subject_id
+    )
+
+    return render_template(
+        "test_contenttypes.html",
+        category=category,
+        subcategory=subcategory,
+        subject=subject,
+        contenttypes=contenttypes_data
+    )
+
+
+# ============================================================
+# SET PAGE
+# ============================================================
+
+@demotest_bp.route(
+    "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>"
+)
+def sets(
+    category_id,
+    subcategory_id,
+    subject_id,
+    contenttype_id
+):
+
+    category = get_category(
+        category_id
+    )
+
+    subcategory = get_subcategory(
+        subcategory_id
+    )
+
+    subject = get_subject(
+        subcategory_id,
+        subject_id
+    )
+
+    contenttype = get_contenttype(
+        subject_id,
+        contenttype_id
+    )
+
+    if (
+        not category
+        or not subcategory
+        or not subject
+        or not contenttype
+    ):
+        abort(404)
+
+    # Verify category relationship
+    if (
+        subcategory.get("CategoryId")
+        != category_id
+    ):
+        abort(404)
+
+    # Get CSV sets
     sets_data = get_sets(
         category_id,
         subcategory_id,
-        subject_id
+        subject_id,
+        contenttype_id
     )
 
     return render_template(
@@ -485,6 +613,7 @@ def sets(
         category=category,
         subcategory=subcategory,
         subject=subject,
+        contenttype=contenttype,
         sets=sets_data
     )
 
@@ -494,13 +623,14 @@ def sets(
 # ============================================================
 
 @demotest_bp.route(
-    "/category/<category_id>/<subcategory_id>/<subject_id>/<set_name>",
+    "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>",
     methods=["GET", "POST"]
 )
 def test_page(
     category_id,
     subcategory_id,
     subject_id,
+    contenttype_id,
     set_name
 ):
 
@@ -517,13 +647,20 @@ def test_page(
         subject_id
     )
 
+    contenttype = get_contenttype(
+        subject_id,
+        contenttype_id
+    )
+
     if (
         not category
         or not subcategory
         or not subject
+        or not contenttype
     ):
         abort(404)
 
+    # Verify relationships
     if (
         subcategory.get("CategoryId")
         != category_id
@@ -551,6 +688,7 @@ def test_page(
             category_id,
             subcategory_id,
             subject_id,
+            contenttype_id,
             set_name
         )
 
@@ -559,6 +697,7 @@ def test_page(
             category=category,
             subcategory=subcategory,
             subject=subject,
+            contenttype=contenttype,
             set_name=set_name,
             language=language,
             questions=questions
@@ -577,6 +716,7 @@ def test_page(
         category_id,
         subcategory_id,
         subject_id,
+        contenttype_id,
         set_name
     )
 
@@ -634,6 +774,7 @@ def test_page(
         category=category,
         subcategory=subcategory,
         subject=subject,
+        contenttype=contenttype,
         set_name=set_name,
         language=language,
         score=score,
@@ -642,4 +783,3 @@ def test_page(
         percentage=percentage,
         results=results
     )
-
