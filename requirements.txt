@@ -7,6 +7,10 @@ Flask-Mail
 azure-communication-email
 pandas==2.2.2
 azure-storage-blob==12.20.0
+gspread
+google-auth
+google-auth-oauthlib
+google-api-python-client
 
 
 
