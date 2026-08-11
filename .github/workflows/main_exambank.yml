@@ -59,7 +59,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-app
-      
+      - name: Show Azure client ID being used
+        run: |
+          echo "Azure Client ID is configured:"
+          if [ -n "${{ secrets.AZURE_CLIENT_ID }}" ]; then
+             echo "YES - AZURE_CLIENT_ID is present"
+          else
+             echo "NO - AZURE_CLIENT_ID is EMPTY"
+          fi
       - name: Login to Azure
         uses: azure/login@v2
         with:
