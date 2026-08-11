@@ -63,19 +63,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_586729A2B53A414589C4CF2DE6468EC8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DEFC38F72AE44D4B8C5B8BEC8A0E0D41 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_82BBB3986E1E412BAE297FE28454D020 }}
-      # 👉 Add this step here
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A173FEC0432747B2B77EFA36AD42838B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5C7358C8380B4B739234A4715A01A90F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_70F5D964E6F8435D89815CC73B32EA91 }}
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'exambank'
           slot-name: 'Production'
-      
-
-   
-
-    
           
