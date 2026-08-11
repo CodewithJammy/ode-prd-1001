@@ -1,390 +1,386 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+```
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Upload Question Set</title>
+<title>Upload Question Set</title>
 
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+<style>
 
+    body {
+        background: #f4f6fb;
+        min-height: 100vh;
+    }
 
-    <style>
+    .upload-container {
+        max-width: 700px;
+        margin: 60px auto;
+    }
 
-        body {
+    .upload-card {
+        background: white;
+        border: none;
+        border-radius: 20px;
+        padding: 35px;
 
-            background: #f4f6fb;
+        box-shadow:
+            0 10px 30px
+            rgba(0, 0, 0, 0.08);
+    }
 
-            min-height: 100vh;
+    .page-title {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
 
-        }
+    .page-subtitle {
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
 
+    .form-label {
+        font-weight: 600;
+    }
 
-        .upload-container {
+    .form-select,
+    .form-control {
+        min-height: 48px;
+        border-radius: 10px;
+    }
 
-            max-width: 700px;
+    .path-preview {
+        background: #f7f8fa;
+        border-radius: 10px;
+        padding: 14px;
 
-            margin: 60px auto;
+        font-family: monospace;
+        font-size: 14px;
+        color: #495057;
 
-        }
+        word-break: break-all;
+    }
 
+    .upload-button {
+        width: 100%;
+        min-height: 50px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
 
-        .upload-card {
-
-            background: white;
-
-            border: none;
-
-            border-radius: 20px;
-
-            padding: 35px;
-
-            box-shadow:
-                0 10px 30px
-                rgba(0, 0, 0, 0.08);
-
-        }
-
-
-        .page-title {
-
-            font-weight: 700;
-
-            margin-bottom: 5px;
-
-        }
-
-
-        .page-subtitle {
-
-            color: #6c757d;
-
-            margin-bottom: 30px;
-
-        }
-
-
-        .form-label {
-
-            font-weight: 600;
-
-        }
-
-
-        .form-select,
-        .form-control {
-
-            min-height: 48px;
-
-            border-radius: 10px;
-
-        }
-
-
-        .path-preview {
-
-            background: #f7f8fa;
-
-            border-radius: 10px;
-
-            padding: 14px;
-
-            font-family: monospace;
-
-            font-size: 14px;
-
-            color: #495057;
-
-            word-break: break-all;
-
-        }
-
-
-        .upload-button {
-
-            width: 100%;
-
-            min-height: 50px;
-
-            border-radius: 10px;
-
-            font-weight: 600;
-
-        }
-
-    </style>
+</style>
+```
 
 </head>
 
-
 <body>
-
 
 <div class="container upload-container">
 
-
-    <div class="upload-card">
-
-
-        <h2 class="page-title">
-
-            Upload Question Set
-
-        </h2>
+```
+<div class="upload-card">
 
 
-        <p class="page-subtitle">
+    <h2 class="page-title">
+        Upload Question Set
+    </h2>
 
-            Select the module and upload your CSV question file.
 
-        </p>
+    <p class="page-subtitle">
+        Select the module and upload your CSV question file.
+    </p>
+
+
+    <!-- ================================================= -->
+    <!-- FLASH MESSAGES -->
+    <!-- ================================================= -->
+
+    {% with messages = get_flashed_messages(
+        with_categories=true
+    ) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }}"
+                >
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ================================================= -->
+    <!-- FORM -->
+    <!-- ================================================= -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
 
 
         <!-- ================================================= -->
-        <!-- FLASH MESSAGES -->
+        <!-- CATEGORY -->
         <!-- ================================================= -->
 
-        {% with messages = get_flashed_messages(
-            with_categories=true
-        ) %}
+        <div class="mb-3">
 
-            {% if messages %}
+            <label
+                class="form-label"
+                for="category"
+            >
+                Category
+            </label>
 
-                {% for category, message in messages %}
 
-                    <div
-                        class="alert alert-{{ category }}"
+            <select
+                class="form-select"
+                id="category"
+                name="category_id"
+                required
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+
+                {% for category in categories %}
+
+                    <option
+                        value="{{ category['CategoryId'] }}"
                     >
-
-                        {{ message }}
-
-                    </div>
+                        {{ category['NameEnglish'] }}
+                        -
+                        {{ category['NameHindi'] }}
+                    </option>
 
                 {% endfor %}
 
-            {% endif %}
+            </select>
 
-        {% endwith %}
+        </div>
 
 
         <!-- ================================================= -->
-        <!-- FORM -->
+        <!-- SUBCATEGORY -->
         <!-- ================================================= -->
 
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-        >
+        <div class="mb-3">
+
+            <label
+                class="form-label"
+                for="subcategory"
+            >
+                SubCategory
+            </label>
 
 
-            <!-- CATEGORY -->
-
-            <div class="mb-3">
-
-                <label
-                    class="form-label"
-                    for="category"
-                >
-                    Category
-                </label>
-
-
-                <select
-                    class="form-select"
-                    id="category"
-                    name="category_id"
-                    required
-                >
-
-                    <option value="">
-                        Select Category
-                    </option>
-
-
-                    {% for category in categories %}
-
-                     <option value="{{ category['CategoryId'] }}">
-                {{ category['NameEnglish'] }}
-                - 
-                {{ category['NameHindi'] }}
-            </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-
-            <!-- SUBCATEGORY -->
-
-            <div class="mb-3">
-
-                <label
-                    class="form-label"
-                    for="subcategory"
-                >
-                    SubCategory
-                </label>
-
-
-                <select
-                    class="form-select"
-                    id="subcategory"
-                    name="subcategory_id"
-                    required
-                    disabled
-                >
-
-                    <option value="">
-                        Select SubCategory
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SUBJECT -->
-
-            <div class="mb-3">
-
-                <label
-                    class="form-label"
-                    for="subject"
-                >
-                    Subject
-                </label>
-
-
-                <select
-                    class="form-select"
-                    id="subject"
-                    name="subject_id"
-                    required
-                    disabled
-                >
-
-                    <option value="">
-                        Select Subject
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SET -->
-
-            <div class="mb-3">
-
-                <label
-                    class="form-label"
-                    for="set_name"
-                >
-                    Set Name
-                </label>
-
-
-                <input
-                    type="text"
-                    class="form-control"
-                    id="set_name"
-                    name="set_name"
-                    placeholder="Example: Set1"
-                    required
-                >
-
-                <small class="text-muted">
-
-                    Enter Set1, Set2, Set3 etc.
-
-                </small>
-
-            </div>
-
-
-            <!-- FILE -->
-
-            <div class="mb-3">
-
-                <label
-                    class="form-label"
-                    for="questions_file"
-                >
-                    Question CSV File
-                </label>
-
-
-                <input
-                    type="file"
-                    class="form-control"
-                    id="questions_file"
-                    name="questions_file"
-                    accept=".csv"
-                    required
-                >
-
-            </div>
-
-
-            <!-- PATH PREVIEW -->
-
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Upload Location
-
-                </label>
-
-
-                <div
-                    class="path-preview"
-                    id="pathPreview"
-                >
-
-                    data/Category/SubCategory/Subject/Set1.csv
-
-                </div>
-
-            </div>
-
-
-            <!-- UPLOAD -->
-
-            <button
-                type="submit"
-                class="btn btn-primary upload-button"
+            <select
+                class="form-select"
+                id="subcategory"
+                name="subcategory_id"
+                required
+                disabled
             >
 
-                Upload Question Set
+                <option value="">
+                    Select SubCategory
+                </option>
 
-            </button>
+            </select>
+
+        </div>
 
 
-        </form>
+        <!-- ================================================= -->
+        <!-- SUBJECT -->
+        <!-- ================================================= -->
+
+        <div class="mb-3">
+
+            <label
+                class="form-label"
+                for="subject"
+            >
+                Subject
+            </label>
 
 
-    </div>
+            <select
+                class="form-select"
+                id="subject"
+                name="subject_id"
+                required
+                disabled
+            >
+
+                <option value="">
+                    Select Subject
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CONTENT TYPE -->
+        <!-- ================================================= -->
+
+        <div class="mb-3">
+
+            <label
+                class="form-label"
+                for="contenttype"
+            >
+                Content Type
+            </label>
+
+
+            <select
+                class="form-select"
+                id="contenttype"
+                name="contenttype_id"
+                required
+                disabled
+            >
+
+                <option value="">
+                    Select Content Type
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SET -->
+        <!-- ================================================= -->
+
+        <div class="mb-3">
+
+            <label
+                class="form-label"
+                for="set_name"
+            >
+                Set Name
+            </label>
+
+
+            <input
+                type="text"
+                class="form-control"
+                id="set_name"
+                name="set_name"
+                placeholder="Example: Set1"
+                required
+            >
+
+
+            <small class="text-muted">
+
+                Enter Set1, Set2, Set3 etc.
+
+            </small>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- FILE -->
+        <!-- ================================================= -->
+
+        <div class="mb-3">
+
+            <label
+                class="form-label"
+                for="questions_file"
+            >
+                Question CSV File
+            </label>
+
+
+            <input
+                type="file"
+                class="form-control"
+                id="questions_file"
+                name="questions_file"
+                accept=".csv"
+                required
+            >
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PATH PREVIEW -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+            <label class="form-label">
+                Upload Location
+            </label>
+
+
+            <div
+                class="path-preview"
+                id="pathPreview"
+            >
+                data/Category/SubCategory/Subject/ContentType/Set1.csv
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- UPLOAD -->
+        <!-- ================================================= -->
+
+        <button
+            type="submit"
+            class="btn btn-primary upload-button"
+        >
+            Upload Question Set
+        </button>
+
+
+    </form>
+
+
+</div>
+```
 
 </div>
 
-
 <script>
 
+
+// ============================================================
+// ELEMENTS
+// ============================================================
 
 const categorySelect =
     document.getElementById(
@@ -404,6 +400,12 @@ const subjectSelect =
     );
 
 
+const contenttypeSelect =
+    document.getElementById(
+        "contenttype"
+    );
+
+
 const setNameInput =
     document.getElementById(
         "set_name"
@@ -417,7 +419,7 @@ const pathPreview =
 
 
 // ============================================================
-// UPDATE PATH
+// UPDATE PATH PREVIEW
 // ============================================================
 
 function updatePathPreview() {
@@ -430,6 +432,9 @@ function updatePathPreview() {
 
     const subject =
         subjectSelect.value;
+
+    const contenttype =
+        contenttypeSelect.value;
 
     let setName =
         setNameInput.value.trim();
@@ -445,17 +450,19 @@ function updatePathPreview() {
     if (
         category &&
         subcategory &&
-        subject
+        subject &&
+        contenttype
     ) {
 
         pathPreview.textContent =
-            `data/${category}/${subcategory}/${subject}/${setName}.csv`;
+            `data/${category}/${subcategory}/${subject}/${contenttype}/${setName}.csv`;
 
     }
+
     else {
 
         pathPreview.textContent =
-            "data/Category/SubCategory/Subject/Set1.csv";
+            "data/Category/SubCategory/Subject/ContentType/Set1.csv";
 
     }
 
@@ -474,22 +481,37 @@ categorySelect.addEventListener(
             this.value;
 
 
-        // Reset
+        // Reset subcategory
 
         subcategorySelect.innerHTML =
             '<option value="">Select SubCategory</option>';
+
+
+        // Reset subject
 
         subjectSelect.innerHTML =
             '<option value="">Select Subject</option>';
 
 
-        subjectSelect.disabled = true;
+        // Reset content type
+
+        contenttypeSelect.innerHTML =
+            '<option value="">Select Content Type</option>';
+
+
+        // Disable dependent fields
+
+        subcategorySelect.disabled =
+            true;
+
+        subjectSelect.disabled =
+            true;
+
+        contenttypeSelect.disabled =
+            true;
 
 
         if (!categoryId) {
-
-            subcategorySelect.disabled =
-                true;
 
             updatePathPreview();
 
@@ -549,6 +571,7 @@ categorySelect.addEventListener(
 
 
         }
+
         catch (error) {
 
             console.error(error);
@@ -578,8 +601,22 @@ subcategorySelect.addEventListener(
             this.value;
 
 
+        // Reset subject
+
         subjectSelect.innerHTML =
             '<option value="">Select Subject</option>';
+
+
+        // Reset content type
+
+        contenttypeSelect.innerHTML =
+            '<option value="">Select Content Type</option>';
+
+
+        // Disable content type
+
+        contenttypeSelect.disabled =
+            true;
 
 
         if (!subcategoryId) {
@@ -645,6 +682,7 @@ subcategorySelect.addEventListener(
 
 
         }
+
         catch (error) {
 
             console.error(error);
@@ -668,6 +706,106 @@ subcategorySelect.addEventListener(
 
 subjectSelect.addEventListener(
     "change",
+    async function () {
+
+        const subjectId =
+            this.value;
+
+
+        // Reset content type
+
+        contenttypeSelect.innerHTML =
+            '<option value="">Select Content Type</option>';
+
+
+        contenttypeSelect.disabled =
+            true;
+
+
+        if (!subjectId) {
+
+            updatePathPreview();
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/upload/contenttypes/${encodeURIComponent(subjectId)}`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load content types"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            data.contenttypes.forEach(
+                function (item) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        item.ContenttypeId;
+
+
+                    option.textContent =
+                        `${item.NameEnglish} - ${item.NameHindi}`;
+
+
+                    contenttypeSelect.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            contenttypeSelect.disabled =
+                false;
+
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to load content types."
+            );
+
+        }
+
+
+        updatePathPreview();
+
+    }
+);
+
+
+// ============================================================
+// CONTENT TYPE CHANGE
+// ============================================================
+
+contenttypeSelect.addEventListener(
+    "change",
     updatePathPreview
 );
 
@@ -682,10 +820,15 @@ setNameInput.addEventListener(
 );
 
 
-</script>
+// ============================================================
+// INITIAL PATH
+// ============================================================
 
+updatePathPreview();
+
+
+</script>
 
 </body>
 
 </html>
-
