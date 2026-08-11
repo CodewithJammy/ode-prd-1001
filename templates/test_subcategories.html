@@ -53,7 +53,14 @@
 <body>
 
 <div class="container page-container">
-
+    <a
+        class="back"
+        href="{{ url_for(
+            'home'
+        ) }}"
+    >
+        ← Back to Subjects
+    </a>
     <h2>
         {{ category.NameEnglish }}
     </h2>
