@@ -1,4 +1,3 @@
-
 import os
 import json
 
@@ -133,6 +132,22 @@ def load_subjects():
 
 
 # ============================================================
+# LOAD CONTENT TYPES
+# ============================================================
+
+def load_contenttypes():
+
+    data = load_json_file(
+        "contenttype.json"
+    )
+
+    return data.get(
+        "Contenttype",
+        []
+    )
+
+
+# ============================================================
 # FIND CATEGORY
 # ============================================================
 
@@ -162,8 +177,10 @@ def get_subcategories(category_id):
 
         for item in load_subcategories()
 
-        if item.get("CategoryId")
-        == category_id
+        if (
+            item.get("CategoryId")
+            == category_id
+        )
 
     ]
 
@@ -180,8 +197,30 @@ def get_subjects(subcategory_id):
 
         for item in load_subjects()
 
-        if item.get("SubCategoryId")
-        == subcategory_id
+        if (
+            item.get("SubCategoryId")
+            == subcategory_id
+        )
+
+    ]
+
+
+# ============================================================
+# FIND CONTENT TYPES
+# ============================================================
+
+def get_contenttypes(subject_id):
+
+    return [
+
+        item
+
+        for item in load_contenttypes()
+
+        if (
+            item.get("SubjectId")
+            == subject_id
+        )
 
     ]
 
@@ -214,6 +253,10 @@ def upload_file():
 
             subject_id = request.form.get(
                 "subject_id"
+            )
+
+            contenttype_id = request.form.get(
+                "contenttype_id"
             )
 
             set_name = request.form.get(
@@ -257,6 +300,18 @@ def upload_file():
 
                 flash(
                     "Please select a subject.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("upload.upload_file")
+                )
+
+
+            if not contenttype_id:
+
+                flash(
+                    "Please select a content type.",
                     "danger"
                 )
 
@@ -406,6 +461,37 @@ def upload_file():
 
 
             # =================================================
+            # VALIDATE CONTENT TYPE
+            # =================================================
+
+            contenttype = None
+
+            for item in get_contenttypes(
+                subject_id
+            ):
+
+                if (
+                    item.get("ContenttypeId")
+                    == contenttype_id
+                ):
+
+                    contenttype = item
+                    break
+
+
+            if not contenttype:
+
+                flash(
+                    "Invalid content type selected.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("upload.upload_file")
+                )
+
+
+            # =================================================
             # CLEAN SET NAME
             # =================================================
 
@@ -443,6 +529,7 @@ def upload_file():
                 f"{category_id}/"
                 f"{subcategory_id}/"
                 f"{subject_id}/"
+                f"{contenttype_id}/"
                 f"{set_name}.csv"
             )
 
@@ -512,10 +599,6 @@ def upload_file():
     # GET
     # ========================================================
 
-    # categories = load_categories()
-    # print("CATEGORIES:", categories)
-    # print("COUNT:", len(categories))
-    # Load categories from Azure:
     categories = load_categories()
 
     current_app.logger.error(
@@ -567,8 +650,34 @@ def get_subjects_api(
         "subjects": subjects
     }
 
-#==============test method ==========================
-#====================================================
-@upload_bp.route("/deployment-test")
+
+# ============================================================
+# API - CONTENT TYPES
+# ============================================================
+
+@upload_bp.route(
+    "/contenttypes/<subject_id>"
+)
+def get_contenttypes_api(
+    subject_id
+):
+
+    contenttypes = get_contenttypes(
+        subject_id
+    )
+
+    return {
+        "contenttypes": contenttypes
+    }
+
+
+# ============================================================
+# DEPLOYMENT TEST
+# ============================================================
+
+@upload_bp.route(
+    "/deployment-test"
+)
 def deployment_test():
+
     return "DEPLOYMENT TEST - NEW UPLOAD.PY"
