@@ -62,7 +62,7 @@ jobs:
       - name: Show Azure client ID being used
         run: |
           echo "Azure Client ID is configured:"
-          if [ -n "${{ secrets.AZURE_CLIENT_ID }}" ]; then
+          if [ -n "${{ secrets.AZUREAPPSERVICE_CLIENTID_A173FEC0432747B2B77EFA36AD42838B }}" ]; then
              echo "YES - AZURE_CLIENT_ID is present"
           else
              echo "NO - AZURE_CLIENT_ID is EMPTY"
