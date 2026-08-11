@@ -1,73 +1,311 @@
-<style>
-  #secondaryNavbarWrapper {
-    padding-top: 70px; /* adjust depending on your top navbar height */
-  }
-</style>
+<nav class="navbar navbar-expand-lg exam-navbar">
 
-
-<!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">EduPrep</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-       <ul class="navbar-nav me-auto">
-  <li class="nav-item">
-    <!--<a class="nav-link" href="{{ url_for('courses.courses') }}">Courses</a> -->
-    <a class="nav-link" href="{{ url_for('upload.upload_file') }}">upload</a>
-  </li>
-  <li class="nav-item">
-   <!-- <a class="nav-link" href="{{ url_for('tests.tests') }}">Tests</a>  -->
-    <a class="nav-link" href="#">Tests</a>
-  </li>
-</ul>
-<ul class="navbar-nav ms-auto">
-  {% if session.get('user_id') %}
-    <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('user.logout') }}">
-        <i class="fas fa-user-circle fa-lg"></i> Logout
-      </a>
-    </li>
-  {% else %}
-    <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('user.signup_form') }}">
-        <i class="fas fa-user-circle fa-lg"></i> Signup/Login
-      </a>
-    </li>
-  {% endif %}
-</ul>
 
-      </div>
+        <!-- Logo -->
+
+        <a class="navbar-brand exam-logo"
+           href="{{ url_for('user.user_home') }}">
+
+            <span class="logo-box">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
+
+            <span>
+                Exam<span>Portal</span>
+            </span>
+
+        </a>
+
+
+        <!-- Mobile button -->
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <div class="collapse navbar-collapse"
+             id="mainNavbar">
+
+
+            <!-- Left Menu -->
+
+            <ul class="navbar-nav ms-4 me-auto">
+
+
+                <!-- Home -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                       href="{{ url_for('user.user_home') }}">
+
+                        <i class="bi bi-house-door"></i>
+                        Home
+
+                    </a>
+
+                </li>
+
+
+                <!-- Exams -->
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown">
+
+                        <i class="bi bi-journal-text"></i>
+                        Exams
+
+                    </a>
+
+
+                    <ul class="dropdown-menu exam-dropdown">
+
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="{{ url_for('demo_test.subcategories', category_id='School') }}">
+
+                                <span class="menu-icon school-icon">
+                                    <i class="bi bi-book"></i>
+                                </span>
+
+                                <span>
+                                    <strong>School Tests</strong>
+                                    <small>Class wise exams</small>
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="{{ url_for('demo_test.subcategories', category_id='Certifications') }}">
+
+                                <span class="menu-icon certification-icon">
+                                    <i class="bi bi-award"></i>
+                                </span>
+
+                                <span>
+                                    <strong>Certifications</strong>
+                                    <small>Professional exams</small>
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="{{ url_for('demo_test.subcategories', category_id='OneDay') }}">
+
+                                <span class="menu-icon oneday-icon">
+                                    <i class="bi bi-lightning"></i>
+                                </span>
+
+                                <span>
+                                    <strong>One Day Exams</strong>
+                                    <small>Quick competitive tests</small>
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="{{ url_for('demo_test.subcategories', category_id='SkillDev') }}">
+
+                                <span class="menu-icon skill-icon">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </span>
+
+                                <span>
+                                    <strong>Skill Development</strong>
+                                    <small>Improve your skills</small>
+                                </span>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- Practice -->
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown">
+
+                        <i class="bi bi-bullseye"></i>
+                        Practice
+
+                    </a>
+
+                    <ul class="dropdown-menu">
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Subject Practice
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Topic Practice
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Mock Tests
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- Results -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#">
+
+                        <i class="bi bi-bar-chart"></i>
+                        Results
+
+                    </a>
+
+                </li>
+
+
+                <!-- About -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#">
+
+                        <i class="bi bi-info-circle"></i>
+                        About
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+            <!-- Right -->
+
+            <div class="d-flex align-items-center">
+
+
+                <a href="#"
+                   class="nav-search">
+
+                    <i class="bi bi-search"></i>
+
+                </a>
+
+
+                <div class="dropdown">
+
+                    <a class="profile-button dropdown-toggle"
+                       href="#"
+                       data-bs-toggle="dropdown">
+
+                        <span class="profile-avatar">
+
+                            <i class="bi bi-person"></i>
+
+                        </span>
+
+                        <span class="profile-name">
+
+                            {{ user.Username if user and user.Username else 'Account' }}
+
+                        </span>
+
+                    </a>
+
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="#">
+
+                                <i class="bi bi-person"></i>
+                                My Profile
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item"
+                               href="#">
+
+                                <i class="bi bi-clock-history"></i>
+                                My Attempts
+
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item text-danger"
+                               href="#">
+
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-  </nav>
 
-  <!-- {% if session.get('user_id') %} -->
-<nav id="secondaryNavbarWrapper" class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <!-- Toggler -->
-    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#secondaryNavbar"
-      aria-controls="secondaryNavbar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Collapsible content centered always -->
-    <div class="collapse navbar-collapse justify-content-center" id="secondaryNavbar">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link {% if active_tab=='orders' %}active{% endif %}" href="{{ url_for('user.user_details', tab='orders') }}">My Orders</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if active_tab=='performance' %}active{% endif %}" href="{{ url_for('user.user_details', tab='performance') }}">Performance</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if active_tab=='details' %}active{% endif %}" href="{{ url_for('user.user_details', tab='details') }}">Personal Details</a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </nav>
- <!-- {% endif %} -->
