@@ -1,0 +1,571 @@
+{% extends "base.html" %}
+
+{% block title %}
+ExamPortal - Learn, Practice & Test
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =========================================
+     HERO
+========================================= -->
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <!-- Left -->
+
+            <div class="col-lg-7">
+
+                <div class="hero-badge">
+
+                    <i class="bi bi-stars"></i>
+
+                    Smart Online Examination Platform
+
+                </div>
+
+
+                <h1 class="hero-title">
+
+                    Prepare.
+                    <span>Practice.</span>
+                    Perform.
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    Test your knowledge, practice important questions
+                    and improve your performance with ExamPortal.
+
+                    From school examinations to professional
+                    certifications — everything in one place.
+
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="{{ url_for('demo_test.subcategories', category_id='School') }}"
+                        class="btn btn-primary hero-btn">
+
+                        <i class="bi bi-play-fill"></i>
+
+                        Explore Exams
+
+                    </a>
+
+
+                    <a
+                        href="#categories"
+                        class="btn btn-outline-secondary hero-outline-btn">
+
+                        View Categories
+
+                        <i class="bi bi-arrow-down"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Features -->
+
+                <div class="hero-features">
+
+                    <div>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Hindi & English
+
+                    </div>
+
+
+                    <div>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Multiple Subjects
+
+                    </div>
+
+
+                    <div>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Multiple Sets
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Right -->
+
+            <div class="col-lg-5">
+
+                <div class="hero-card">
+
+                    <div class="hero-card-header">
+
+                        <span>
+                            <i class="bi bi-clipboard-check"></i>
+                            Start Your Test
+                        </span>
+
+                        <span class="live-badge">
+                            LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="test-preview">
+
+                        <div class="question-number">
+                            Question 01
+                        </div>
+
+
+                        <h4>
+
+                            How confident are you
+                            about your preparation?
+
+                        </h4>
+
+
+                        <div class="answer-option">
+
+                            <span>A</span>
+
+                            Very Confident
+
+                        </div>
+
+
+                        <div class="answer-option">
+
+                            <span>B</span>
+
+                            Need More Practice
+
+                        </div>
+
+
+                        <div class="answer-option">
+
+                            <span>C</span>
+
+                            Just Getting Started
+
+                        </div>
+
+
+                        <div class="progress-section">
+
+                            <div class="d-flex justify-content-between">
+
+                                <small>
+                                    Your preparation
+                                </small>
+
+                                <small>
+                                    75%
+                                </small>
+
+                            </div>
+
+
+                            <div class="progress">
+
+                                <div
+                                    class="progress-bar"
+                                    style="width:75%">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     CATEGORIES
+========================================= -->
+
+<section
+    class="categories-section"
+    id="categories">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span>
+                EXPLORE
+            </span>
+
+            <h2>
+                Choose Your Exam
+            </h2>
+
+            <p>
+                Select an exam category and start your preparation.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- School -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <a
+                    href="{{ url_for('demo_test.subcategories', category_id='School') }}"
+                    class="category-card">
+
+                    <div class="category-icon school-icon">
+
+                        <i class="bi bi-book"></i>
+
+                    </div>
+
+
+                    <h4>
+                        School Tests
+                    </h4>
+
+                    <p>
+                        Practice class-wise subjects and examinations.
+                    </p>
+
+
+                    <span class="category-link">
+
+                        Explore
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Certifications -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <a
+                    href="{{ url_for('demo_test.subcategories', category_id='Certifications') }}"
+                    class="category-card">
+
+                    <div class="category-icon certification-icon">
+
+                        <i class="bi bi-award"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Certifications
+                    </h4>
+
+                    <p>
+                        Prepare for professional certification exams.
+                    </p>
+
+
+                    <span class="category-link">
+
+                        Explore
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- One Day -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <a
+                    href="{{ url_for('demo_test.subcategories', category_id='OneDay') }}"
+                    class="category-card">
+
+                    <div class="category-icon oneday-icon">
+
+                        <i class="bi bi-lightning"></i>
+
+                    </div>
+
+
+                    <h4>
+                        One Day Exams
+                    </h4>
+
+                    <p>
+                        Quick preparation for competitive examinations.
+                    </p>
+
+
+                    <span class="category-link">
+
+                        Explore
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Skills -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <a
+                    href="{{ url_for('demo_test.subcategories', category_id='SkillDev') }}"
+                    class="category-card">
+
+                    <div class="category-icon skill-icon">
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Skill Development
+                    </h4>
+
+                    <p>
+                        Build and test your professional skills.
+                    </p>
+
+
+                    <span class="category-link">
+
+                        Explore
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     HOW IT WORKS
+========================================= -->
+
+<section class="how-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span>
+                SIMPLE PROCESS
+            </span>
+
+            <h2>
+                How ExamPortal Works
+            </h2>
+
+            <p>
+                Start your preparation in just a few simple steps.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <div class="col-md-3">
+
+                <div class="step-card">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <i class="bi bi-grid-3x3-gap"></i>
+
+                    <h4>
+                        Choose Exam
+                    </h4>
+
+                    <p>
+                        Select your exam category and course.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="step-card">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <i class="bi bi-book"></i>
+
+                    <h4>
+                        Select Subject
+                    </h4>
+
+                    <p>
+                        Choose a subject and topic you want to practice.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="step-card">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    <h4>
+                        Take Test
+                    </h4>
+
+                    <p>
+                        Attempt questions from your selected set.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="step-card">
+
+                    <div class="step-number">
+                        04
+                    </div>
+
+                    <i class="bi bi-bar-chart-line"></i>
+
+                    <h4>
+                        Check Result
+                    </h4>
+
+                    <p>
+                        Review your performance and improve.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     CTA
+========================================= -->
+
+<section class="cta-section">
+
+    <div class="container">
+
+        <div class="cta-card">
+
+            <div>
+
+                <span class="cta-small">
+                    READY TO START?
+                </span>
+
+                <h2>
+                    Test your knowledge today.
+                </h2>
+
+                <p>
+                    Choose an exam and start practicing.
+                </p>
+
+            </div>
+
+
+            <a
+                href="#categories"
+                class="btn btn-light cta-button">
+
+                Start Your Test
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
