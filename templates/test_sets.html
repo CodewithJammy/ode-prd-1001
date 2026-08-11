@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,6 +30,18 @@
             margin: 50px auto;
         }
 
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: 500;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
         .set-card {
             border: none;
             border-radius: 15px;
@@ -55,22 +67,34 @@
 
 </head>
 
+
 <body>
 
+
 <div class="container page-container">
+
+
+    <!-- ================================================= -->
+    <!-- BACK TO CONTENT TYPES -->
+    <!-- ================================================= -->
+
     <a
         class="back"
         href="{{ url_for(
             'demo_test.contenttypes',
-             category_id=category.CategoryId,
-             subcategory_id=subcategory.SubCategoryId,
-             subject_id=subject.SubjectId,
-             contenttype_id=contenttype.ContenttypeId
-            
+            category_id=category.CategoryId,
+            subcategory_id=subcategory.SubCategoryId,
+            subject_id=subject.SubjectId
         ) }}"
     >
         ← Back to Exam Type
     </a>
+
+
+    <!-- ================================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ================================================= -->
+
     <div class="mb-4">
 
         <h2>
@@ -88,24 +112,28 @@
     </div>
 
 
+    <!-- ================================================= -->
+    <!-- TEST SETS -->
+    <!-- ================================================= -->
+
     <div class="row g-4">
 
+
         {% for test_set in sets %}
+
 
         <div class="col-md-4">
 
             <a
                 class="set-link"
-                href="{{
-                    url_for(
-                        'demo_test.test_page',
-                        category_id=category.CategoryId,
-                        subcategory_id=subcategory.SubCategoryId,
-                        subject_id=subject.SubjectId,
-                        contenttype_id=contenttype_id,
-                        set_name=test_set.name
-                    )
-                }}"
+                href="{{ url_for(
+                    'demo_test.test_page',
+                    category_id=category.CategoryId,
+                    subcategory_id=subcategory.SubCategoryId,
+                    subject_id=subject.SubjectId,
+                    contenttype_id=contenttype.ContenttypeId,
+                    set_name=test_set.name
+                ) }}"
             >
 
                 <div class="card set-card shadow-sm">
@@ -128,7 +156,9 @@
 
         </div>
 
+
         {% else %}
+
 
         <div class="col-12">
 
@@ -140,13 +170,17 @@
 
         </div>
 
+
         {% endfor %}
+
 
     </div>
 
+
 </div>
+
 
 </body>
 
 </html>
-
+```
