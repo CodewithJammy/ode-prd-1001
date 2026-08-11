@@ -58,7 +58,19 @@
 <body>
 
 <div class="container page-container">
-
+    <a
+        class="back"
+        href="{{ url_for(
+            'demo_test.contenttypes',
+             category_id=category.CategoryId,
+             subcategory_id=subcategory.SubCategoryId,
+             subject_id=subject.SubjectId,
+             contenttype_id=contenttype.ContenttypeId
+            
+        ) }}"
+    >
+        ← Back to Subjects
+    </a>
     <div class="mb-4">
 
         <h2>
