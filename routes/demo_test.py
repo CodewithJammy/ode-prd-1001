@@ -91,7 +91,11 @@ def load_json_file(filename):
             blob_name
         )
 
-        data = blob_client.download_blob().readall()
+        data = (
+            blob_client
+            .download_blob()
+            .readall()
+        )
 
         return json.loads(
             data.decode("utf-8-sig")
@@ -149,7 +153,7 @@ def load_subjects():
 
 
 # ============================================================
-# NEW - LOAD CONTENT TYPES
+# LOAD CONTENT TYPES
 # ============================================================
 
 def load_contenttypes():
@@ -174,7 +178,10 @@ def get_category(category_id):
 
     for category in categories:
 
-        if category.get("CategoryId") == category_id:
+        if category.get(
+            "CategoryId"
+        ) == category_id:
+
             return category
 
     return None
@@ -191,9 +198,12 @@ def get_subcategory(subcategory_id):
     for subcategory in subcategories:
 
         if (
-            subcategory.get("SubCategoryId")
+            subcategory.get(
+                "SubCategoryId"
+            )
             == subcategory_id
         ):
+
             return subcategory
 
     return None
@@ -210,8 +220,9 @@ def get_subjects(subcategory_id):
     return [
         subject
         for subject in subjects
-        if subject.get("SubCategoryId")
-        == subcategory_id
+        if subject.get(
+            "SubCategoryId"
+        ) == subcategory_id
     ]
 
 
@@ -230,14 +241,17 @@ def get_subject(
 
     for subject in subjects:
 
-        if subject.get("SubjectId") == subject_id:
+        if subject.get(
+            "SubjectId"
+        ) == subject_id:
+
             return subject
 
     return None
 
 
 # ============================================================
-# NEW - FIND CONTENT TYPES FOR SUBJECT
+# FIND CONTENT TYPES FOR SUBJECT
 # ============================================================
 
 def get_contenttypes(subject_id):
@@ -247,13 +261,14 @@ def get_contenttypes(subject_id):
     return [
         contenttype
         for contenttype in contenttypes
-        if contenttype.get("SubjectId")
-        == subject_id
+        if contenttype.get(
+            "SubjectId"
+        ) == subject_id
     ]
 
 
 # ============================================================
-# NEW - FIND ONE CONTENT TYPE
+# FIND ONE CONTENT TYPE
 # ============================================================
 
 def get_contenttype(
@@ -268,9 +283,12 @@ def get_contenttype(
     for contenttype in contenttypes:
 
         if (
-            contenttype.get("ContenttypeId")
+            contenttype.get(
+                "ContenttypeId"
+            )
             == contenttype_id
         ):
+
             return contenttype
 
     return None
@@ -314,7 +332,9 @@ def get_sets(
                 continue
 
             # Only CSV files
-            if not blob_name.lower().endswith(".csv"):
+            if not blob_name.lower().endswith(
+                ".csv"
+            ):
                 continue
 
             filename = os.path.basename(
@@ -450,8 +470,9 @@ def subcategories(category_id):
     subcategories_data = [
         item
         for item in load_subcategories()
-        if item.get("CategoryId")
-        == category_id
+        if item.get(
+            "CategoryId"
+        ) == category_id
     ]
 
     return render_template(
@@ -487,7 +508,9 @@ def subjects(
     # Make sure subcategory belongs
     # to selected category
     if (
-        subcategory.get("CategoryId")
+        subcategory.get(
+            "CategoryId"
+        )
         != category_id
     ):
         abort(404)
@@ -505,7 +528,7 @@ def subjects(
 
 
 # ============================================================
-# NEW - CONTENT TYPE PAGE
+# CONTENT TYPE PAGE
 # ============================================================
 
 @demotest_bp.route(
@@ -539,12 +562,13 @@ def contenttypes(
 
     # Verify category relationship
     if (
-        subcategory.get("CategoryId")
+        subcategory.get(
+            "CategoryId"
+        )
         != category_id
     ):
         abort(404)
 
-    # Get content types for subject
     contenttypes_data = get_contenttypes(
         subject_id
     )
@@ -600,12 +624,13 @@ def sets(
 
     # Verify category relationship
     if (
-        subcategory.get("CategoryId")
+        subcategory.get(
+            "CategoryId"
+        )
         != category_id
     ):
         abort(404)
 
-    # Get CSV sets
     sets_data = get_sets(
         category_id,
         subcategory_id,
@@ -626,9 +651,6 @@ def sets(
 # ============================================================
 # TEST PAGE
 # ============================================================
-# ============================================================
-# TEST PAGE
-# ============================================================
 
 @demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>",
@@ -642,23 +664,43 @@ def test_page(
     set_name
 ):
 
+    # ========================================================
+    # LOAD CATEGORY
+    # ========================================================
+
     category = get_category(
         category_id
     )
 
+    # ========================================================
+    # LOAD SUBCATEGORY
+    # ========================================================
+
     subcategory = get_subcategory(
         subcategory_id
     )
+
+    # ========================================================
+    # LOAD SUBJECT
+    # ========================================================
 
     subject = get_subject(
         subcategory_id,
         subject_id
     )
 
+    # ========================================================
+    # LOAD CONTENT TYPE
+    # ========================================================
+
     contenttype = get_contenttype(
         subject_id,
         contenttype_id
     )
+
+    # ========================================================
+    # VALIDATE
+    # ========================================================
 
     if (
         not category
@@ -668,18 +710,20 @@ def test_page(
     ):
         abort(404)
 
-    # --------------------------------------------------------
-    # Verify relationships
-    # --------------------------------------------------------
+    # ========================================================
+    # VERIFY RELATIONSHIPS
+    # ========================================================
 
     if (
-        subcategory.get("CategoryId")
+        subcategory.get(
+            "CategoryId"
+        )
         != category_id
     ):
         abort(404)
 
     # ========================================================
-    # GET
+    # GET - SHOW TEST
     # ========================================================
 
     if request.method == "GET":
@@ -723,6 +767,16 @@ def test_page(
         "english"
     )
 
+    if language not in [
+        "english",
+        "hindi"
+    ]:
+        language = "english"
+
+    # ========================================================
+    # LOAD QUESTIONS
+    # ========================================================
+
     questions = load_questions(
         category_id,
         subcategory_id,
@@ -730,6 +784,10 @@ def test_page(
         contenttype_id,
         set_name
     )
+
+    # ========================================================
+    # CALCULATE SCORE
+    # ========================================================
 
     score = 0
     attempted = 0
@@ -749,7 +807,10 @@ def test_page(
         )
 
         correct_answer = str(
-            question.get("answer", "")
+            question.get(
+                "answer",
+                ""
+            )
         ).strip()
 
         if user_answer:
@@ -768,6 +829,10 @@ def test_page(
             "correct_answer": correct_answer,
             "is_correct": is_correct
         })
+
+    # ========================================================
+    # SCORE DETAILS
+    # ========================================================
 
     total = len(questions)
 
@@ -796,6 +861,7 @@ def test_page(
     # ========================================================
     # FREE RESULT
     #
+    # Example:
     # Topic Wise
     # ========================================================
 
@@ -803,16 +869,27 @@ def test_page(
 
         return render_template(
             "test_result.html",
+
             category=category,
+
             subcategory=subcategory,
+
             subject=subject,
+
             contenttype=contenttype,
+
             set_name=set_name,
+
             language=language,
+
             score=score,
+
             attempted=attempted,
+
             total=total,
+
             percentage=percentage,
+
             results=results
         )
 
@@ -821,105 +898,96 @@ def test_page(
     #
     # Complete Test / Previous Years
     # ========================================================
-# ========================================================
-# PAID RESULT
-#
-# Complete Test / Previous Years
-# ========================================================
 
-google_id = session.get(
-    "google_id"
-)
+    google_id = session.get(
+        "google_id"
+    )
 
-user_id = session.get(
-    "user_id"
-)
+    user_id = session.get(
+        "user_id"
+    )
 
-# ========================================================
-# USER NOT LOGGED IN
-# ========================================================
+    # ========================================================
+    # USER NOT LOGGED IN
+    # ========================================================
 
-if not google_id:
+    if not google_id:
 
-    # ----------------------------------------------------
-    # Save the completed test temporarily.
+        # Save completed test information.
+        # It can be used after Google login.
+
+        session["pending_test"] = {
+
+            "category_id": category_id,
+
+            "subcategory_id": subcategory_id,
+
+            "subject_id": subject_id,
+
+            "contenttype_id": contenttype_id,
+
+            "set_name": set_name,
+
+            "language": language,
+
+            "score": score,
+
+            "attempted": attempted,
+
+            "total": total,
+
+            "percentage": percentage
+        }
+
+        return redirect(
+            url_for(
+                "auth.login"
+            )
+        )
+
+    # ========================================================
+    # USER LOGGED IN BUT USER ID NOT AVAILABLE
+    # ========================================================
+
+    if not user_id:
+
+        return redirect(
+            url_for(
+                "auth.login"
+            )
+        )
+
+    # ========================================================
+    # SHOW PAYMENT PAGE
     #
-    # We will use this after Google login.
-    # ----------------------------------------------------
+    # Payment page will later provide:
+    #
+    # 1. Current test
+    # 2. All tests - ₹99
+    #
+    # Both will have 90-day access.
+    # ========================================================
 
-    session["pending_test"] = {
+    return render_template(
+        "payment_required.html",
 
-        "category_id": category_id,
+        category=category,
 
-        "subcategory_id": subcategory_id,
+        subcategory=subcategory,
 
-        "subject_id": subject_id,
+        subject=subject,
 
-        "contenttype_id": contenttype_id,
+        contenttype=contenttype,
 
-        "set_name": set_name,
+        set_name=set_name,
 
-        "language": language,
+        score=score,
 
-        "score": score,
+        attempted=attempted,
 
-        "attempted": attempted,
+        total=total,
 
-        "total": total,
+        percentage=percentage,
 
-        "percentage": percentage
-
-    }
-
-    # ----------------------------------------------------
-    # Send user to Google login
-    # ----------------------------------------------------
-
-    return redirect(
-        url_for(
-            "auth.login"
-        )
+        language=language
     )
-
-
-# ========================================================
-# USER LOGGED IN BUT USER ID NOT AVAILABLE
-# ========================================================
-
-if not user_id:
-
-    return redirect(
-        url_for(
-            "auth.login"
-        )
-    )
-
-
-# ========================================================
-# SHOW PAYMENT OPTIONS
-# ========================================================
-
-return render_template(
-
-    "payment_required.html",
-
-    category=category,
-
-    subcategory=subcategory,
-
-    subject=subject,
-
-    contenttype=contenttype,
-
-    set_name=set_name,
-
-    score=score,
-
-    attempted=attempted,
-
-    total=total,
-
-    percentage=percentage,
-
-    language=language
-)
