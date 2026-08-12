@@ -416,3 +416,78 @@ def has_valid_all_access(
             return True
 
     return False
+
+
+
+
+# ============================================================
+# CHECK ACTIVE ALL-TEST SUBSCRIPTION
+# ============================================================
+
+def get_active_all_subscription(user_id, google_id):
+
+    sheet = get_payments_sheet()
+
+    records = sheet.get_all_records()
+
+    now = datetime.utcnow()
+
+    for row in records:
+
+        if str(row.get("UserId", "")).strip() != str(user_id).strip():
+            continue
+
+        if str(row.get("GoogleId", "")).strip() != str(google_id).strip():
+            continue
+
+        # Must be successful payment
+        payment_status = str(
+            row.get("PaymentStatus", "")
+        ).strip().lower()
+
+        if payment_status not in [
+            "paid",
+            "success",
+            "successful",
+            "approved"
+        ]:
+            continue
+
+        # Must be All access
+        access_type = str(
+            row.get("AccessType", "")
+        ).strip().lower()
+
+        if access_type != "all":
+            continue
+
+        # Check expiry
+        expiry_string = str(
+            row.get("ExpiryDate", "")
+        ).strip()
+
+        if not expiry_string:
+            continue
+
+        try:
+
+            expiry_date = datetime.strptime(
+                expiry_string,
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+        except ValueError:
+
+            continue
+
+        if expiry_date > now:
+
+            return {
+                "active": True,
+                "expiry_date": expiry_date
+            }
+
+    return {
+        "active": False,
+        "expiry_date": None
+    }
