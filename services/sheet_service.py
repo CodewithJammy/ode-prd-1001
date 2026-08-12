@@ -1,46 +1,91 @@
 import os
 import json
+
 import gspread
 
 from google.oauth2.service_account import Credentials
 
+
+# ============================================================
+# Google Sheets permissions
+# ============================================================
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets"
 ]
 
 
-def get_sheet():
+# ============================================================
+# Create Google Sheets client
+# ============================================================
 
-    spreadsheet_id = os.getenv("GOOGLE_SHEET_ID")
-    service_account_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+def get_client():
 
-    if not spreadsheet_id:
-        raise RuntimeError(
-            "GOOGLE_SHEET_ID is not configured in Azure."
-        )
+    service_account_json = os.getenv(
+        "GOOGLE_SERVICE_ACCOUNT_JSON"
+    )
 
     if not service_account_json:
+
         raise RuntimeError(
-            "GOOGLE_SERVICE_ACCOUNT_JSON is not configured in Azure."
+            "GOOGLE_SERVICE_ACCOUNT_JSON is not configured."
         )
 
     try:
-        service_account_info = json.loads(service_account_json)
+
+        credentials_info = json.loads(
+            service_account_json
+        )
+
     except json.JSONDecodeError as e:
+
         raise RuntimeError(
             "GOOGLE_SERVICE_ACCOUNT_JSON contains invalid JSON."
         ) from e
 
-    credentials = Credentials.from_service_account_info(
-        service_account_info,
-        scopes=SCOPES
+    credentials = (
+        Credentials.from_service_account_info(
+            credentials_info,
+            scopes=SCOPES
+        )
     )
 
-    client = gspread.authorize(credentials)
+    return gspread.authorize(
+        credentials
+    )
 
-    spreadsheet = client.open_by_key(spreadsheet_id)
 
-    worksheet = spreadsheet.worksheet("Users")
+# ============================================================
+# Open Google Spreadsheet
+# ============================================================
 
-    return worksheet
+def get_spreadsheet():
+
+    spreadsheet_id = os.getenv(
+        "GOOGLE_SHEET_ID"
+    )
+
+    if not spreadsheet_id:
+
+        raise RuntimeError(
+            "GOOGLE_SHEET_ID is not configured."
+        )
+
+    client = get_client()
+
+    return client.open_by_key(
+        spreadsheet_id
+    )
+
+
+# ============================================================
+# Get specific worksheet
+# ============================================================
+
+def get_worksheet(name):
+
+    spreadsheet = get_spreadsheet()
+
+    return spreadsheet.worksheet(
+        name
+    )
