@@ -10,6 +10,7 @@ from routes.auth import auth_bp
 from routes.user import user_bp
 from routes.upload import upload_bp
 from routes.demo_test import demotest_bp
+from routes.payment import payment_bp
 
 
 
@@ -26,6 +27,7 @@ app.register_blueprint(upload_bp)
 app.register_blueprint(demotest_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(payment_bp)
 
 @app.route("/")
 def home():
