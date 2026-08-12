@@ -8,64 +8,364 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Profile - ExamPortal</title>
+    <title>Complete Your Profile</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #f4f7fb;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+        .profile-container {
+
+            width: 100%;
+
+            max-width: 520px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-header {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .profile-header h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 28px;
+
+            color: #1f2937;
+        }
+
+        .profile-header p {
+
+            margin: 0;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        .profile-picture {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+        .profile-picture img {
+
+            width: 90px;
+
+            height: 90px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+        }
+
+        .field {
+
+            margin-bottom: 20px;
+        }
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: 600;
+
+            color: #374151;
+        }
+
+        .field input,
+        .field select {
+
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.1);
+        }
+
+        .readonly {
+
+            background: #f3f4f6;
+
+            color: #6b7280;
+        }
+
+        .gender-field {
+
+            margin-bottom: 30px;
+        }
+
+        .error {
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+        }
+
+        .continue-button {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .continue-button:hover {
+
+            background: #1d4ed8;
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-    <h1>Profile Page</h1>
 
-    <hr>
+<div class="profile-container">
 
-    <h3>Google Login Successful</h3>
 
-    <p>
-        <strong>User ID:</strong>
-        {{ user.UserId }}
-    </p>
+    <!-- Header -->
 
-    <p>
-        <strong>Google ID:</strong>
-        {{ user.GoogleId }}
-    </p>
+    <div class="profile-header">
 
-    <p>
-        <strong>Email:</strong>
-        {{ user.Email }}
-    </p>
-
-    <p>
-        <strong>Username:</strong>
-        {{ user.Username }}
-    </p>
-
-    <p>
-        <strong>First Name:</strong>
-        {{ user.FirstName }}
-    </p>
-
-    <p>
-        <strong>Last Name:</strong>
-        {{ user.LastName }}
-    </p>
-
-    <p>
-        <strong>New User:</strong>
-        {{ user.NewUser }}
-    </p>
-
-    {% if user.Picture %}
+        <h1>
+            Complete Your Profile
+        </h1>
 
         <p>
-            <strong>Profile Picture:</strong>
+            Just a few details before you continue
         </p>
 
-        <img src="{{ user.Picture }}"
-             alt="Google Profile Picture"
-             width="100">
+    </div>
+
+
+    <!-- Profile picture -->
+
+    {% if user and user.Picture %}
+
+    <div class="profile-picture">
+
+        <img
+            src="{{ user.Picture }}"
+            alt="Profile Picture">
+
+    </div>
 
     {% endif %}
+
+
+    <!-- Error -->
+
+    {% if error %}
+
+    <div class="error">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Profile form -->
+
+    <form
+        method="POST"
+        action="{{ url_for('user.profile') }}">
+
+
+        <!-- Email -->
+
+        <div class="field">
+
+            <label>
+                Email
+            </label>
+
+            <input
+                type="email"
+                value="{{ user.Email }}"
+                class="readonly"
+                readonly>
+
+        </div>
+
+
+        <!-- Username -->
+
+        <div class="field">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value="{{ user.Username or '' }}"
+                placeholder="Enter your username"
+                required>
+
+        </div>
+
+
+        <!-- Mobile -->
+
+        <div class="field">
+
+            <label for="mobile">
+                Mobile Number
+            </label>
+
+            <input
+                type="tel"
+                id="mobile"
+                name="mobile"
+                value="{{ user.Mobile or '' }}"
+                placeholder="Enter your mobile number">
+
+        </div>
+
+
+        <!-- Gender -->
+
+        <div class="field gender-field">
+
+            <label for="gender">
+                Gender
+            </label>
+
+            <select
+                id="gender"
+                name="gender">
+
+                <option value="">
+                    Select Gender
+                </option>
+
+                <option
+                    value="Male"
+                    {% if user.Gender == "Male" %}
+                    selected
+                    {% endif %}>
+                    Male
+                </option>
+
+                <option
+                    value="Female"
+                    {% if user.Gender == "Female" %}
+                    selected
+                    {% endif %}>
+                    Female
+                </option>
+
+                <option
+                    value="Other"
+                    {% if user.Gender == "Other" %}
+                    selected
+                    {% endif %}>
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Continue -->
+
+        <button
+            type="submit"
+            class="continue-button">
+
+            Continue
+
+        </button>
+
+
+    </form>
+
+
+</div>
+
 
 </body>
 
