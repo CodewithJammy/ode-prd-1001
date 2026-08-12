@@ -70,71 +70,129 @@ CLIENT_CONFIG = {
 
 SCOPES = [
     "openid",
+
     "https://www.googleapis.com/auth/userinfo.email",
+
     "https://www.googleapis.com/auth/userinfo.profile"
 ]
-
 
 
 # ============================================================
 # LOGOUT
 # ============================================================
 
-@auth_bp.route("/logout", methods=["GET"])
+@auth_bp.route(
+    "/logout",
+    methods=["GET"]
+)
 def logout():
 
-    # --------------------------------------------------------
-    # Completely clear current user session
-    # --------------------------------------------------------
+    print("DEBUG: LOGOUT START")
+
+    # ========================================================
+    # COMPLETELY DESTROY LOGIN SESSION
+    # ========================================================
 
     session.clear()
 
-    # --------------------------------------------------------
-    # Prevent browser from using cached authenticated pages
-    # --------------------------------------------------------
+    print(
+        "DEBUG: SESSION AFTER LOGOUT =",
+        dict(session)
+    )
+
+    # ========================================================
+    # REDIRECT TO PUBLIC HOME
+    #
+    # IMPORTANT:
+    # Do NOT redirect to login page.
+    #
+    # This makes the public navbar immediately show:
+    #
+    # Account
+    #
+    # instead of keeping the user inside login flow.
+    # ========================================================
 
     response = redirect(
-        url_for("auth.login")
+        url_for("home")
     )
+
+    # ========================================================
+    # PREVENT BROWSER CACHE
+    # ========================================================
 
     response.headers["Cache-Control"] = (
         "no-cache, no-store, must-revalidate"
     )
+
     response.headers["Pragma"] = "no-cache"
+
     response.headers["Expires"] = "0"
 
+    print("DEBUG: LOGOUT COMPLETE")
+
     return response
+
+
 # ============================================================
 # ACCOUNT BUTTON
 # ============================================================
 
-@auth_bp.route("/account")
+@auth_bp.route(
+    "/account"
+)
 def account():
 
-    # --------------------------------------------------------
-    # Check whether user is already logged in
-    # --------------------------------------------------------
+    # ========================================================
+    # CHECK LOGIN SESSION
+    # ========================================================
+
+    user_id = session.get("user_id")
 
     google_id = session.get("google_id")
 
-    # --------------------------------------------------------
-    # NOT LOGGED IN
-    # Send user to login page
-    # --------------------------------------------------------
 
-    if not google_id:
+    print(
+        "DEBUG ACCOUNT:",
+        "user_id =",
+        user_id,
+        "google_id =",
+        google_id
+    )
+
+
+    # ========================================================
+    # NOT LOGGED IN
+    # ========================================================
+
+    if not user_id or not google_id:
+
+        print(
+            "DEBUG ACCOUNT: USER NOT LOGGED IN"
+        )
 
         return redirect(
             url_for("auth.login")
         )
 
-    # --------------------------------------------------------
-    # ALREADY LOGGED IN
-    # Send user to USER HOME
+
+    # ========================================================
+    # USER IS LOGGED IN
     #
-    # IMPORTANT:
-    # Do NOT send to profile here.
-    # --------------------------------------------------------
+    # Always go to user home.
+    #
+    # user_home() itself will decide whether:
+    #
+    # NewUser = 1
+    #       -> Profile
+    #
+    # NewUser = 0
+    #       -> User Home
+    # ========================================================
+
+    print(
+        "DEBUG ACCOUNT: USER LOGGED IN"
+    )
 
     return redirect(
         url_for("user.user_home")
@@ -145,8 +203,35 @@ def account():
 # LOGIN PAGE
 # ============================================================
 
-@auth_bp.route("/login")
+@auth_bp.route(
+    "/login"
+)
 def login():
+
+    # ========================================================
+    # IMPORTANT
+    #
+    # If already logged in, don't show login page again.
+    # ========================================================
+
+    if (
+        session.get("user_id")
+        and
+        session.get("google_id")
+    ):
+
+        print(
+            "DEBUG LOGIN: ALREADY LOGGED IN"
+        )
+
+        return redirect(
+            url_for("user.user_home")
+        )
+
+
+    print(
+        "DEBUG LOGIN: PUBLIC LOGIN PAGE"
+    )
 
     return render_template(
         "login.html"
@@ -157,12 +242,14 @@ def login():
 # START GOOGLE LOGIN
 # ============================================================
 
-@auth_bp.route("/google")
+@auth_bp.route(
+    "/google"
+)
 def google_login():
 
-    # --------------------------------------------------------
-    # Check Google Client ID
-    # --------------------------------------------------------
+    # ========================================================
+    # CHECK GOOGLE CLIENT ID
+    # ========================================================
 
     if not CLIENT_ID:
 
@@ -172,9 +259,10 @@ def google_login():
             500
         )
 
-    # --------------------------------------------------------
-    # Check Google Client Secret
-    # --------------------------------------------------------
+
+    # ========================================================
+    # CHECK GOOGLE CLIENT SECRET
+    # ========================================================
 
     if not CLIENT_SECRET:
 
@@ -184,11 +272,13 @@ def google_login():
             500
         )
 
+
     # ========================================================
     # GENERATE PKCE CODE VERIFIER
     # ========================================================
 
     code_verifier = secrets.token_urlsafe(64)
+
 
     # ========================================================
     # CREATE GOOGLE OAUTH FLOW
@@ -196,15 +286,19 @@ def google_login():
 
     flow = Flow.from_client_config(
         CLIENT_CONFIG,
+
         scopes=SCOPES,
+
         code_verifier=code_verifier
     )
 
-    # --------------------------------------------------------
-    # Exact Azure callback URL
-    # --------------------------------------------------------
+
+    # ========================================================
+    # EXACT AZURE CALLBACK URL
+    # ========================================================
 
     flow.redirect_uri = REDIRECT_URI
+
 
     # ========================================================
     # GENERATE GOOGLE AUTHORIZATION URL
@@ -212,11 +306,15 @@ def google_login():
 
     authorization_url, state = (
         flow.authorization_url(
+
             access_type="offline",
+
             include_granted_scopes="true",
+
             prompt="select_account"
         )
     )
+
 
     # ========================================================
     # SAVE OAUTH STATE
@@ -224,11 +322,15 @@ def google_login():
 
     session["google_oauth_state"] = state
 
+
     # ========================================================
     # SAVE PKCE CODE VERIFIER
     # ========================================================
 
-    session["google_code_verifier"] = code_verifier
+    session["google_code_verifier"] = (
+        code_verifier
+    )
+
 
     # ========================================================
     # DEBUG
@@ -252,6 +354,7 @@ def google_login():
         "DEBUG GOOGLE CODE VERIFIER SAVED"
     )
 
+
     # ========================================================
     # REDIRECT TO GOOGLE
     # ========================================================
@@ -265,7 +368,9 @@ def google_login():
 # GOOGLE CALLBACK
 # ============================================================
 
-@auth_bp.route("/google/callback")
+@auth_bp.route(
+    "/google/callback"
+)
 def google_callback():
 
     # ========================================================
@@ -276,6 +381,7 @@ def google_callback():
         "google_oauth_state"
     )
 
+
     # ========================================================
     # GET PKCE VERIFIER
     # ========================================================
@@ -283,6 +389,7 @@ def google_callback():
     code_verifier = session.get(
         "google_code_verifier"
     )
+
 
     # ========================================================
     # VALIDATE STATE
@@ -296,6 +403,7 @@ def google_callback():
             400
         )
 
+
     # ========================================================
     # VALIDATE PKCE VERIFIER
     # ========================================================
@@ -308,22 +416,29 @@ def google_callback():
             400
         )
 
+
     # ========================================================
     # CREATE OAUTH FLOW AGAIN
     # ========================================================
 
     flow = Flow.from_client_config(
+
         CLIENT_CONFIG,
+
         scopes=SCOPES,
+
         state=state,
+
         code_verifier=code_verifier
     )
 
-    # --------------------------------------------------------
-    # Exact Azure callback URL
-    # --------------------------------------------------------
+
+    # ========================================================
+    # EXACT AZURE CALLBACK URL
+    # ========================================================
 
     flow.redirect_uri = REDIRECT_URI
+
 
     # ========================================================
     # DEBUG
@@ -342,6 +457,7 @@ def google_callback():
     print(
         "DEBUG CODE VERIFIER FOUND"
     )
+
 
     # ========================================================
     # EXCHANGE AUTHORIZATION CODE
@@ -367,17 +483,20 @@ def google_callback():
             500
         )
 
+
     # ========================================================
     # GET GOOGLE CREDENTIALS
     # ========================================================
 
     credentials = flow.credentials
 
+
     # ========================================================
     # GET GOOGLE USER INFORMATION
     # ========================================================
 
     response = requests.get(
+
         "https://openidconnect.googleapis.com/v1/userinfo",
 
         headers={
@@ -388,9 +507,12 @@ def google_callback():
         timeout=10
     )
 
+
     response.raise_for_status()
 
+
     google_user = response.json()
+
 
     # ========================================================
     # GET GOOGLE UNIQUE ID
@@ -400,12 +522,14 @@ def google_callback():
         "sub"
     )
 
+
     if not google_id:
 
         return (
             "Google did not return a user ID.",
             400
         )
+
 
     # ========================================================
     # FIND USER IN GOOGLE SHEET
@@ -414,6 +538,7 @@ def google_callback():
     user = find_user_by_google_id(
         google_id
     )
+
 
     # ========================================================
     # CREATE NEW USER
@@ -424,6 +549,7 @@ def google_callback():
         user = create_user(
             google_user
         )
+
 
     # ========================================================
     # SAFETY CHECK
@@ -437,8 +563,20 @@ def google_callback():
             500
         )
 
+
     # ========================================================
-    # STORE LOGIN SESSION
+    # IMPORTANT:
+    #
+    # CREATE A CLEAN LOGIN SESSION
+    #
+    # First remove any old session values.
+    # ========================================================
+
+    session.clear()
+
+
+    # ========================================================
+    # STORE USER SESSION
     # ========================================================
 
     session["user_id"] = user.get(
@@ -449,34 +587,46 @@ def google_callback():
 
     session["user"] = user
 
+
     # ========================================================
     # REMOVE TEMPORARY OAUTH DATA
+    #
+    # session.clear() already removed them.
+    # These are intentionally NOT added again.
     # ========================================================
 
-    session.pop(
-        "google_oauth_state",
-        None
+
+    # ========================================================
+    # DEBUG LOGIN SESSION
+    # ========================================================
+
+    print(
+        "DEBUG LOGIN SUCCESS"
     )
 
-    session.pop(
-        "google_code_verifier",
-        None
+    print(
+        "DEBUG SESSION user_id =",
+        session.get("user_id")
     )
+
+    print(
+        "DEBUG SESSION google_id =",
+        session.get("google_id")
+    )
+
 
     # ========================================================
     # IMPORTANT LOGIN FLOW
-    # ========================================================
     #
-    # Do NOT directly send every user to profile.
+    # Do NOT directly send user to profile.
     #
-    # user_home() will check NewUser:
+    # user_home() decides:
     #
     # NewUser = 1
-    #       -> profile
+    #     -> Profile
     #
     # NewUser = 0
-    #       -> user_home.html
-    #
+    #     -> User Home
     # ========================================================
 
     return redirect(
