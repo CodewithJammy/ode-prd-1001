@@ -59,3 +59,79 @@ def create_user(google_user):
         "Gender": "",
         "NewUser": 1
     }
+
+
+
+            # ------------------------------------------------
+            # Update the existing row
+            # ------------------------------------------------
+
+
+def update_user_profile(
+    google_id,
+    username,
+    mobile,
+    gender
+):
+    """
+    Update the existing user row in the Users Google Sheet.
+    """
+
+    sheet = get_worksheet("Users")
+
+    records = sheet.get_all_records()
+
+    for index, row in enumerate(records, start=2):
+
+        if str(row.get("GoogleId")) == str(google_id):
+
+            # ------------------------------------------------
+            # Update the existing row
+            # ------------------------------------------------
+
+            headers = sheet.row_values(1)
+
+            updates = {
+                "Username": username,
+                "Mobile": mobile,
+                "Gender": gender,
+                "NewUser": 0
+            }
+
+            for column_name, value in updates.items():
+
+                if column_name in headers:
+
+                    column_number = (
+                        headers.index(column_name) + 1
+                    )
+
+                    sheet.update_cell(
+                        index,
+                        column_number,
+                        value
+                    )
+
+            # ------------------------------------------------
+            # Return updated user
+            # ------------------------------------------------
+
+            updated_records = sheet.get_all_records()
+
+            for updated_row in updated_records:
+
+                if str(
+                    updated_row.get("GoogleId")
+                ) == str(google_id):
+
+                    return updated_row
+
+            return None
+
+    return None
+
+
+
+
+
+-----------------------------------------------
