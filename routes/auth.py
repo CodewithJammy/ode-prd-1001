@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import (
     Blueprint,
@@ -10,13 +11,16 @@ from flask import (
 )
 
 from google_auth_oauthlib.flow import Flow
-import requests
 
 from services.user_service import (
     find_user_by_google_id,
     create_user
 )
 
+
+# ============================================================
+# Blueprint
+# ============================================================
 
 auth_bp = Blueprint(
     "auth",
@@ -25,18 +29,39 @@ auth_bp = Blueprint(
 )
 
 
+# ============================================================
+# Google OAuth Configuration
+# ============================================================
+
+CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+REDIRECT_URI = (
+    "https://exambank.azurewebsites.net/auth/google/callback"
+)
+
+
 CLIENT_CONFIG = {
     "web": {
-        "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-        "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+
+        "auth_uri":
+            "https://accounts.google.com/o/oauth2/auth",
+
+        "token_uri":
+            "https://oauth2.googleapis.com/token",
+
         "redirect_uris": [
-            "https://exambank.azurewebsites.net/auth/google/callback"
+            REDIRECT_URI
         ]
     }
 }
 
+
+# ============================================================
+# Google OAuth Scopes
+# ============================================================
 
 SCOPES = [
     "openid",
@@ -45,42 +70,86 @@ SCOPES = [
 ]
 
 
+# ============================================================
+# ACCOUNT
+# ============================================================
+
 @auth_bp.route("/account")
 def account():
 
     google_id = session.get("google_id")
 
+    # --------------------------------------------------------
     # User is NOT logged in
+    # --------------------------------------------------------
+
     if not google_id:
 
         return redirect(
             url_for("auth.login")
         )
 
+    # --------------------------------------------------------
     # User is already logged in
+    # --------------------------------------------------------
+
     return redirect(
-        url_for("user.user_home")
+        url_for("user.profile")
     )
 
+
+# ============================================================
+# LOGIN PAGE
+# ============================================================
 
 @auth_bp.route("/login")
 def login():
 
-    return render_template("login.html")
+    return render_template(
+        "login.html"
+    )
 
+
+# ============================================================
+# START GOOGLE LOGIN
+# ============================================================
 
 @auth_bp.route("/google")
 def google_login():
+
+    # --------------------------------------------------------
+    # Check Google configuration
+    # --------------------------------------------------------
+
+    if not CLIENT_ID or not CLIENT_SECRET:
+
+        return (
+            "Google OAuth is not configured correctly "
+            "in Azure App Settings.",
+            500
+        )
+
+    # --------------------------------------------------------
+    # Create OAuth flow
+    # --------------------------------------------------------
 
     flow = Flow.from_client_config(
         CLIENT_CONFIG,
         scopes=SCOPES
     )
 
+    # --------------------------------------------------------
+    # Callback URL
+    # --------------------------------------------------------
+
     flow.redirect_uri = url_for(
         "auth.google_callback",
         _external=True
     )
+
+    # --------------------------------------------------------
+    # Generate Google authorization URL
+    # --------------------------------------------------------
 
     authorization_url, state = (
         flow.authorization_url(
@@ -90,17 +159,47 @@ def google_login():
         )
     )
 
+    # --------------------------------------------------------
+    # Save OAuth state in Flask session
+    # --------------------------------------------------------
+
     session["google_oauth_state"] = state
 
-    return redirect(authorization_url)
+    # --------------------------------------------------------
+    # Redirect user to Google
+    # --------------------------------------------------------
 
+    return redirect(
+        authorization_url
+    )
+
+
+# ============================================================
+# GOOGLE CALLBACK
+# ============================================================
 
 @auth_bp.route("/google/callback")
 def google_callback():
 
+    # --------------------------------------------------------
+    # Get OAuth state
+    # --------------------------------------------------------
+
     state = session.get(
         "google_oauth_state"
     )
+
+    if not state:
+
+        return (
+            "Google login session expired. "
+            "Please try again.",
+            400
+        )
+
+    # --------------------------------------------------------
+    # Create OAuth flow again
+    # --------------------------------------------------------
 
     flow = Flow.from_client_config(
         CLIENT_CONFIG,
@@ -108,10 +207,18 @@ def google_callback():
         state=state
     )
 
+    # --------------------------------------------------------
+    # Callback URL
+    # --------------------------------------------------------
+
     flow.redirect_uri = url_for(
         "auth.google_callback",
         _external=True
     )
+
+    # --------------------------------------------------------
+    # Exchange authorization code for token
+    # --------------------------------------------------------
 
     flow.fetch_token(
         authorization_response=request.url
@@ -119,23 +226,48 @@ def google_callback():
 
     credentials = flow.credentials
 
+    # --------------------------------------------------------
+    # Get Google user information
+    # --------------------------------------------------------
+
     response = requests.get(
         "https://openidconnect.googleapis.com/v1/userinfo",
         headers={
             "Authorization":
                 f"Bearer {credentials.token}"
-        }
+        },
+        timeout=10
     )
 
     response.raise_for_status()
 
     google_user = response.json()
 
-    google_id = google_user["sub"]
+    # --------------------------------------------------------
+    # Google unique user ID
+    # --------------------------------------------------------
+
+    google_id = google_user.get("sub")
+
+    if not google_id:
+
+        return (
+            "Google did not return a user ID.",
+            400
+        )
+
+    # --------------------------------------------------------
+    # Find user in Google Sheet
+    # --------------------------------------------------------
 
     user = find_user_by_google_id(
         google_id
     )
+
+    # --------------------------------------------------------
+    # User doesn't exist
+    # Create new user in Sheet
+    # --------------------------------------------------------
 
     if not user:
 
@@ -143,12 +275,26 @@ def google_callback():
             google_user
         )
 
+    # --------------------------------------------------------
+    # Store login information in Flask session
+    # --------------------------------------------------------
+
     session["user_id"] = user["UserId"]
 
     session["google_id"] = google_id
 
     session["user"] = user
 
+    # OAuth state is no longer required
+    session.pop(
+        "google_oauth_state",
+        None
+    )
+
+    # --------------------------------------------------------
+    # Go to profile
+    # --------------------------------------------------------
+
     return redirect(
-        url_for("user.user_home")
+        url_for("user.profile")
     )
