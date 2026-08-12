@@ -75,6 +75,35 @@ SCOPES = [
 ]
 
 
+
+# ============================================================
+# LOGOUT
+# ============================================================
+
+@auth_bp.route("/logout", methods=["GET"])
+def logout():
+
+    # --------------------------------------------------------
+    # Completely clear current user session
+    # --------------------------------------------------------
+
+    session.clear()
+
+    # --------------------------------------------------------
+    # Prevent browser from using cached authenticated pages
+    # --------------------------------------------------------
+
+    response = redirect(
+        url_for("auth.login")
+    )
+
+    response.headers["Cache-Control"] = (
+        "no-cache, no-store, must-revalidate"
+    )
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    return response
 # ============================================================
 # ACCOUNT BUTTON
 # ============================================================
