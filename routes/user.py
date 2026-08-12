@@ -253,6 +253,6 @@ def user_home():
     # ========================================================
 
     return render_template(
-        "profile.html",
+        "user_home.html",
         user=user
     )
