@@ -491,3 +491,130 @@ def get_active_all_subscription(user_id, google_id):
         "active": False,
         "expiry_date": None
     }
+
+
+
+# ============================================================
+# CHECK ACTIVE SINGLE TEST ACCESS
+# ============================================================
+
+def get_active_single_access(
+    user_id,
+    google_id,
+    category_id,
+    subcategory_id,
+    subject_id,
+    contenttype_id,
+    set_name
+):
+
+    sheet = get_payments_sheet()
+
+    records = sheet.get_all_records()
+
+    now = datetime.utcnow()
+
+    for row in records:
+
+        if str(row.get("UserId", "")).strip() != str(user_id).strip():
+            continue
+
+        if str(row.get("GoogleId", "")).strip() != str(google_id).strip():
+            continue
+
+        # Payment must be successful
+        payment_status = str(
+            row.get("PaymentStatus", "")
+        ).strip().lower()
+
+        if payment_status not in [
+            "paid",
+            "success",
+            "successful",
+            "approved"
+        ]:
+            continue
+
+        # Single access
+        access_type = str(
+            row.get("AccessType", "")
+        ).strip().lower()
+
+        if access_type != "single":
+            continue
+
+        # Check AttemptId -> TestAttempts
+        attempt_id = str(
+            row.get("AttemptId", "")
+        ).strip()
+
+        if not attempt_id:
+            continue
+
+        attempts_sheet = get_test_attempts_sheet()
+
+        attempts = attempts_sheet.get_all_records()
+
+        for attempt in attempts:
+
+            if str(
+                attempt.get("AttemptId", "")
+            ).strip() != attempt_id:
+                continue
+
+            if str(
+                attempt.get("CategoryId", "")
+            ).strip() != str(category_id).strip():
+                continue
+
+            if str(
+                attempt.get("SubCategoryId", "")
+            ).strip() != str(subcategory_id).strip():
+                continue
+
+            if str(
+                attempt.get("SubjectId", "")
+            ).strip() != str(subject_id).strip():
+                continue
+
+            if str(
+                attempt.get("ContenttypeId", "")
+            ).strip() != str(contenttype_id).strip():
+                continue
+
+            if str(
+                attempt.get("SetName", "")
+            ).strip() != str(set_name).strip():
+                continue
+
+            expiry_string = str(
+                row.get("ExpiryDate", "")
+            ).strip()
+
+            if not expiry_string:
+                continue
+
+            try:
+
+                expiry_date = datetime.strptime(
+                    expiry_string,
+                    "%Y-%m-%d %H:%M:%S"
+                )
+
+            except ValueError:
+
+                continue
+
+            if expiry_date > now:
+
+                return {
+                    "active": True,
+                    "expiry_date": expiry_date,
+                    "attempt": attempt
+                }
+
+    return {
+        "active": False,
+        "expiry_date": None,
+        "attempt": None
+    }
