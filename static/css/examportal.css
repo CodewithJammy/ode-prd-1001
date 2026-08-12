@@ -704,3 +704,7 @@ a {
     background: #fff1f2;
     color: #b02a37;
 }
+
+.account-menu {
+    display: block !important;
+}
