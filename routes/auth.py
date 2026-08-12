@@ -20,7 +20,7 @@ from services.user_service import (
 
 
 # ============================================================
-# Blueprint
+# BLUEPRINT
 # ============================================================
 
 auth_bp = Blueprint(
@@ -31,22 +31,11 @@ auth_bp = Blueprint(
 
 
 # ============================================================
-# Google OAuth Configuration
+# GOOGLE OAUTH CONFIGURATION
 # ============================================================
 
-CLIENT_ID = os.getenv(
-    "GOOGLE_CLIENT_ID"
-)
-
-CLIENT_SECRET = os.getenv(
-    "GOOGLE_CLIENT_SECRET"
-)
-
-
-# IMPORTANT:
-# This must exactly match the URI configured
-# in Google Cloud Console.
-# ============================================================
+CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 REDIRECT_URI = (
     "https://exambank.azurewebsites.net/auth/google/callback"
@@ -76,32 +65,32 @@ CLIENT_CONFIG = {
 
 
 # ============================================================
-# Google OAuth Scopes
+# GOOGLE OAUTH SCOPES
 # ============================================================
 
 SCOPES = [
-
     "openid",
-
     "https://www.googleapis.com/auth/userinfo.email",
-
     "https://www.googleapis.com/auth/userinfo.profile"
 ]
 
 
 # ============================================================
-# ACCOUNT
+# ACCOUNT BUTTON
 # ============================================================
 
 @auth_bp.route("/account")
 def account():
 
-    google_id = session.get(
-        "google_id"
-    )
+    # --------------------------------------------------------
+    # Check whether user is already logged in
+    # --------------------------------------------------------
+
+    google_id = session.get("google_id")
 
     # --------------------------------------------------------
-    # User is NOT logged in
+    # NOT LOGGED IN
+    # Send user to login page
     # --------------------------------------------------------
 
     if not google_id:
@@ -111,11 +100,15 @@ def account():
         )
 
     # --------------------------------------------------------
-    # User is already logged in
+    # ALREADY LOGGED IN
+    # Send user to USER HOME
+    #
+    # IMPORTANT:
+    # Do NOT send to profile here.
     # --------------------------------------------------------
 
     return redirect(
-        url_for("user.profile")
+        url_for("user.user_home")
     )
 
 
@@ -139,7 +132,7 @@ def login():
 def google_login():
 
     # --------------------------------------------------------
-    # Check Google configuration
+    # Check Google Client ID
     # --------------------------------------------------------
 
     if not CLIENT_ID:
@@ -150,6 +143,10 @@ def google_login():
             500
         )
 
+    # --------------------------------------------------------
+    # Check Google Client Secret
+    # --------------------------------------------------------
+
     if not CLIENT_SECRET:
 
         return (
@@ -158,22 +155,15 @@ def google_login():
             500
         )
 
-    # --------------------------------------------------------
-    # Generate PKCE code verifier
-    #
-    # This value must be preserved until the callback.
-    # --------------------------------------------------------
+    # ========================================================
+    # GENERATE PKCE CODE VERIFIER
+    # ========================================================
 
-    code_verifier = secrets.token_urlsafe(
-        64
-    )
+    code_verifier = secrets.token_urlsafe(64)
 
-    # --------------------------------------------------------
-    # Create OAuth flow
-    #
-    # IMPORTANT:
-    # Pass the code verifier here.
-    # --------------------------------------------------------
+    # ========================================================
+    # CREATE GOOGLE OAUTH FLOW
+    # ========================================================
 
     flow = Flow.from_client_config(
         CLIENT_CONFIG,
@@ -182,14 +172,14 @@ def google_login():
     )
 
     # --------------------------------------------------------
-    # Use exact Azure callback URL
+    # Exact Azure callback URL
     # --------------------------------------------------------
 
     flow.redirect_uri = REDIRECT_URI
 
-    # --------------------------------------------------------
-    # Generate Google authorization URL
-    # --------------------------------------------------------
+    # ========================================================
+    # GENERATE GOOGLE AUTHORIZATION URL
+    # ========================================================
 
     authorization_url, state = (
         flow.authorization_url(
@@ -199,26 +189,21 @@ def google_login():
         )
     )
 
-    # --------------------------------------------------------
-    # Save OAuth state
-    # --------------------------------------------------------
+    # ========================================================
+    # SAVE OAUTH STATE
+    # ========================================================
 
     session["google_oauth_state"] = state
 
-    # --------------------------------------------------------
-    # Save PKCE verifier
-    #
-    # We need the SAME verifier when Google sends
-    # the user back to /google/callback.
-    # --------------------------------------------------------
+    # ========================================================
+    # SAVE PKCE CODE VERIFIER
+    # ========================================================
 
-    session["google_code_verifier"] = (
-        code_verifier
-    )
+    session["google_code_verifier"] = code_verifier
 
-    # --------------------------------------------------------
-    # Debug information
-    # --------------------------------------------------------
+    # ========================================================
+    # DEBUG
+    # ========================================================
 
     print(
         "DEBUG GOOGLE CLIENT ID:",
@@ -238,9 +223,9 @@ def google_login():
         "DEBUG GOOGLE CODE VERIFIER SAVED"
     )
 
-    # --------------------------------------------------------
-    # Redirect user to Google
-    # --------------------------------------------------------
+    # ========================================================
+    # REDIRECT TO GOOGLE
+    # ========================================================
 
     return redirect(
         authorization_url
@@ -254,25 +239,25 @@ def google_login():
 @auth_bp.route("/google/callback")
 def google_callback():
 
-    # --------------------------------------------------------
-    # Get OAuth state
-    # --------------------------------------------------------
+    # ========================================================
+    # GET OAUTH STATE
+    # ========================================================
 
     state = session.get(
         "google_oauth_state"
     )
 
-    # --------------------------------------------------------
-    # Get PKCE code verifier
-    # --------------------------------------------------------
+    # ========================================================
+    # GET PKCE VERIFIER
+    # ========================================================
 
     code_verifier = session.get(
         "google_code_verifier"
     )
 
-    # --------------------------------------------------------
-    # Validate OAuth state
-    # --------------------------------------------------------
+    # ========================================================
+    # VALIDATE STATE
+    # ========================================================
 
     if not state:
 
@@ -282,9 +267,9 @@ def google_callback():
             400
         )
 
-    # --------------------------------------------------------
-    # Validate PKCE verifier
-    # --------------------------------------------------------
+    # ========================================================
+    # VALIDATE PKCE VERIFIER
+    # ========================================================
 
     if not code_verifier:
 
@@ -294,13 +279,9 @@ def google_callback():
             400
         )
 
-    # --------------------------------------------------------
-    # Create OAuth flow again
-    #
-    # IMPORTANT:
-    # Use the SAME code verifier that was generated
-    # before sending the user to Google.
-    # --------------------------------------------------------
+    # ========================================================
+    # CREATE OAUTH FLOW AGAIN
+    # ========================================================
 
     flow = Flow.from_client_config(
         CLIENT_CONFIG,
@@ -315,9 +296,9 @@ def google_callback():
 
     flow.redirect_uri = REDIRECT_URI
 
-    # --------------------------------------------------------
-    # Debug
-    # --------------------------------------------------------
+    # ========================================================
+    # DEBUG
+    # ========================================================
 
     print(
         "DEBUG CALLBACK URL:",
@@ -333,23 +314,39 @@ def google_callback():
         "DEBUG CODE VERIFIER FOUND"
     )
 
-    # --------------------------------------------------------
-    # Exchange authorization code for token
-    # --------------------------------------------------------
+    # ========================================================
+    # EXCHANGE AUTHORIZATION CODE
+    # ========================================================
 
-    flow.fetch_token(
-        authorization_response=request.url
-    )
+    try:
 
-    # --------------------------------------------------------
-    # Get credentials
-    # --------------------------------------------------------
+        flow.fetch_token(
+            authorization_response=request.url
+        )
+
+    except Exception as e:
+
+        print(
+            "GOOGLE TOKEN ERROR:",
+            str(e)
+        )
+
+        return (
+            "Google login failed while exchanging "
+            "the authorization code. "
+            "Please try again.",
+            500
+        )
+
+    # ========================================================
+    # GET GOOGLE CREDENTIALS
+    # ========================================================
 
     credentials = flow.credentials
 
-    # --------------------------------------------------------
-    # Get Google user information
-    # --------------------------------------------------------
+    # ========================================================
+    # GET GOOGLE USER INFORMATION
+    # ========================================================
 
     response = requests.get(
         "https://openidconnect.googleapis.com/v1/userinfo",
@@ -366,9 +363,9 @@ def google_callback():
 
     google_user = response.json()
 
-    # --------------------------------------------------------
-    # Get Google unique ID
-    # --------------------------------------------------------
+    # ========================================================
+    # GET GOOGLE UNIQUE ID
+    # ========================================================
 
     google_id = google_user.get(
         "sub"
@@ -381,19 +378,17 @@ def google_callback():
             400
         )
 
-    # --------------------------------------------------------
-    # Find user in Google Sheet
-    # --------------------------------------------------------
+    # ========================================================
+    # FIND USER IN GOOGLE SHEET
+    # ========================================================
 
     user = find_user_by_google_id(
         google_id
     )
 
-    # --------------------------------------------------------
-    # User does not exist
-    #
-    # Create new user in Google Sheet.
-    # --------------------------------------------------------
+    # ========================================================
+    # CREATE NEW USER
+    # ========================================================
 
     if not user:
 
@@ -401,25 +396,33 @@ def google_callback():
             google_user
         )
 
-    # --------------------------------------------------------
-    # Store login information in Flask session
-    # --------------------------------------------------------
+    # ========================================================
+    # SAFETY CHECK
+    # ========================================================
 
-    session["user_id"] = (
-        user["UserId"]
+    if not user:
+
+        return (
+            "Unable to create or retrieve your "
+            "user profile.",
+            500
+        )
+
+    # ========================================================
+    # STORE LOGIN SESSION
+    # ========================================================
+
+    session["user_id"] = user.get(
+        "UserId"
     )
 
-    session["google_id"] = (
-        google_id
-    )
+    session["google_id"] = google_id
 
-    session["user"] = (
-        user
-    )
+    session["user"] = user
 
-    # --------------------------------------------------------
-    # Remove temporary OAuth information
-    # --------------------------------------------------------
+    # ========================================================
+    # REMOVE TEMPORARY OAUTH DATA
+    # ========================================================
 
     session.pop(
         "google_oauth_state",
@@ -431,10 +434,22 @@ def google_callback():
         None
     )
 
-    # --------------------------------------------------------
-    # Go to profile
-    # --------------------------------------------------------
+    # ========================================================
+    # IMPORTANT LOGIN FLOW
+    # ========================================================
+    #
+    # Do NOT directly send every user to profile.
+    #
+    # user_home() will check NewUser:
+    #
+    # NewUser = 1
+    #       -> profile
+    #
+    # NewUser = 0
+    #       -> user_home.html
+    #
+    # ========================================================
 
     return redirect(
-        url_for("user.profile")
+        url_for("user.user_home")
     )
