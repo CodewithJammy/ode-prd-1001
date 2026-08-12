@@ -821,108 +821,105 @@ def test_page(
     #
     # Complete Test / Previous Years
     # ========================================================
+# ========================================================
+# PAID RESULT
+#
+# Complete Test / Previous Years
+# ========================================================
 
-    google_id = session.get(
-        "google_id"
-    )
+google_id = session.get(
+    "google_id"
+)
 
-    user_id = session.get(
-        "user_id"
-    )
+user_id = session.get(
+    "user_id"
+)
 
-    # ========================================================
-    # USER NOT LOGGED IN
-    # ========================================================
+# ========================================================
+# USER NOT LOGGED IN
+# ========================================================
 
-    if not google_id:
+if not google_id:
 
-        # Save information about the pending test.
-        # The actual TestAttempts row will be created
-        # after Google login.
-
-        session["pending_test"] = {
-            "category_id": category_id,
-            "subcategory_id": subcategory_id,
-            "subject_id": subject_id,
-            "contenttype_id": contenttype_id,
-            "set_name": set_name,
-            "language": language,
-            "score": score,
-            "attempted": attempted,
-            "total": total,
-            "percentage": percentage
-        }
-
-        return redirect(
-            url_for(
-                "auth.login"
-            )
-        )
-
-    # ========================================================
-    # USER IS ALREADY LOGGED IN
-    # ========================================================
-
-    if not user_id:
-
-        # User has Google ID but no UserId.
-        # Send them through login again.
-
-        return redirect(
-            url_for(
-                "auth.login"
-            )
-        )
-
-    # ========================================================
-    # CREATE TEST ATTEMPT
-    # ========================================================
-
-    attempt = create_test_attempt(
-
-        user_id=user_id,
-
-        google_id=google_id,
-
-        category_id=category_id,
-
-        subcategory_id=subcategory_id,
-
-        subject_id=subject_id,
-
-        contenttype_id=contenttype_id,
-
-        set_name=set_name,
-
-        score=score,
-
-        attempted=attempted,
-
-        total=total,
-
-        percentage=percentage,
-
-        result_access="Paid"
-    )
-
-    # ========================================================
-    # TEMPORARY PAYMENT PAGE
+    # ----------------------------------------------------
+    # Save the completed test temporarily.
     #
-    # We will create payment_required.html next.
-    # ========================================================
+    # We will use this after Google login.
+    # ----------------------------------------------------
 
-    return render_template(
-        "payment_required.html",
+    session["pending_test"] = {
 
-        category=category,
+        "category_id": category_id,
 
-        subcategory=subcategory,
+        "subcategory_id": subcategory_id,
 
-        subject=subject,
+        "subject_id": subject_id,
 
-        contenttype=contenttype,
+        "contenttype_id": contenttype_id,
 
-        set_name=set_name,
+        "set_name": set_name,
 
-        attempt=attempt
+        "language": language,
+
+        "score": score,
+
+        "attempted": attempted,
+
+        "total": total,
+
+        "percentage": percentage
+
+    }
+
+    # ----------------------------------------------------
+    # Send user to Google login
+    # ----------------------------------------------------
+
+    return redirect(
+        url_for(
+            "auth.login"
+        )
     )
+
+
+# ========================================================
+# USER LOGGED IN BUT USER ID NOT AVAILABLE
+# ========================================================
+
+if not user_id:
+
+    return redirect(
+        url_for(
+            "auth.login"
+        )
+    )
+
+
+# ========================================================
+# SHOW PAYMENT OPTIONS
+# ========================================================
+
+return render_template(
+
+    "payment_required.html",
+
+    category=category,
+
+    subcategory=subcategory,
+
+    subject=subject,
+
+    contenttype=contenttype,
+
+    set_name=set_name,
+
+    score=score,
+
+    attempted=attempted,
+
+    total=total,
+
+    percentage=percentage,
+
+    language=language
+)
