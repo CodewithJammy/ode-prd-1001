@@ -1,486 +1,484 @@
 <!DOCTYPE html>
-<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
-
+<html lang="en">
 <head>
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Payment Required
-    </title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <title>Result Access Required</title>
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f4f6fb;
-            min-height: 100vh;
-            color: #212529;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            color: #111827;
         }
 
-        .payment-container {
+        .page {
             max-width: 900px;
-            margin: 60px auto;
+            margin: 0 auto;
+            padding: 35px 20px 60px;
         }
 
-        .payment-card {
-            background: white;
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
         }
 
-        .payment-title {
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 8px;
         }
 
-        .test-info {
-            background: #f7f8fa;
-            border-radius: 14px;
-            padding: 20px;
+        .header p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        /* ==================================================
+           TEST DETAILS
+           ================================================== */
+
+        .details-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 25px 20px;
             margin-bottom: 30px;
         }
 
-        .test-info-row {
+        .details-card h2 {
+            margin: 0 0 22px;
+            font-size: 20px;
+        }
+
+        .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 7px 0;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 15px;
         }
 
-        .test-info-label {
-            color: #6c757d;
+        .detail-label {
+            color: #64748b;
         }
 
-        .plan-card {
-            border: 2px solid #e2e6ea;
-            border-radius: 16px;
-            padding: 25px;
-            height: 100%;
-            transition: 0.2s;
-        }
-
-        .plan-card:hover {
-            border-color: #0d6efd;
-            box-shadow: 0 5px 20px rgba(13,110,253,0.10);
-        }
-
-        .plan-title {
-            font-size: 22px;
+        .detail-value {
             font-weight: 700;
+            text-align: right;
+            color: #111827;
         }
 
-        .plan-price {
+        /* ==================================================
+           ACCESS TITLE
+           ================================================== */
+
+        .access-title {
+            text-align: center;
+            margin: 25px 0 22px;
+        }
+
+        .access-title h2 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        /* ==================================================
+           PAYMENT OPTIONS
+           ================================================== */
+
+        .plans {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .plan {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px 25px;
+            position: relative;
+            transition: 0.2s ease;
+        }
+
+        .plan:hover {
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+        }
+
+        .plan h3 {
+            margin: 5px 0 20px;
+            font-size: 22px;
+        }
+
+        .price {
             font-size: 38px;
             font-weight: 700;
-            margin: 15px 0;
+            margin-bottom: 12px;
         }
 
-        .plan-validity {
-            color: #6c757d;
+        .validity {
+            color: #64748b;
+            font-size: 14px;
             margin-bottom: 20px;
         }
 
-        .plan-button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
+        .features {
+            padding: 0;
+            margin: 0 0 25px;
+            list-style: none;
         }
 
-        .recommended {
-            font-size: 12px;
-            font-weight: 600;
+        .features li {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .features li::before {
+            content: "✓";
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .pay-btn {
+            display: block;
+            width: 100%;
+            padding: 13px 15px;
+            border: none;
+            border-radius: 9px;
+            background: #111827;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .pay-btn:hover {
+            background: #000000;
+        }
+
+        /* ==================================================
+           BEST VALUE
+           ================================================== */
+
+        .best-value {
+            position: absolute;
+            top: 18px;
+            right: 18px;
             background: #198754;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 10px;
             border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 700;
         }
 
-        .security-note {
+        /* ==================================================
+           EXISTING ACCESS MESSAGE
+           ================================================== */
+
+        .active-message {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            border-radius: 12px;
+            padding: 18px;
             text-align: center;
-            color: #6c757d;
-            font-size: 14px;
-            margin-top: 25px;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        /* ==================================================
+           MOBILE
+           ================================================== */
+
+        @media (max-width: 700px) {
+
+            .plans {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .detail-row {
+                gap: 15px;
+            }
+
+            .detail-value {
+                max-width: 55%;
+            }
         }
 
     </style>
 
 </head>
 
-
 <body>
 
+<div class="page">
 
-<div class="container payment-container">
+    <!-- ==================================================
+         HEADER
+         ================================================== -->
 
-    <div class="payment-card">
+    <div class="header">
 
+        <h1>
+            Result Access Required
+        </h1>
 
-        <!-- ================================================= -->
-        <!-- HEADER -->
-        <!-- ================================================= -->
+        <p>
+            Choose an access plan to view your test result.
+        </p>
 
-        <div class="text-center mb-4">
-
-            <h2 class="payment-title">
-                Result Access Required
-            </h2>
-
-            <p class="text-muted mb-0">
-                Choose an access plan to view your test result.
-            </p>
-
-        </div>
+    </div>
 
 
-        <!-- ================================================= -->
-        <!-- TEST INFORMATION -->
-        <!-- ================================================= -->
+    <!-- ==================================================
+         TEST DETAILS
+         ================================================== -->
 
-        <div class="test-info">
+    <div class="details-card">
 
-            <h5 class="fw-bold mb-3">
-                Test Details
-            </h5>
+        <h2>
+            Test Details
+        </h2>
 
+        <div class="detail-row">
 
-            <div class="test-info-row">
+            <span class="detail-label">
+                Category
+            </span>
 
-                <span class="test-info-label">
-                    Category
-                </span>
-
-                <strong>
-                    {{ category.NameEnglish }}
-                </strong>
-
-            </div>
-
-
-            <div class="test-info-row">
-
-                <span class="test-info-label">
-                    Subject
-                </span>
-
-                <strong>
-                    {{ subject.NameEnglish }}
-                </strong>
-
-            </div>
-
-
-            <div class="test-info-row">
-
-                <span class="test-info-label">
-                    Test Type
-                </span>
-
-                <strong>
-                    {{ contenttype.NameEnglish }}
-                </strong>
-
-            </div>
-
-
-            <div class="test-info-row">
-
-                <span class="test-info-label">
-                    Test
-                </span>
-
-                <strong>
-                    {{ set_name }}
-                </strong>
-
-            </div>
-
-
-            <div class="test-info-row">
-
-                <span class="test-info-label">
-                    Your Score
-                </span>
-
-                <strong>
-                    {{ score }} / {{ total }}
-                </strong>
-
-            </div>
+            <span class="detail-value">
+                {{ category.NameEnglish
+                   if category and category.NameEnglish
+                   else category.CategoryId }}
+            </span>
 
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- ACCESS OPTIONS -->
-        <!-- ================================================= -->
+        <div class="detail-row">
 
-        <h4 class="text-center fw-bold mb-4">
+            <span class="detail-label">
+                Subject
+            </span>
+
+            <span class="detail-value">
+                {{ subject.NameEnglish
+                   if subject and subject.NameEnglish
+                   else subject.SubjectId }}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Test Type
+            </span>
+
+            <span class="detail-value">
+                {{ contenttype.NameEnglish
+                   if contenttype and contenttype.NameEnglish
+                   else contenttype.ContenttypeId }}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Test
+            </span>
+
+            <span class="detail-value">
+                {{ set_name }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         ACCESS OPTIONS
+         ================================================== -->
+
+    <div class="access-title">
+
+        <h2>
             Choose Your Access
-        </h4>
+        </h2>
+
+    </div>
 
 
-        <div class="row g-4">
+    <div class="plans">
 
 
-            <!-- ============================================= -->
-            <!-- SINGLE TEST -->
-            <!-- ============================================= -->
+        <!-- ==================================================
+             SINGLE TEST
+             Price comes from contenttype JSON
+             ================================================== -->
 
-            <div class="col-md-6">
+        <div class="plan">
 
-                <div class="plan-card">
+            <h3>
+                Single Test
+            </h3>
 
-                    <div class="plan-title">
-                        Single Test
-                    </div>
+            <div class="price">
 
-
-                    <div class="plan-price">
-
-                        ₹{{ contenttype.Price }}
-
-                    </div>
-
-
-                    <div class="plan-validity">
-
-                        Access valid for
-                        <strong>90 days</strong>
-
-                    </div>
-
-
-                    <ul class="text-muted mb-4">
-
-                        <li>
-                            Access this test result
-                        </li>
-
-                        <li>
-                            Valid for 90 days
-                        </li>
-
-                        <li>
-                            No access to other tests
-                        </li>
-
-                    </ul>
-
-
-                    <form
-                        method="POST"
-                        action="{{
-                            url_for(
-                                'payment.select_payment'
-                            )
-                        }}"
-                    >
-
-                        <input
-                            type="hidden"
-                            name="access_type"
-                            value="Single"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="category_id"
-                            value="{{ category.CategoryId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="subcategory_id"
-                            value="{{ subcategory.SubCategoryId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="subject_id"
-                            value="{{ subject.SubjectId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="contenttype_id"
-                            value="{{ contenttype.ContenttypeId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="set_name"
-                            value="{{ set_name }}"
-                        >
-
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary plan-button"
-                        >
-
-                            Continue with Single Test
-
-                        </button>
-
-                    </form>
-
-                </div>
+                ₹{{ contenttype.Price or 0 }}
 
             </div>
 
+            <div class="validity">
 
-            <!-- ============================================= -->
-            <!-- ALL TESTS -->
-            <!-- ============================================= -->
-
-            <div class="col-md-6">
-
-                <div class="plan-card">
-
-                    <span class="recommended">
-                        BEST VALUE
-                    </span>
-
-
-                    <div class="plan-title">
-                        All Tests
-                    </div>
-
-
-                    <div class="plan-price">
-
-                        ₹99
-
-                    </div>
-
-
-                    <div class="plan-validity">
-
-                        Access valid for
-                        <strong>90 days</strong>
-
-                    </div>
-
-
-                    <ul class="text-muted mb-4">
-
-                        <li>
-                            Access all paid tests
-                        </li>
-
-                        <li>
-                            Complete Tests
-                        </li>
-
-                        <li>
-                            Previous Years Tests
-                        </li>
-
-                        <li>
-                            Valid for 90 days
-                        </li>
-
-                    </ul>
-
-
-                    <form
-                        method="POST"
-                        action="{{
-                            url_for(
-                                'payment.select_payment'
-                            )
-                        }}"
-                    >
-
-                        <input
-                            type="hidden"
-                            name="access_type"
-                            value="All"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="category_id"
-                            value="{{ category.CategoryId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="subcategory_id"
-                            value="{{ subcategory.SubCategoryId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="subject_id"
-                            value="{{ subject.SubjectId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="contenttype_id"
-                            value="{{ contenttype.ContenttypeId }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="set_name"
-                            value="{{ set_name }}"
-                        >
-
-
-                        <button
-                            type="submit"
-                            class="btn btn-success plan-button"
-                        >
-
-                            Continue with All Tests
-
-                        </button>
-
-                    </form>
-
-                </div>
+                Access valid for
+                <strong>90 days</strong>
 
             </div>
 
+            <ul class="features">
+
+                <li>
+                    Access this test
+                </li>
+
+                <li>
+                    View your complete result
+                </li>
+
+                <li>
+                    Valid for 90 days
+                </li>
+
+            </ul>
+
+
+            <form method="POST"
+                  action="{{ url_for('payment.select_payment') }}">
+
+                <input type="hidden"
+                       name="attempt_id"
+                       value="{{ attempt.AttemptId if attempt else '' }}">
+
+                <input type="hidden"
+                       name="access_type"
+                       value="Single">
+
+                <input type="hidden"
+                       name="amount"
+                       value="{{ contenttype.Price or 0 }}">
+
+                <button type="submit"
+                        class="pay-btn">
+
+                    Continue with Single Test
+
+                </button>
+
+            </form>
 
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- NOTE -->
-        <!-- ================================================= -->
+        <!-- ==================================================
+             ALL TESTS
+             Fixed ₹99
+             ================================================== -->
 
-        <div class="security-note">
+        <div class="plan">
 
-            🔒 Secure payment will be available through Razorpay.
+            <div class="best-value">
+                BEST VALUE
+            </div>
 
-            <br>
+            <h3>
+                All Tests
+            </h3>
 
-            Your access will be valid for 90 days after successful payment.
+            <div class="price">
+                ₹99
+            </div>
+
+            <div class="validity">
+
+                Access valid for
+                <strong>90 days</strong>
+
+            </div>
+
+            <ul class="features">
+
+                <li>
+                    Access all paid tests
+                </li>
+
+                <li>
+                    No need to purchase tests individually
+                </li>
+
+                <li>
+                    View complete results
+                </li>
+
+                <li>
+                    Valid for 90 days
+                </li>
+
+            </ul>
+
+
+            <form method="POST"
+                  action="{{ url_for('payment.select_payment') }}">
+
+                <input type="hidden"
+                       name="attempt_id"
+                       value="{{ attempt.AttemptId if attempt else '' }}">
+
+                <input type="hidden"
+                       name="access_type"
+                       value="All">
+
+                <input type="hidden"
+                       name="amount"
+                       value="99">
+
+                <button type="submit"
+                        class="pay-btn">
+
+                    Continue with All Tests
+
+                </button>
+
+            </form>
 
         </div>
-
 
     </div>
 
 </div>
 
-
 </body>
-
 </html>
