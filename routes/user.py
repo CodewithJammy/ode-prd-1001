@@ -14,6 +14,10 @@ from services.user_service import (
 )
 
 
+# ============================================================
+# BLUEPRINT
+# ============================================================
+
 user_bp = Blueprint(
     "user",
     __name__,
@@ -22,7 +26,7 @@ user_bp = Blueprint(
 
 
 # ============================================================
-# USER PROFILE / USER HOME
+# USER PROFILE
 # ============================================================
 
 @user_bp.route(
@@ -35,9 +39,7 @@ def profile():
     # Get Google ID from session
     # --------------------------------------------------------
 
-    google_id = session.get(
-        "google_id"
-    )
+    google_id = session.get("google_id")
 
     if not google_id:
 
@@ -49,9 +51,7 @@ def profile():
     # Get Users sheet
     # --------------------------------------------------------
 
-    sheet = get_worksheet(
-        "Users"
-    )
+    sheet = get_worksheet("Users")
 
     records = sheet.get_all_records()
 
@@ -63,12 +63,13 @@ def profile():
 
     for row in records:
 
-        if str(
-            row.get("GoogleId")
-        ) == str(google_id):
+        if (
+            str(row.get("GoogleId", "")).strip()
+            ==
+            str(google_id).strip()
+        ):
 
             user = row
-
             break
 
     # --------------------------------------------------------
@@ -127,6 +128,10 @@ def profile():
             gender=gender
         )
 
+        # ----------------------------------------------------
+        # Update failed
+        # ----------------------------------------------------
+
         if not updated_user:
 
             return render_template(
@@ -144,6 +149,12 @@ def profile():
 
         session["user"] = updated_user
 
+        session["google_id"] = google_id
+
+        session["user_id"] = updated_user.get(
+            "UserId"
+        )
+
         # ----------------------------------------------------
         # Profile completed
         # ----------------------------------------------------
@@ -153,7 +164,7 @@ def profile():
         )
 
     # ========================================================
-    # GET
+    # GET - SHOW PROFILE
     # ========================================================
 
     return render_template(
@@ -175,9 +186,7 @@ def user_home():
     # Get Google ID
     # --------------------------------------------------------
 
-    google_id = session.get(
-        "google_id"
-    )
+    google_id = session.get("google_id")
 
     if not google_id:
 
@@ -186,25 +195,28 @@ def user_home():
         )
 
     # --------------------------------------------------------
-    # Get user from Sheet
+    # Get Users sheet
     # --------------------------------------------------------
 
-    sheet = get_worksheet(
-        "Users"
-    )
+    sheet = get_worksheet("Users")
 
     records = sheet.get_all_records()
+
+    # --------------------------------------------------------
+    # Find current user
+    # --------------------------------------------------------
 
     user = None
 
     for row in records:
 
-        if str(
-            row.get("GoogleId")
-        ) == str(google_id):
+        if (
+            str(row.get("GoogleId", "")).strip()
+            ==
+            str(google_id).strip()
+        ):
 
             user = row
-
             break
 
     # --------------------------------------------------------
@@ -220,24 +232,27 @@ def user_home():
         )
 
     # --------------------------------------------------------
-    # Still a new user
+    # New user
     #
-    # Send them back to profile completion.
+    # User has not completed profile yet.
     # --------------------------------------------------------
 
     if str(
-        user.get("NewUser")
-    ) == "1":
+        user.get("NewUser", "")
+    ).strip() == "1":
 
         return redirect(
             url_for("user.profile")
         )
 
-    # --------------------------------------------------------
-    # Normal user home
-    # --------------------------------------------------------
+    # ========================================================
+    # TEMPORARY
+    #
+    # You don't have user_home.html yet.
+    # So use profile.html for now.
+    # ========================================================
 
     return render_template(
-        "user_home.html",
+        "profile.html",
         user=user
     )
