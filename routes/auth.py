@@ -46,11 +46,13 @@ CLIENT_CONFIG = {
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET,
 
-        "auth_uri":
-            "https://accounts.google.com/o/oauth2/auth",
+        "auth_uri": (
+            "https://accounts.google.com/o/oauth2/auth"
+        ),
 
-        "token_uri":
-            "https://oauth2.googleapis.com/token",
+        "token_uri": (
+            "https://oauth2.googleapis.com/token"
+        ),
 
         "redirect_uris": [
             REDIRECT_URI
@@ -79,20 +81,14 @@ def account():
 
     google_id = session.get("google_id")
 
-    # --------------------------------------------------------
-    # User is NOT logged in
-    # --------------------------------------------------------
-
+    # User is not logged in
     if not google_id:
 
         return redirect(
             url_for("auth.login")
         )
 
-    # --------------------------------------------------------
     # User is already logged in
-    # --------------------------------------------------------
-
     return redirect(
         url_for("user.profile")
     )
@@ -118,14 +114,22 @@ def login():
 def google_login():
 
     # --------------------------------------------------------
-    # Check Google configuration
+    # Check configuration
     # --------------------------------------------------------
 
-    if not CLIENT_ID or not CLIENT_SECRET:
+    if not CLIENT_ID:
 
         return (
-            "Google OAuth is not configured correctly "
-            "in Azure App Settings.",
+            "GOOGLE_CLIENT_ID is missing "
+            "from Azure App Settings.",
+            500
+        )
+
+    if not CLIENT_SECRET:
+
+        return (
+            "GOOGLE_CLIENT_SECRET is missing "
+            "from Azure App Settings.",
             500
         )
 
@@ -138,14 +142,9 @@ def google_login():
         scopes=SCOPES
     )
 
-    # --------------------------------------------------------
-    # Callback URL
-    # --------------------------------------------------------
-
-    flow.redirect_uri = url_for(
-        "auth.google_callback",
-        _external=True
-    )
+    # IMPORTANT:
+    # Use the exact Azure callback URL.
+    flow.redirect_uri = REDIRECT_URI
 
     # --------------------------------------------------------
     # Generate Google authorization URL
@@ -160,13 +159,32 @@ def google_login():
     )
 
     # --------------------------------------------------------
-    # Save OAuth state in Flask session
+    # Save state
     # --------------------------------------------------------
 
     session["google_oauth_state"] = state
 
     # --------------------------------------------------------
-    # Redirect user to Google
+    # Temporary debugging
+    # --------------------------------------------------------
+
+    print(
+        "DEBUG GOOGLE CLIENT ID:",
+        CLIENT_ID
+    )
+
+    print(
+        "DEBUG GOOGLE REDIRECT URI:",
+        REDIRECT_URI
+    )
+
+    print(
+        "DEBUG GOOGLE AUTH URL:",
+        authorization_url
+    )
+
+    # --------------------------------------------------------
+    # Send user to Google
     # --------------------------------------------------------
 
     return redirect(
@@ -198,7 +216,7 @@ def google_callback():
         )
 
     # --------------------------------------------------------
-    # Create OAuth flow again
+    # Create OAuth flow
     # --------------------------------------------------------
 
     flow = Flow.from_client_config(
@@ -207,14 +225,9 @@ def google_callback():
         state=state
     )
 
-    # --------------------------------------------------------
-    # Callback URL
-    # --------------------------------------------------------
-
-    flow.redirect_uri = url_for(
-        "auth.google_callback",
-        _external=True
-    )
+    # IMPORTANT:
+    # Must be exactly the same URI used above.
+    flow.redirect_uri = REDIRECT_URI
 
     # --------------------------------------------------------
     # Exchange authorization code for token
@@ -244,7 +257,7 @@ def google_callback():
     google_user = response.json()
 
     # --------------------------------------------------------
-    # Google unique user ID
+    # Get Google ID
     # --------------------------------------------------------
 
     google_id = google_user.get("sub")
@@ -265,8 +278,7 @@ def google_callback():
     )
 
     # --------------------------------------------------------
-    # User doesn't exist
-    # Create new user in Sheet
+    # Create new user if not found
     # --------------------------------------------------------
 
     if not user:
@@ -276,7 +288,7 @@ def google_callback():
         )
 
     # --------------------------------------------------------
-    # Store login information in Flask session
+    # Store user in Flask session
     # --------------------------------------------------------
 
     session["user_id"] = user["UserId"]
@@ -285,7 +297,7 @@ def google_callback():
 
     session["user"] = user
 
-    # OAuth state is no longer required
+    # Remove OAuth state
     session.pop(
         "google_oauth_state",
         None
