@@ -81,14 +81,14 @@ def get_next_payment_id():
     return max(ids, default=0) + 1
 
 
+
 # ============================================================
 # CREATE PAYMENT REQUEST
 #
 # Temporary payment request.
 #
-# Later this function can create a Razorpay Order.
-#
-# For now it only prepares the payment information.
+# Currently payment is simulated.
+# Later Razorpay Order creation can be added here.
 # ============================================================
 
 def create_payment_request(
@@ -96,8 +96,14 @@ def create_payment_request(
     user_id,
     google_id,
     amount,
-    access_type
+    access_type,
+    payment_method="Manual",
+    razorpay_order_id=""
 ):
+
+    # --------------------------------------------------------
+    # Normalize access type
+    # --------------------------------------------------------
 
     access_type = str(
         access_type
@@ -113,18 +119,39 @@ def create_payment_request(
             "Expected 'Single' or 'All'."
         )
 
+    # --------------------------------------------------------
+    # Normalize payment method
+    # --------------------------------------------------------
+
+    payment_method = str(
+        payment_method or "Manual"
+    ).strip()
+
+    if not payment_method:
+        payment_method = "Manual"
+
+    # --------------------------------------------------------
+    # Return temporary payment request
+    # --------------------------------------------------------
+
     return {
+
         "AttemptId": attempt_id,
+
         "UserId": user_id,
+
         "GoogleId": google_id,
+
         "Amount": amount,
+
         "AccessType": access_type,
-        "PaymentMethod": "Manual",
+
+        "PaymentMethod": payment_method,
+
         "PaymentStatus": "Pending",
-        "RazorpayOrderId": ""
+
+        "RazorpayOrderId": razorpay_order_id
     }
-
-
 # ============================================================
 # CREATE TEST ATTEMPT
 #
