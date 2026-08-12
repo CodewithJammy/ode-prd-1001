@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Payment Required
+    </title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f4f6fb;
+            min-height: 100vh;
+            color: #212529;
+        }
+
+        .payment-container {
+            max-width: 900px;
+            margin: 60px auto;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+        .payment-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .test-info {
+            background: #f7f8fa;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .test-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+        }
+
+        .test-info-label {
+            color: #6c757d;
+        }
+
+        .plan-card {
+            border: 2px solid #e2e6ea;
+            border-radius: 16px;
+            padding: 25px;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        .plan-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 5px 20px rgba(13,110,253,0.10);
+        }
+
+        .plan-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .plan-price {
+            font-size: 38px;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .plan-validity {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .recommended {
+            font-size: 12px;
+            font-weight: 600;
+            background: #198754;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .security-note {
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container payment-container">
+
+    <div class="payment-card">
+
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
+        <div class="text-center mb-4">
+
+            <h2 class="payment-title">
+                Result Access Required
+            </h2>
+
+            <p class="text-muted mb-0">
+                Choose an access plan to view your test result.
+            </p>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- TEST INFORMATION -->
+        <!-- ================================================= -->
+
+        <div class="test-info">
+
+            <h5 class="fw-bold mb-3">
+                Test Details
+            </h5>
+
+
+            <div class="test-info-row">
+
+                <span class="test-info-label">
+                    Category
+                </span>
+
+                <strong>
+                    {{ category.NameEnglish }}
+                </strong>
+
+            </div>
+
+
+            <div class="test-info-row">
+
+                <span class="test-info-label">
+                    Subject
+                </span>
+
+                <strong>
+                    {{ subject.NameEnglish }}
+                </strong>
+
+            </div>
+
+
+            <div class="test-info-row">
+
+                <span class="test-info-label">
+                    Test Type
+                </span>
+
+                <strong>
+                    {{ contenttype.NameEnglish }}
+                </strong>
+
+            </div>
+
+
+            <div class="test-info-row">
+
+                <span class="test-info-label">
+                    Test
+                </span>
+
+                <strong>
+                    {{ set_name }}
+                </strong>
+
+            </div>
+
+
+            <div class="test-info-row">
+
+                <span class="test-info-label">
+                    Your Score
+                </span>
+
+                <strong>
+                    {{ score }} / {{ total }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- ACCESS OPTIONS -->
+        <!-- ================================================= -->
+
+        <h4 class="text-center fw-bold mb-4">
+            Choose Your Access
+        </h4>
+
+
+        <div class="row g-4">
+
+
+            <!-- ============================================= -->
+            <!-- SINGLE TEST -->
+            <!-- ============================================= -->
+
+            <div class="col-md-6">
+
+                <div class="plan-card">
+
+                    <div class="plan-title">
+                        Single Test
+                    </div>
+
+
+                    <div class="plan-price">
+
+                        ₹{{ contenttype.Price }}
+
+                    </div>
+
+
+                    <div class="plan-validity">
+
+                        Access valid for
+                        <strong>90 days</strong>
+
+                    </div>
+
+
+                    <ul class="text-muted mb-4">
+
+                        <li>
+                            Access this test result
+                        </li>
+
+                        <li>
+                            Valid for 90 days
+                        </li>
+
+                        <li>
+                            No access to other tests
+                        </li>
+
+                    </ul>
+
+
+                    <form
+                        method="POST"
+                        action="{{
+                            url_for(
+                                'payment.select_payment'
+                            )
+                        }}"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="access_type"
+                            value="Single"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="category_id"
+                            value="{{ category.CategoryId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="subcategory_id"
+                            value="{{ subcategory.SubCategoryId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="subject_id"
+                            value="{{ subject.SubjectId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="contenttype_id"
+                            value="{{ contenttype.ContenttypeId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="set_name"
+                            value="{{ set_name }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary plan-button"
+                        >
+
+                            Continue with Single Test
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- ============================================= -->
+            <!-- ALL TESTS -->
+            <!-- ============================================= -->
+
+            <div class="col-md-6">
+
+                <div class="plan-card">
+
+                    <span class="recommended">
+                        BEST VALUE
+                    </span>
+
+
+                    <div class="plan-title">
+                        All Tests
+                    </div>
+
+
+                    <div class="plan-price">
+
+                        ₹99
+
+                    </div>
+
+
+                    <div class="plan-validity">
+
+                        Access valid for
+                        <strong>90 days</strong>
+
+                    </div>
+
+
+                    <ul class="text-muted mb-4">
+
+                        <li>
+                            Access all paid tests
+                        </li>
+
+                        <li>
+                            Complete Tests
+                        </li>
+
+                        <li>
+                            Previous Years Tests
+                        </li>
+
+                        <li>
+                            Valid for 90 days
+                        </li>
+
+                    </ul>
+
+
+                    <form
+                        method="POST"
+                        action="{{
+                            url_for(
+                                'payment.select_payment'
+                            )
+                        }}"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="access_type"
+                            value="All"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="category_id"
+                            value="{{ category.CategoryId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="subcategory_id"
+                            value="{{ subcategory.SubCategoryId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="subject_id"
+                            value="{{ subject.SubjectId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="contenttype_id"
+                            value="{{ contenttype.ContenttypeId }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="set_name"
+                            value="{{ set_name }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-success plan-button"
+                        >
+
+                            Continue with All Tests
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- NOTE -->
+        <!-- ================================================= -->
+
+        <div class="security-note">
+
+            🔒 Secure payment will be available through Razorpay.
+
+            <br>
+
+            Your access will be valid for 90 days after successful payment.
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
