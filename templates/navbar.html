@@ -230,73 +230,119 @@
        class="nav-search">
         <i class="bi bi-search"></i>
     </a>
-    <div class="ms-3 dropdown">
+         <div class="ms-3">
 
-    <!-- ACCOUNT BUTTON -->
-    <a class="profile-button text-decoration-none dropdown-toggle"
-       href="#"
-       id="accountDropdown"
-       role="button"
-       data-bs-toggle="dropdown"
-       aria-expanded="false">
+    {% if request.endpoint == 'user.user_home' %}
 
-        <span class="profile-avatar">
+        <!-- =================================================
+             USER HOME: ACCOUNT + LOGOUT DROPDOWN
+             ================================================= -->
 
-            {% if user and user.Picture %}
+        <div class="dropdown">
 
-                <img src="{{ user.Picture }}"
-                     alt="Profile"
-                     class="profile-img">
+            <a class="profile-button text-decoration-none dropdown-toggle"
+               href="#"
+               id="accountDropdown"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
 
-            {% else %}
+                <span class="profile-avatar">
 
-                <i class="bi bi-person"></i>
+                    {% if user and user.Picture %}
 
-            {% endif %}
+                        <img src="{{ user.Picture }}"
+                             alt="Profile"
+                             class="profile-img">
 
-        </span>
+                    {% else %}
 
-        <span class="profile-name">
+                        <i class="bi bi-person"></i>
 
-            {{ user.Username if user and user.Username else 'Account' }}
+                    {% endif %}
 
-        </span>
+                </span>
 
-    </a>
+                <span class="profile-name">
 
+                    {{ user.Username if user and user.Username else 'Account' }}
 
-    <!-- ACCOUNT DROPDOWN -->
-    <ul class="dropdown-menu dropdown-menu-end account-menu"
-        aria-labelledby="accountDropdown">
-
-        <li>
-            <a class="dropdown-item"
-               href="{{ url_for('auth.account') }}">
-
-                <i class="bi bi-person-circle me-2"></i>
-                My Account
+                </span>
 
             </a>
-        </li>
 
-        <li>
-            <hr class="dropdown-divider">
-        </li>
 
-        <li>
-            <a class="dropdown-item logout-item"
-               href="{{ url_for('auth.logout') }}">
+            <!-- ACCOUNT MENU -->
 
-                <i class="bi bi-box-arrow-right me-2"></i>
-                Logout
+            <ul class="dropdown-menu dropdown-menu-end account-menu"
+                aria-labelledby="accountDropdown">
 
-            </a>
-        </li>
+                <li>
+                    <a class="dropdown-item"
+                       href="{{ url_for('auth.account') }}">
 
-    </ul>
+                        <i class="bi bi-person-circle me-2"></i>
+                        My Account
 
-</div>
-    </div>
+                    </a>
+                </li>
+
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+
+                <li>
+                    <a class="dropdown-item logout-item"
+                       href="{{ url_for('auth.logout') }}">
+
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Logout
+
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    {% else %}
+
+        <!-- =================================================
+             PUBLIC PAGES: ACCOUNT ONLY
+             NO LOGOUT
+             ================================================= -->
+
+        <a class="profile-button text-decoration-none"
+           href="{{ url_for('auth.account') }}">
+
+            <span class="profile-avatar">
+
+                {% if user and user.Picture %}
+
+                    <img src="{{ user.Picture }}"
+                         alt="Profile"
+                         class="profile-img">
+
+                {% else %}
+
+                    <i class="bi bi-person"></i>
+
+                {% endif %}
+
+            </span>
+
+            <span class="profile-name">
+
+                {{ user.Username if user and user.Username else 'Account' }}
+
+            </span>
+
+        </a>
+
+    {% endif %}
+
+</div>       
+        </div>
 
         </div>
 
