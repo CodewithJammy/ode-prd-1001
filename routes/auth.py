@@ -45,6 +45,24 @@ SCOPES = [
 ]
 
 
+@auth_bp.route("/account")
+def account():
+
+    google_id = session.get("google_id")
+
+    # User is NOT logged in
+    if not google_id:
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    # User is already logged in
+    return redirect(
+        url_for("user.user_home")
+    )
+
+
 @auth_bp.route("/login")
 def login():
 
