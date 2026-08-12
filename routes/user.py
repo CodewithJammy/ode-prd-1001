@@ -1,4 +1,10 @@
-from flask import Blueprint, session, render_template
+from flask import (
+    Blueprint,
+    session,
+    render_template,
+    redirect,
+    url_for
+)
 
 from services.sheet_service import get_worksheet
 
@@ -10,42 +16,47 @@ user_bp = Blueprint(
 )
 
 
-@user_bp.route("/user-home")
-def user_home():
+@user_bp.route("/profile")
+def profile():
 
     google_id = session.get("google_id")
 
+    # User is not logged in
     if not google_id:
         return redirect(
             url_for("auth.login")
         )
 
+    # Get Users sheet
     sheet = get_worksheet("Users")
 
+    # Get all users
     records = sheet.get_all_records()
 
     user = None
 
+    # Find logged-in user
     for row in records:
 
-        if str(row.get("GoogleId")) == str(google_id):
+        if str(row.get("GoogleId", "")).strip() == str(google_id).strip():
 
             user = row
             break
 
+    # User not found in Sheet
     if not user:
+
+        session.clear()
+
         return redirect(
             url_for("auth.login")
         )
 
-    if str(user.get("NewUser")) == "1":
+    # Store user in session
+    session["user"] = user
 
-        return render_template(
-            "profile.html",
-            user=user
-        )
-
+    # Open profile page
     return render_template(
-        "user_home.html",
+        "profile.html",
         user=user
     )
