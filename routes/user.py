@@ -26,6 +26,49 @@ user_bp = Blueprint(
 
 
 # ============================================================
+# HELPER
+# ============================================================
+
+def get_current_user():
+
+    # --------------------------------------------------------
+    # Get Google ID from session
+    # --------------------------------------------------------
+
+    google_id = session.get("google_id")
+
+    if not google_id:
+        return None
+
+
+    # --------------------------------------------------------
+    # Get Users sheet
+    # --------------------------------------------------------
+
+    sheet = get_worksheet("Users")
+
+    records = sheet.get_all_records()
+
+
+    # --------------------------------------------------------
+    # Find current user
+    # --------------------------------------------------------
+
+    for row in records:
+
+        if (
+            str(row.get("GoogleId", "")).strip()
+            ==
+            str(google_id).strip()
+        ):
+
+            return row
+
+
+    return None
+
+
+# ============================================================
 # USER PROFILE
 # ============================================================
 
@@ -36,7 +79,7 @@ user_bp = Blueprint(
 def profile():
 
     # --------------------------------------------------------
-    # Get Google ID from session
+    # User must be logged in
     # --------------------------------------------------------
 
     google_id = session.get("google_id")
@@ -47,30 +90,13 @@ def profile():
             url_for("auth.login")
         )
 
-    # --------------------------------------------------------
-    # Get Users sheet
-    # --------------------------------------------------------
-
-    sheet = get_worksheet("Users")
-
-    records = sheet.get_all_records()
 
     # --------------------------------------------------------
-    # Find current user
+    # Get current user
     # --------------------------------------------------------
 
-    user = None
+    user = get_current_user()
 
-    for row in records:
-
-        if (
-            str(row.get("GoogleId", "")).strip()
-            ==
-            str(google_id).strip()
-        ):
-
-            user = row
-            break
 
     # --------------------------------------------------------
     # User not found
@@ -83,6 +109,7 @@ def profile():
         return redirect(
             url_for("auth.login")
         )
+
 
     # ========================================================
     # POST - SAVE PROFILE
@@ -105,6 +132,7 @@ def profile():
             ""
         ).strip()
 
+
         # ----------------------------------------------------
         # Basic validation
         # ----------------------------------------------------
@@ -117,16 +145,22 @@ def profile():
                 error="Please enter your username."
             )
 
+
         # ----------------------------------------------------
         # Update Google Sheet
         # ----------------------------------------------------
 
         updated_user = update_user_profile(
+
             google_id=google_id,
+
             username=username,
+
             mobile=mobile,
+
             gender=gender
         )
+
 
         # ----------------------------------------------------
         # Update failed
@@ -136,12 +170,15 @@ def profile():
 
             return render_template(
                 "profile.html",
+
                 user=user,
+
                 error=(
                     "Unable to update your profile. "
                     "Please try again."
                 )
             )
+
 
         # ----------------------------------------------------
         # Update Flask session
@@ -155,13 +192,17 @@ def profile():
             "UserId"
         )
 
+
         # ----------------------------------------------------
-        # Profile completed
+        # IMPORTANT
+        #
+        # After profile completion, go to user home.
         # ----------------------------------------------------
 
         return redirect(
             url_for("user.user_home")
         )
+
 
     # ========================================================
     # GET - SHOW PROFILE
@@ -183,41 +224,27 @@ def profile():
 def user_home():
 
     # --------------------------------------------------------
-    # Get Google ID
+    # User must be logged in
     # --------------------------------------------------------
 
     google_id = session.get("google_id")
 
-    if not google_id:
+    user_id = session.get("user_id")
+
+
+    if not google_id or not user_id:
 
         return redirect(
             url_for("auth.login")
         )
 
-    # --------------------------------------------------------
-    # Get Users sheet
-    # --------------------------------------------------------
-
-    sheet = get_worksheet("Users")
-
-    records = sheet.get_all_records()
 
     # --------------------------------------------------------
-    # Find current user
+    # Get current user
     # --------------------------------------------------------
 
-    user = None
+    user = get_current_user()
 
-    for row in records:
-
-        if (
-            str(row.get("GoogleId", "")).strip()
-            ==
-            str(google_id).strip()
-        ):
-
-            user = row
-            break
 
     # --------------------------------------------------------
     # User not found
@@ -231,25 +258,35 @@ def user_home():
             url_for("auth.login")
         )
 
-    # --------------------------------------------------------
-    # New user
-    #
-    # User has not completed profile yet.
-    # --------------------------------------------------------
 
-    if str(
+    # ========================================================
+    # CHECK NEW USER
+    # ========================================================
+    #
+    # Only FIRST LOGIN should go to profile.
+    #
+    # NewUser = 1
+    #     -> profile
+    #
+    # NewUser = 0
+    #     -> user home
+    #
+    # ========================================================
+
+    new_user = str(
         user.get("NewUser", "")
-    ).strip() == "1":
+    ).strip()
+
+
+    if new_user == "1":
 
         return redirect(
             url_for("user.profile")
         )
 
+
     # ========================================================
-    # TEMPORARY
-    #
-    # You don't have user_home.html yet.
-    # So use profile.html for now.
+    # NORMAL USER HOME
     # ========================================================
 
     return render_template(
