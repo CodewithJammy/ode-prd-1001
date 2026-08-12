@@ -5,8 +5,8 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from routes.upload import upload_bp
 from routes.demo_test import demotest_bp
-from route.auth import auth_bp
-from route.user import user_bp
+from routes.auth import auth_bp
+from routes.user import user_bp
 
 
 
