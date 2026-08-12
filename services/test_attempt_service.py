@@ -82,6 +82,50 @@ def get_next_payment_id():
 
 
 # ============================================================
+# CREATE PAYMENT REQUEST
+#
+# Temporary payment request.
+#
+# Later this function can create a Razorpay Order.
+#
+# For now it only prepares the payment information.
+# ============================================================
+
+def create_payment_request(
+    attempt_id,
+    user_id,
+    google_id,
+    amount,
+    access_type
+):
+
+    access_type = str(
+        access_type
+    ).strip().capitalize()
+
+    if access_type not in [
+        "Single",
+        "All"
+    ]:
+
+        raise ValueError(
+            "Invalid access type. "
+            "Expected 'Single' or 'All'."
+        )
+
+    return {
+        "AttemptId": attempt_id,
+        "UserId": user_id,
+        "GoogleId": google_id,
+        "Amount": amount,
+        "AccessType": access_type,
+        "PaymentMethod": "Manual",
+        "PaymentStatus": "Pending",
+        "RazorpayOrderId": ""
+    }
+
+
+# ============================================================
 # CREATE TEST ATTEMPT
 #
 # This is created before payment.
