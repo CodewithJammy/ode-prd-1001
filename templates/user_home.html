@@ -1,643 +1,336 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+My Dashboard - ExamPortal
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
 
-    <title>My Dashboard - ExamPortal</title>
+    .dashboard-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px 60px;
+    }
 
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+    /* =====================================================
+       WELCOME CARD
+    ===================================================== */
 
-    <!-- Bootstrap Icons -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    .welcome-card {
+        background: linear-gradient(
+            135deg,
+            #635bff,
+            #7c73ff
+        );
 
-    <style>
+        border-radius: 22px;
+        padding: 34px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 28px;
+    }
 
-        * {
-            box-sizing: border-box;
+    .welcome-card::after {
+        content: "";
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        right: -70px;
+        top: -100px;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-card h1 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .welcome-card p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 16px;
+    }
+
+    .dashboard-avatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: white;
+        color: #635bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        overflow: hidden;
+        margin-bottom: 18px;
+    }
+
+    .dashboard-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+
+    /* =====================================================
+       STATS
+    ===================================================== */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 17px;
+        padding: 22px;
+        border: 1px solid #e9edf3;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #f0efff;
+        color: #635bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 14px;
+    }
+
+    .stat-number {
+        font-size: 25px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 14px;
+        margin-top: 3px;
+    }
+
+
+    /* =====================================================
+       CONTENT GRID
+    ===================================================== */
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 22px;
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: 18px;
+        padding: 25px;
+        border: 1px solid #e9edf3;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+        font-size: 19px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #111827;
+    }
+
+
+    /* =====================================================
+       EXAM CARDS
+    ===================================================== */
+
+    .exam-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .exam-card {
+        border: 1px solid #e8ebf2;
+        border-radius: 14px;
+        padding: 18px;
+        text-decoration: none;
+        color: #1f2937;
+        transition: 0.2s ease;
+    }
+
+    .exam-card:hover {
+        transform: translateY(-3px);
+        border-color: #635bff;
+        box-shadow: 0 8px 20px rgba(99,91,255,0.10);
+        color: #1f2937;
+    }
+
+    .exam-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
+        background: #f0efff;
+        color: #635bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 19px;
+    }
+
+    .exam-card h5 {
+        margin: 0 0 5px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .exam-card p {
+        margin: 0;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+
+    /* =====================================================
+       PROFILE
+    ===================================================== */
+
+    .profile-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #eef0f4;
+    }
+
+    .profile-row:last-child {
+        border-bottom: none;
+    }
+
+    .profile-row i {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+        border-radius: 9px;
+        background: #f0efff;
+        color: #635bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-label {
+        font-size: 12px;
+        color: #8a909b;
+    }
+
+    .profile-value {
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 2px;
+        word-break: break-word;
+    }
+
+
+    /* =====================================================
+       EDIT PROFILE BUTTON
+    ===================================================== */
+
+    .primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 11px;
+        background: #635bff;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        border: none;
+        margin-top: 15px;
+    }
+
+    .primary-btn:hover {
+        background: #5148e8;
+        color: white;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        body {
-            margin: 0;
-            background: #f5f7fb;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #1f2937;
+        .content-grid {
+            grid-template-columns: 1fr;
         }
 
-        /* =====================================================
-           NAVBAR
-        ===================================================== */
+    }
 
-        .exam-navbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e8ebf0;
-            min-height: 72px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
 
-        .exam-logo {
-            font-size: 23px;
-            font-weight: 700;
-            color: #1f2937;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .exam-logo span:last-child span {
-            color: #635bff;
-        }
-
-        .logo-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 11px;
-            background: #635bff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-link {
-            color: #4b5563 !important;
-            font-weight: 500;
-            padding: 10px 14px !important;
-        }
-
-        .nav-link:hover {
-            color: #635bff !important;
-        }
-
-        .profile-button {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            text-decoration: none;
-            color: #374151;
-            font-weight: 600;
-            padding: 7px 12px;
-            border-radius: 10px;
-        }
-
-        .profile-button:hover {
-            background: #f1f0ff;
-            color: #635bff;
-        }
-
-        .profile-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: #635bff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* =====================================================
-           MAIN
-        ===================================================== */
+    @media (max-width: 600px) {
 
         .dashboard-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px 60px;
+            padding: 25px 15px;
         }
-
-        /* =====================================================
-           WELCOME CARD
-        ===================================================== */
 
         .welcome-card {
-            background: linear-gradient(
-                135deg,
-                #635bff,
-                #7c73ff
-            );
-
-            border-radius: 22px;
-            padding: 34px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 28px;
-        }
-
-        .welcome-card::after {
-            content: "";
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            right: -70px;
-            top: -100px;
-        }
-
-        .welcome-content {
-            position: relative;
-            z-index: 2;
+            padding: 25px;
         }
 
         .welcome-card h1 {
-            font-size: 30px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 24px;
         }
-
-        .welcome-card p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 16px;
-        }
-
-        .dashboard-avatar {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            background: white;
-            color: #635bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            overflow: hidden;
-            margin-bottom: 18px;
-        }
-
-        .dashboard-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* =====================================================
-           STATS
-        ===================================================== */
 
         .stats-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 18px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .stat-card {
-            background: white;
-            border-radius: 17px;
-            padding: 22px;
-            border: 1px solid #e9edf3;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            padding: 16px;
         }
-
-        .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: #f0efff;
-            color: #635bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 14px;
-        }
-
-        .stat-number {
-            font-size: 25px;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            font-size: 14px;
-            margin-top: 3px;
-        }
-
-        /* =====================================================
-           CONTENT GRID
-        ===================================================== */
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 22px;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            border: 1px solid #e9edf3;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
-        }
-
-        .card-title {
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #111827;
-        }
-
-        /* =====================================================
-           EXAM CARDS
-        ===================================================== */
 
         .exam-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: 1fr;
         }
 
-        .exam-card {
-            border: 1px solid #e8ebf2;
-            border-radius: 14px;
-            padding: 18px;
-            text-decoration: none;
-            color: #1f2937;
-            transition: 0.2s ease;
-        }
+    }
 
-        .exam-card:hover {
-            transform: translateY(-3px);
-            border-color: #635bff;
-            box-shadow: 0 8px 20px rgba(99,91,255,0.10);
-        }
+</style>
 
-        .exam-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 11px;
-            background: #f0efff;
-            color: #635bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            font-size: 19px;
-        }
-
-        .exam-card h5 {
-            margin: 0 0 5px;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .exam-card p {
-            margin: 0;
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        /* =====================================================
-           PROFILE
-        ===================================================== */
-
-        .profile-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 13px 0;
-            border-bottom: 1px solid #eef0f4;
-        }
-
-        .profile-row:last-child {
-            border-bottom: none;
-        }
-
-        .profile-row i {
-            width: 35px;
-            height: 35px;
-            border-radius: 9px;
-            background: #f0efff;
-            color: #635bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-label {
-            font-size: 12px;
-            color: #8a909b;
-        }
-
-        .profile-value {
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 2px;
-            word-break: break-word;
-        }
-
-        /* =====================================================
-           BUTTON
-        ===================================================== */
-
-        .primary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 11px;
-            background: #635bff;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            border: none;
-            margin-top: 15px;
-        }
-
-        .primary-btn:hover {
-            background: #5148e8;
-            color: white;
-        }
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 900px) {
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .dashboard-wrapper {
-                padding: 25px 15px;
-            }
-
-            .welcome-card {
-                padding: 25px;
-            }
-
-            .welcome-card h1 {
-                font-size: 24px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-
-            .stat-card {
-                padding: 16px;
-            }
-
-            .exam-list {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-name {
-                display: none;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
-
-<nav class="navbar navbar-expand-lg exam-navbar">
-
-    <div class="container">
-
-        <!-- Logo -->
-
-        <a class="navbar-brand exam-logo"
-           href="{{ url_for('home') }}">
-
-            <span class="logo-box">
-                <i class="bi bi-mortarboard-fill"></i>
-            </span>
-
-            <span>
-                Exam<span>Portal</span>
-            </span>
-
-        </a>
-
-
-        <!-- Mobile button -->
-
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar">
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
-
-
-        <div class="collapse navbar-collapse"
-             id="mainNavbar">
-
-
-            <!-- LEFT MENU -->
-
-            <ul class="navbar-nav ms-4 me-auto">
-
-                <li class="nav-item">
-
-                    <a class="nav-link"
-                       href="{{ url_for('home') }}">
-
-                        <i class="bi bi-house-door"></i>
-                        Home
-
-                    </a>
-
-                </li>
-
-
-                <li class="nav-item dropdown">
-
-                    <a class="nav-link dropdown-toggle"
-                       href="#"
-                       role="button"
-                       data-bs-toggle="dropdown">
-
-                        <i class="bi bi-journal-text"></i>
-                        Exams
-
-                    </a>
-
-                    <ul class="dropdown-menu">
-
-                        <li>
-                            <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='School') }}">
-                                School Tests
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='Certifications') }}">
-                                Certifications
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='OneDay') }}">
-                                One Day Exams
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='SkillDev') }}">
-                                Skill Development
-                            </a>
-                        </li>
-
-                    </ul>
-
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="#">
-
-                        <i class="bi bi-bullseye"></i>
-                        Practice
-
-                    </a>
-
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="#">
-
-                        <i class="bi bi-bar-chart"></i>
-                        Results
-
-                    </a>
-
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="#">
-
-                        <i class="bi bi-info-circle"></i>
-                        About
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-
-            <!-- RIGHT -->
-
-            <div class="d-flex align-items-center">
-
-                <a href="#"
-                   class="nav-search me-3">
-
-                    <i class="bi bi-search"></i>
-
-                </a>
-
-
-                <a class="profile-button"
-                   href="{{ url_for('user.profile') }}">
-
-                    <span class="profile-avatar">
-
-                        {% if user and user.Picture %}
-
-                            <img src="{{ user.Picture }}"
-                                 alt="Profile">
-
-                        {% else %}
-
-                            <i class="bi bi-person"></i>
-
-                        {% endif %}
-
-                    </span>
-
-
-                    <span class="profile-name">
-
-                        {{ user.Username if user and user.Username else 'Account' }}
-
-                    </span>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</nav>
-
-
-
-<!-- =========================================================
-     DASHBOARD
-========================================================= -->
 
 <main class="dashboard-wrapper">
 
 
     <!-- =====================================================
          WELCOME
-    ====================================================== -->
+    ===================================================== -->
 
     <section class="welcome-card">
 
         <div class="welcome-content">
-
 
             <div class="dashboard-avatar">
 
@@ -666,9 +359,7 @@
 
 
             <p>
-
                 Ready to learn, practice and improve your exam score?
-
             </p>
 
         </div>
@@ -676,10 +367,9 @@
     </section>
 
 
-
     <!-- =====================================================
          STATS
-    ====================================================== -->
+    ===================================================== -->
 
     <section class="stats-grid">
 
@@ -687,9 +377,7 @@
         <div class="stat-card">
 
             <div class="stat-icon">
-
                 <i class="bi bi-journal-check"></i>
-
             </div>
 
             <div class="stat-number">
@@ -706,9 +394,7 @@
         <div class="stat-card">
 
             <div class="stat-icon">
-
                 <i class="bi bi-trophy"></i>
-
             </div>
 
             <div class="stat-number">
@@ -725,9 +411,7 @@
         <div class="stat-card">
 
             <div class="stat-icon">
-
                 <i class="bi bi-clock-history"></i>
-
             </div>
 
             <div class="stat-number">
@@ -744,9 +428,7 @@
         <div class="stat-card">
 
             <div class="stat-icon">
-
                 <i class="bi bi-star"></i>
-
             </div>
 
             <div class="stat-number">
@@ -762,10 +444,9 @@
     </section>
 
 
-
     <!-- =====================================================
          MAIN CONTENT
-    ====================================================== -->
+    ===================================================== -->
 
     <section class="content-grid">
 
@@ -777,9 +458,7 @@
         <div class="dashboard-card">
 
             <div class="card-title">
-
                 Explore Exams
-
             </div>
 
 
@@ -791,9 +470,7 @@
                     href="{{ url_for('demo_test.subcategories', category_id='School') }}">
 
                     <div class="exam-icon">
-
                         <i class="bi bi-book"></i>
-
                     </div>
 
                     <h5>
@@ -812,9 +489,7 @@
                     href="{{ url_for('demo_test.subcategories', category_id='Certifications') }}">
 
                     <div class="exam-icon">
-
                         <i class="bi bi-award"></i>
-
                     </div>
 
                     <h5>
@@ -833,9 +508,7 @@
                     href="{{ url_for('demo_test.subcategories', category_id='OneDay') }}">
 
                     <div class="exam-icon">
-
                         <i class="bi bi-lightning"></i>
-
                     </div>
 
                     <h5>
@@ -854,9 +527,7 @@
                     href="{{ url_for('demo_test.subcategories', category_id='SkillDev') }}">
 
                     <div class="exam-icon">
-
                         <i class="bi bi-graph-up-arrow"></i>
-
                     </div>
 
                     <h5>
@@ -875,7 +546,6 @@
         </div>
 
 
-
         <!-- =================================================
              MY PROFILE
         ================================================== -->
@@ -883,9 +553,7 @@
         <div class="dashboard-card">
 
             <div class="card-title">
-
                 My Profile
-
             </div>
 
 
@@ -981,6 +649,8 @@
             </div>
 
 
+            <!-- EDIT PROFILE ONLY -->
+
             <a
                 href="{{ url_for('user.profile') }}"
                 class="primary-btn">
@@ -993,20 +663,10 @@
 
         </div>
 
+
     </section>
 
 
 </main>
 
-
-
-<!-- Bootstrap JS -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
-
-
-</body>
-
-</html>
+{% endblock %}
