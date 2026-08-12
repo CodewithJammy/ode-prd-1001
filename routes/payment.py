@@ -51,11 +51,9 @@ def select_payment():
     # --------------------------------------------------------
 
     google_id = session.get("google_id")
-
     user_id = session.get("user_id")
 
     if not google_id or not user_id:
-
         return redirect(
             url_for("auth.login")
         )
@@ -70,17 +68,15 @@ def select_payment():
         ""
     ).strip()
 
-
     if access_type not in [
         "Single",
         "All"
     ]:
-
         abort(400)
 
 
     # --------------------------------------------------------
-    # Get test information
+    # Get test information from form
     # --------------------------------------------------------
 
     category_id = request.form.get(
@@ -114,7 +110,7 @@ def select_payment():
 
 
     # --------------------------------------------------------
-    # If pending_test exists, use the actual result
+    # If pending_test exists, use actual test result
     # --------------------------------------------------------
 
     if pending_test:
@@ -168,6 +164,26 @@ def select_payment():
 
 
     # ========================================================
+    # VALIDATE REQUIRED TEST INFORMATION
+    # ========================================================
+
+    if not category_id:
+        abort(400)
+
+    if not subcategory_id:
+        abort(400)
+
+    if not subject_id:
+        abort(400)
+
+    if not contenttype_id:
+        abort(400)
+
+    if not set_name:
+        abort(400)
+
+
+    # ========================================================
     # LOAD CONTENT TYPE
     # ========================================================
 
@@ -198,13 +214,16 @@ def select_payment():
     )
 
 
+    # --------------------------------------------------------
+    # Validate content
+    # --------------------------------------------------------
+
     if (
         not category
         or not subcategory
         or not subject
         or not contenttype
     ):
-
         abort(404)
 
 
@@ -230,7 +249,6 @@ def select_payment():
 
             amount = 0
 
-
     else:
 
         amount = ALL_TEST_PRICE
@@ -244,17 +262,39 @@ def select_payment():
         "Payments"
     )
 
-    payments = payments_sheet.get_all_records()
+    payments = (
+        payments_sheet.get_all_records()
+    )
 
     now = datetime.utcnow()
 
     active_all_expiry = None
 
 
-    for payment in payments:
+    for payment_record in payments:
+
+        # ----------------------------------------------------
+        # User
+        # ----------------------------------------------------
 
         if str(
-            payment.get(
+            payment_record.get(
+                "UserId",
+                ""
+            )
+        ).strip() != str(
+            user_id
+        ).strip():
+
+            continue
+
+
+        # ----------------------------------------------------
+        # Google ID
+        # ----------------------------------------------------
+
+        if str(
+            payment_record.get(
                 "GoogleId",
                 ""
             )
@@ -265,21 +305,33 @@ def select_payment():
             continue
 
 
-        if str(
-            payment.get(
+        # ----------------------------------------------------
+        # Payment status
+        # ----------------------------------------------------
+
+        payment_status = str(
+            payment_record.get(
                 "PaymentStatus",
                 ""
             )
-        ).strip().lower() not in [
+        ).strip().lower()
+
+        if payment_status not in [
             "success",
+            "paid",
+            "successful",
             "approved"
         ]:
 
             continue
 
 
+        # ----------------------------------------------------
+        # Access type
+        # ----------------------------------------------------
+
         if str(
-            payment.get(
+            payment_record.get(
                 "AccessType",
                 ""
             )
@@ -288,16 +340,18 @@ def select_payment():
             continue
 
 
+        # ----------------------------------------------------
+        # Expiry
+        # ----------------------------------------------------
+
         expiry_text = str(
-            payment.get(
+            payment_record.get(
                 "ExpiryDate",
                 ""
             )
         ).strip()
 
-
         if not expiry_text:
-
             continue
 
 
@@ -312,6 +366,10 @@ def select_payment():
 
             continue
 
+
+        # ----------------------------------------------------
+        # Still active
+        # ----------------------------------------------------
 
         if expiry_date > now:
 
@@ -349,8 +407,8 @@ def select_payment():
     # ========================================================
     # CREATE TEST ATTEMPT
     #
-    # We create it now because we need AttemptId
-    # for the payment request.
+    # Attempt is created before payment because
+    # Payment.AttemptId needs this ID.
     # ========================================================
 
     attempt = create_test_attempt(
@@ -381,15 +439,26 @@ def select_payment():
     )
 
 
+    # --------------------------------------------------------
+    # Validate attempt
+    # --------------------------------------------------------
+
+    attempt_id = attempt.get(
+        "AttemptId"
+    )
+
+    if not attempt_id:
+
+        abort(500)
+
+
     # ========================================================
     # CREATE PAYMENT REQUEST
     # ========================================================
 
     payment = create_payment_request(
 
-        attempt_id=attempt.get(
-            "AttemptId"
-        ),
+        attempt_id=attempt_id,
 
         user_id=user_id,
 
@@ -397,23 +466,19 @@ def select_payment():
 
         amount=amount,
 
+        access_type=access_type,
+
         payment_method="Manual"
     )
 
 
     # ========================================================
-    # SAVE PAYMENT INFORMATION
+    # SAVE PAYMENT INFORMATION IN SESSION
     # ========================================================
 
     session["pending_payment"] = {
 
-        "PaymentId": payment.get(
-            "PaymentId"
-        ),
-
-        "AttemptId": attempt.get(
-            "AttemptId"
-        ),
+        "AttemptId": attempt_id,
 
         "AccessType": access_type,
 
