@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Profile - ExamPortal</title>
+
+</head>
+
+<body>
+
+    <h1>Profile Page</h1>
+
+    <hr>
+
+    <h3>Google Login Successful</h3>
+
+    <p>
+        <strong>User ID:</strong>
+        {{ user.UserId }}
+    </p>
+
+    <p>
+        <strong>Google ID:</strong>
+        {{ user.GoogleId }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ user.Email }}
+    </p>
+
+    <p>
+        <strong>Username:</strong>
+        {{ user.Username }}
+    </p>
+
+    <p>
+        <strong>First Name:</strong>
+        {{ user.FirstName }}
+    </p>
+
+    <p>
+        <strong>Last Name:</strong>
+        {{ user.LastName }}
+    </p>
+
+    <p>
+        <strong>New User:</strong>
+        {{ user.NewUser }}
+    </p>
+
+    {% if user.Picture %}
+
+        <p>
+            <strong>Profile Picture:</strong>
+        </p>
+
+        <img src="{{ user.Picture }}"
+             alt="Google Profile Picture"
+             width="100">
+
+    {% endif %}
+
+</body>
+
+</html>
