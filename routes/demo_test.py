@@ -11,7 +11,12 @@ from flask import (
     url_for,
     flash,
     abort,
-    current_app
+    current_app,
+    session
+)
+
+from services.test_attempt_service import (
+    create_test_attempt
 )
 
 from azure.storage.blob import BlobServiceClient
@@ -707,67 +712,92 @@ def test_page(
     # POST - CHECK ANSWERS
     # --------------------------------------------------------
 
-    language = request.form.get(
-        "language",
-        "english"
+
+language = request.form.get(
+    "language",
+    "english"
+)
+
+questions = load_questions(
+    category_id,
+    subcategory_id,
+    subject_id,
+    contenttype_id,
+    set_name
+)
+
+score = 0
+attempted = 0
+
+results = []
+
+for index, question in enumerate(
+    questions
+):
+
+    field_name = (
+        f"question_{index}"
     )
 
-    questions = load_questions(
-        category_id,
-        subcategory_id,
-        subject_id,
-        contenttype_id,
-        set_name
+    user_answer = request.form.get(
+        field_name
     )
 
-    score = 0
-    attempted = 0
+    correct_answer = str(
+        question.get("answer", "")
+    ).strip()
 
-    results = []
+    if user_answer:
+        attempted += 1
 
-    for index, question in enumerate(
-        questions
-    ):
-
-        field_name = (
-            f"question_{index}"
-        )
-
-        user_answer = request.form.get(
-            field_name
-        )
-
-        correct_answer = str(
-            question.get("answer", "")
-        ).strip()
-
-        if user_answer:
-            attempted += 1
-
-        is_correct = (
-            user_answer == correct_answer
-        )
-
-        if is_correct:
-            score += 1
-
-        results.append({
-            "question": question,
-            "user_answer": user_answer,
-            "correct_answer": correct_answer,
-            "is_correct": is_correct
-        })
-
-    total = len(questions)
-
-    percentage = (
-        round(
-            (score / total) * 100,
-            2
-        )
-        if total > 0
-        else 0
+    is_correct = (
+        user_answer == correct_answer
     )
+
+    if is_correct:
+        score += 1
+
+    results.append({
+        "question": question,
+        "user_answer": user_answer,
+        "correct_answer": correct_answer,
+        "is_correct": is_correct
+    })
+
+
+total = len(questions)
+
+percentage = (
+    round(
+        (score / total) * 100,
+        2
+    )
+    if total > 0
+    else 0
+)
+
+
+# ========================================================
+# CHECK RESULT ACCESS
+# ========================================================
+
+result_access = (
+    contenttype.get(
+        "ResultAccess",
+        "Free"
+    )
+    .strip()
+    .lower()
+)
+
+
+# ========================================================
+# FREE RESULT
+#
+# Topic Wise
+# ========================================================
+
+if result_access == "free":
 
     return render_template(
         "test_result.html",
@@ -783,3 +813,103 @@ def test_page(
         percentage=percentage,
         results=results
     )
+
+
+# ========================================================
+# PAID RESULT
+#
+# Complete Test / Previous Years
+# ========================================================
+
+google_id = session.get(
+    "google_id"
+)
+
+user_id = session.get(
+    "user_id"
+)
+
+
+# --------------------------------------------------------
+# User is NOT logged in
+# --------------------------------------------------------
+
+if not google_id:
+
+    # For now we save the basic test information
+    # in session so we know which test the user
+    # was trying to access after Google login.
+
+    session["pending_test"] = {
+        "category_id": category_id,
+        "subcategory_id": subcategory_id,
+        "subject_id": subject_id,
+        "contenttype_id": contenttype_id,
+        "set_name": set_name,
+        "language": language,
+        "score": score,
+        "attempted": attempted,
+        "total": total,
+        "percentage": percentage
+    }
+
+    return redirect(
+        url_for(
+            "auth.login"
+        )
+    )
+
+
+# --------------------------------------------------------
+# User IS logged in
+# --------------------------------------------------------
+
+attempt = create_test_attempt(
+
+    user_id=user_id,
+
+    google_id=google_id,
+
+    category_id=category_id,
+
+    subcategory_id=subcategory_id,
+
+    subject_id=subject_id,
+
+    contenttype_id=contenttype_id,
+
+    set_name=set_name,
+
+    score=score,
+
+    attempted=attempted,
+
+    total=total,
+
+    percentage=percentage,
+
+    result_access="Paid"
+)
+
+
+# --------------------------------------------------------
+# Temporary response
+#
+# Payment page will be added next.
+# --------------------------------------------------------
+
+return render_template(
+    "payment_required.html",
+
+    category=category,
+
+    subcategory=subcategory,
+
+    subject=subject,
+
+    contenttype=contenttype,
+
+    set_name=set_name,
+
+    attempt=attempt
+)
