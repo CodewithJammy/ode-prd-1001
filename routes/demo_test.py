@@ -626,6 +626,9 @@ def sets(
 # ============================================================
 # TEST PAGE
 # ============================================================
+# ============================================================
+# TEST PAGE
+# ============================================================
 
 @demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>",
@@ -665,16 +668,19 @@ def test_page(
     ):
         abort(404)
 
+    # --------------------------------------------------------
     # Verify relationships
+    # --------------------------------------------------------
+
     if (
         subcategory.get("CategoryId")
         != category_id
     ):
         abort(404)
 
-    # --------------------------------------------------------
+    # ========================================================
     # GET
-    # --------------------------------------------------------
+    # ========================================================
 
     if request.method == "GET":
 
@@ -708,208 +714,215 @@ def test_page(
             questions=questions
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # POST - CHECK ANSWERS
-    # --------------------------------------------------------
+    # ========================================================
 
-
-language = request.form.get(
-    "language",
-    "english"
-)
-
-questions = load_questions(
-    category_id,
-    subcategory_id,
-    subject_id,
-    contenttype_id,
-    set_name
-)
-
-score = 0
-attempted = 0
-
-results = []
-
-for index, question in enumerate(
-    questions
-):
-
-    field_name = (
-        f"question_{index}"
+    language = request.form.get(
+        "language",
+        "english"
     )
 
-    user_answer = request.form.get(
-        field_name
+    questions = load_questions(
+        category_id,
+        subcategory_id,
+        subject_id,
+        contenttype_id,
+        set_name
     )
 
-    correct_answer = str(
-        question.get("answer", "")
-    ).strip()
+    score = 0
+    attempted = 0
 
-    if user_answer:
-        attempted += 1
+    results = []
 
-    is_correct = (
-        user_answer == correct_answer
+    for index, question in enumerate(
+        questions
+    ):
+
+        field_name = (
+            f"question_{index}"
+        )
+
+        user_answer = request.form.get(
+            field_name
+        )
+
+        correct_answer = str(
+            question.get("answer", "")
+        ).strip()
+
+        if user_answer:
+            attempted += 1
+
+        is_correct = (
+            user_answer == correct_answer
+        )
+
+        if is_correct:
+            score += 1
+
+        results.append({
+            "question": question,
+            "user_answer": user_answer,
+            "correct_answer": correct_answer,
+            "is_correct": is_correct
+        })
+
+    total = len(questions)
+
+    percentage = (
+        round(
+            (score / total) * 100,
+            2
+        )
+        if total > 0
+        else 0
     )
 
-    if is_correct:
-        score += 1
+    # ========================================================
+    # CHECK RESULT ACCESS
+    # ========================================================
 
-    results.append({
-        "question": question,
-        "user_answer": user_answer,
-        "correct_answer": correct_answer,
-        "is_correct": is_correct
-    })
-
-
-total = len(questions)
-
-percentage = (
-    round(
-        (score / total) * 100,
-        2
+    result_access = (
+        contenttype.get(
+            "ResultAccess",
+            "Free"
+        )
+        .strip()
+        .lower()
     )
-    if total > 0
-    else 0
-)
 
+    # ========================================================
+    # FREE RESULT
+    #
+    # Topic Wise
+    # ========================================================
 
-# ========================================================
-# CHECK RESULT ACCESS
-# ========================================================
+    if result_access == "free":
 
-result_access = (
-    contenttype.get(
-        "ResultAccess",
-        "Free"
+        return render_template(
+            "test_result.html",
+            category=category,
+            subcategory=subcategory,
+            subject=subject,
+            contenttype=contenttype,
+            set_name=set_name,
+            language=language,
+            score=score,
+            attempted=attempted,
+            total=total,
+            percentage=percentage,
+            results=results
+        )
+
+    # ========================================================
+    # PAID RESULT
+    #
+    # Complete Test / Previous Years
+    # ========================================================
+
+    google_id = session.get(
+        "google_id"
     )
-    .strip()
-    .lower()
-)
 
+    user_id = session.get(
+        "user_id"
+    )
 
-# ========================================================
-# FREE RESULT
-#
-# Topic Wise
-# ========================================================
+    # ========================================================
+    # USER NOT LOGGED IN
+    # ========================================================
 
-if result_access == "free":
+    if not google_id:
+
+        # Save information about the pending test.
+        # The actual TestAttempts row will be created
+        # after Google login.
+
+        session["pending_test"] = {
+            "category_id": category_id,
+            "subcategory_id": subcategory_id,
+            "subject_id": subject_id,
+            "contenttype_id": contenttype_id,
+            "set_name": set_name,
+            "language": language,
+            "score": score,
+            "attempted": attempted,
+            "total": total,
+            "percentage": percentage
+        }
+
+        return redirect(
+            url_for(
+                "auth.login"
+            )
+        )
+
+    # ========================================================
+    # USER IS ALREADY LOGGED IN
+    # ========================================================
+
+    if not user_id:
+
+        # User has Google ID but no UserId.
+        # Send them through login again.
+
+        return redirect(
+            url_for(
+                "auth.login"
+            )
+        )
+
+    # ========================================================
+    # CREATE TEST ATTEMPT
+    # ========================================================
+
+    attempt = create_test_attempt(
+
+        user_id=user_id,
+
+        google_id=google_id,
+
+        category_id=category_id,
+
+        subcategory_id=subcategory_id,
+
+        subject_id=subject_id,
+
+        contenttype_id=contenttype_id,
+
+        set_name=set_name,
+
+        score=score,
+
+        attempted=attempted,
+
+        total=total,
+
+        percentage=percentage,
+
+        result_access="Paid"
+    )
+
+    # ========================================================
+    # TEMPORARY PAYMENT PAGE
+    #
+    # We will create payment_required.html next.
+    # ========================================================
 
     return render_template(
-        "test_result.html",
+        "payment_required.html",
+
         category=category,
+
         subcategory=subcategory,
+
         subject=subject,
+
         contenttype=contenttype,
+
         set_name=set_name,
-        language=language,
-        score=score,
-        attempted=attempted,
-        total=total,
-        percentage=percentage,
-        results=results
+
+        attempt=attempt
     )
-
-
-# ========================================================
-# PAID RESULT
-#
-# Complete Test / Previous Years
-# ========================================================
-
-google_id = session.get(
-    "google_id"
-)
-
-user_id = session.get(
-    "user_id"
-)
-
-
-# --------------------------------------------------------
-# User is NOT logged in
-# --------------------------------------------------------
-
-if not google_id:
-
-    # For now we save the basic test information
-    # in session so we know which test the user
-    # was trying to access after Google login.
-
-    session["pending_test"] = {
-        "category_id": category_id,
-        "subcategory_id": subcategory_id,
-        "subject_id": subject_id,
-        "contenttype_id": contenttype_id,
-        "set_name": set_name,
-        "language": language,
-        "score": score,
-        "attempted": attempted,
-        "total": total,
-        "percentage": percentage
-    }
-
-    return redirect(
-        url_for(
-            "auth.login"
-        )
-    )
-
-
-# --------------------------------------------------------
-# User IS logged in
-# --------------------------------------------------------
-
-attempt = create_test_attempt(
-
-    user_id=user_id,
-
-    google_id=google_id,
-
-    category_id=category_id,
-
-    subcategory_id=subcategory_id,
-
-    subject_id=subject_id,
-
-    contenttype_id=contenttype_id,
-
-    set_name=set_name,
-
-    score=score,
-
-    attempted=attempted,
-
-    total=total,
-
-    percentage=percentage,
-
-    result_access="Paid"
-)
-
-
-# --------------------------------------------------------
-# Temporary response
-#
-# Payment page will be added next.
-# --------------------------------------------------------
-
-return render_template(
-    "payment_required.html",
-
-    category=category,
-
-    subcategory=subcategory,
-
-    subject=subject,
-
-    contenttype=contenttype,
-
-    set_name=set_name,
-
-    attempt=attempt
-)
