@@ -2,7 +2,9 @@
 
     <div class="container">
 
-        <!-- Logo -->
+        <!-- =========================================================
+             LOGO
+             ========================================================= -->
 
         <a class="navbar-brand exam-logo"
            href="{{ url_for('home') }}">
@@ -18,29 +20,40 @@
         </a>
 
 
-        <!-- Mobile button -->
+        <!-- =========================================================
+             MOBILE BUTTON
+             ========================================================= -->
 
         <button
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar">
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
 
             <span class="navbar-toggler-icon"></span>
 
         </button>
 
 
+        <!-- =========================================================
+             NAVBAR CONTENT
+             ========================================================= -->
+
         <div class="collapse navbar-collapse"
              id="mainNavbar">
 
 
-            <!-- Left Menu -->
+            <!-- =====================================================
+                 LEFT MENU
+                 ===================================================== -->
 
             <ul class="navbar-nav ms-4 me-auto">
 
 
-                <!-- Home -->
+                <!-- HOME -->
 
                 <li class="nav-item">
 
@@ -55,14 +68,17 @@
                 </li>
 
 
-                <!-- Exams -->
+                <!-- =================================================
+                     EXAMS
+                     ================================================= -->
 
                 <li class="nav-item dropdown">
 
                     <a class="nav-link dropdown-toggle"
                        href="#"
                        role="button"
-                       data-bs-toggle="dropdown">
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
 
                         <i class="bi bi-journal-text"></i>
                         Exams
@@ -73,18 +89,32 @@
                     <ul class="dropdown-menu exam-dropdown">
 
 
+                        <!-- SCHOOL -->
+
                         <li>
 
                             <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='School') }}">
+                               href="{{ url_for(
+                                   'demo_test.subcategories',
+                                   category_id='School'
+                               ) }}">
 
                                 <span class="menu-icon school-icon">
+
                                     <i class="bi bi-book"></i>
+
                                 </span>
 
                                 <span>
-                                    <strong>School Tests</strong>
-                                    <small>Class wise exams</small>
+
+                                    <strong>
+                                        School Tests
+                                    </strong>
+
+                                    <small>
+                                        Class wise exams
+                                    </small>
+
                                 </span>
 
                             </a>
@@ -92,18 +122,32 @@
                         </li>
 
 
+                        <!-- CERTIFICATIONS -->
+
                         <li>
 
                             <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='Certifications') }}">
+                               href="{{ url_for(
+                                   'demo_test.subcategories',
+                                   category_id='Certifications'
+                               ) }}">
 
                                 <span class="menu-icon certification-icon">
+
                                     <i class="bi bi-award"></i>
+
                                 </span>
 
                                 <span>
-                                    <strong>Certifications</strong>
-                                    <small>Professional exams</small>
+
+                                    <strong>
+                                        Certifications
+                                    </strong>
+
+                                    <small>
+                                        Professional exams
+                                    </small>
+
                                 </span>
 
                             </a>
@@ -111,80 +155,130 @@
                         </li>
 
 
+                        <!-- ONE DAY -->
+
                         <li>
 
                             <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='OneDay') }}">
+                               href="{{ url_for(
+                                   'demo_test.subcategories',
+                                   category_id='OneDay'
+                               ) }}">
 
                                 <span class="menu-icon oneday-icon">
+
                                     <i class="bi bi-lightning"></i>
+
                                 </span>
 
                                 <span>
-                                    <strong>One Day Exams</strong>
-                                    <small>Quick competitive tests</small>
+
+                                    <strong>
+                                        One Day Exams
+                                    </strong>
+
+                                    <small>
+                                        Quick competitive tests
+                                    </small>
+
                                 </span>
 
                             </a>
 
                         </li>
 
+
+                        <!-- SKILL DEVELOPMENT -->
 
                         <li>
 
                             <a class="dropdown-item"
-                               href="{{ url_for('demo_test.subcategories', category_id='SkillDev') }}">
+                               href="{{ url_for(
+                                   'demo_test.subcategories',
+                                   category_id='SkillDev'
+                               ) }}">
 
                                 <span class="menu-icon skill-icon">
+
                                     <i class="bi bi-graph-up-arrow"></i>
+
                                 </span>
 
                                 <span>
-                                    <strong>Skill Development</strong>
-                                    <small>Improve your skills</small>
+
+                                    <strong>
+                                        Skill Development
+                                    </strong>
+
+                                    <small>
+                                        Improve your skills
+                                    </small>
+
                                 </span>
 
                             </a>
 
                         </li>
+
 
                     </ul>
 
                 </li>
 
 
-                <!-- Practice -->
+                <!-- =================================================
+                     PRACTICE
+                     ================================================= -->
 
                 <li class="nav-item dropdown">
 
                     <a class="nav-link dropdown-toggle"
                        href="#"
                        role="button"
-                       data-bs-toggle="dropdown">
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
 
                         <i class="bi bi-bullseye"></i>
                         Practice
 
                     </a>
 
+
                     <ul class="dropdown-menu">
 
                         <li>
-                            <a class="dropdown-item" href="#">
+
+                            <a class="dropdown-item"
+                               href="#">
+
                                 Subject Practice
+
                             </a>
+
                         </li>
 
+
                         <li>
-                            <a class="dropdown-item" href="#">
+
+                            <a class="dropdown-item"
+                               href="#">
+
                                 Topic Practice
+
                             </a>
+
                         </li>
 
+
                         <li>
-                            <a class="dropdown-item" href="#">
+
+                            <a class="dropdown-item"
+                               href="#">
+
                                 Mock Tests
+
                             </a>
+
                         </li>
 
                     </ul>
@@ -192,11 +286,14 @@
                 </li>
 
 
-                <!-- Results -->
+                <!-- =================================================
+                     RESULTS
+                     ================================================= -->
 
                 <li class="nav-item">
 
-                    <a class="nav-link" href="#">
+                    <a class="nav-link"
+                       href="#">
 
                         <i class="bi bi-bar-chart"></i>
                         Results
@@ -206,11 +303,14 @@
                 </li>
 
 
-                <!-- About -->
+                <!-- =================================================
+                     ABOUT
+                     ================================================= -->
 
                 <li class="nav-item">
 
-                    <a class="nav-link" href="#">
+                    <a class="nav-link"
+                       href="#">
 
                         <i class="bi bi-info-circle"></i>
                         About
@@ -219,130 +319,226 @@
 
                 </li>
 
+
             </ul>
 
 
-            <!-- Right -->
+            <!-- =====================================================
+                 RIGHT SIDE
+                 ===================================================== -->
 
             <div class="d-flex align-items-center">
 
-    <a href="#"
-       class="nav-search">
-        <i class="bi bi-search"></i>
-    </a>
-         <div class="ms-3">
 
-    {% if request.endpoint == 'user.user_home' %}
+                <!-- SEARCH -->
 
-        <!-- =================================================
-             USER HOME: ACCOUNT + LOGOUT DROPDOWN
-             ================================================= -->
+                <a href="#"
+                   class="nav-search">
 
-        <div class="dropdown">
+                    <i class="bi bi-search"></i>
 
-            <a class="profile-button text-decoration-none dropdown-toggle"
-               href="#"
-               id="accountDropdown"
-               role="button"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
+                </a>
 
-                <span class="profile-avatar">
 
-                    {% if user and user.Picture %}
+                <!-- =================================================
+                     ACCOUNT
+                     ================================================= -->
 
-                        <img src="{{ user.Picture }}"
-                             alt="Profile"
-                             class="profile-img">
+                <div class="ms-3">
+
+
+                    {# =================================================
+                       IMPORTANT:
+
+                       We check the endpoint using startswith.
+
+                       This means:
+
+                       user.user_home
+                       user.profile
+                       user.account
+                       etc.
+
+                       can all be treated as user-area pages.
+
+                       Public pages will NOT show Logout.
+                       ================================================= #}
+
+
+                    {% set is_user_area =
+                        request.endpoint
+                        and request.endpoint.startswith('user.')
+                    %}
+
+
+                    {% if is_user_area %}
+
+
+                        <!-- =================================================
+                             USER AREA
+                             ACCOUNT + LOGOUT
+                             ================================================= -->
+
+                        <div class="dropdown">
+
+
+                            <a class="profile-button text-decoration-none dropdown-toggle"
+                               href="#"
+                               id="accountDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+
+
+                                <!-- PROFILE IMAGE -->
+
+                                <span class="profile-avatar">
+
+
+                                    {% if user and user.Picture %}
+
+                                        <img
+                                            src="{{ user.Picture }}"
+                                            alt="Profile"
+                                            class="profile-img">
+
+                                    {% else %}
+
+                                        <i class="bi bi-person"></i>
+
+                                    {% endif %}
+
+
+                                </span>
+
+
+                                <!-- USERNAME -->
+
+                                <span class="profile-name">
+
+                                    {{ user.Username
+                                       if user and user.Username
+                                       else 'Account' }}
+
+                                </span>
+
+
+                            </a>
+
+
+                            <!-- =================================================
+                                 ACCOUNT DROPDOWN
+                                 ================================================= -->
+
+                            <ul class="dropdown-menu dropdown-menu-end account-menu"
+                                aria-labelledby="accountDropdown">
+
+
+                                <!-- MY ACCOUNT -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="{{ url_for('auth.account') }}">
+
+                                        <i class="bi bi-person-circle me-2"></i>
+
+                                        My Account
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- DIVIDER -->
+
+                                <li>
+
+                                    <hr class="dropdown-divider">
+
+                                </li>
+
+
+                                <!-- LOGOUT -->
+
+                                <li>
+
+                                    <a class="dropdown-item logout-item"
+                                       href="{{ url_for('auth.logout') }}">
+
+                                        <i class="bi bi-box-arrow-right me-2"></i>
+
+                                        Logout
+
+                                    </a>
+
+                                </li>
+
+
+                            </ul>
+
+
+                        </div>
+
 
                     {% else %}
 
-                        <i class="bi bi-person"></i>
+
+                        <!-- =================================================
+                             PUBLIC PAGE
+                             
+                             ACCOUNT ONLY
+                             NO LOGOUT
+                             ================================================= -->
+
+                        <a class="profile-button text-decoration-none"
+                           href="{{ url_for('auth.account') }}">
+
+
+                            <!-- PROFILE IMAGE -->
+
+                            <span class="profile-avatar">
+
+
+                                {% if user and user.Picture %}
+
+                                    <img
+                                        src="{{ user.Picture }}"
+                                        alt="Profile"
+                                        class="profile-img">
+
+                                {% else %}
+
+                                    <i class="bi bi-person"></i>
+
+                                {% endif %}
+
+
+                            </span>
+
+
+                            <!-- ACCOUNT NAME -->
+
+                            <span class="profile-name">
+
+                                {{ user.Username
+                                   if user and user.Username
+                                   else 'Account' }}
+
+                            </span>
+
+
+                        </a>
+
 
                     {% endif %}
 
-                </span>
 
-                <span class="profile-name">
-
-                    {{ user.Username if user and user.Username else 'Account' }}
-
-                </span>
-
-            </a>
+                </div>
 
 
-            <!-- ACCOUNT MENU -->
+            </div>
 
-            <ul class="dropdown-menu dropdown-menu-end account-menu"
-                aria-labelledby="accountDropdown">
-
-                <li>
-                    <a class="dropdown-item"
-                       href="{{ url_for('auth.account') }}">
-
-                        <i class="bi bi-person-circle me-2"></i>
-                        My Account
-
-                    </a>
-                </li>
-
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-
-                <li>
-                    <a class="dropdown-item logout-item"
-                       href="{{ url_for('auth.logout') }}">
-
-                        <i class="bi bi-box-arrow-right me-2"></i>
-                        Logout
-
-                    </a>
-                </li>
-
-            </ul>
-
-        </div>
-
-    {% else %}
-
-        <!-- =================================================
-             PUBLIC PAGES: ACCOUNT ONLY
-             NO LOGOUT
-             ================================================= -->
-
-        <a class="profile-button text-decoration-none"
-           href="{{ url_for('auth.account') }}">
-
-            <span class="profile-avatar">
-
-                {% if user and user.Picture %}
-
-                    <img src="{{ user.Picture }}"
-                         alt="Profile"
-                         class="profile-img">
-
-                {% else %}
-
-                    <i class="bi bi-person"></i>
-
-                {% endif %}
-
-            </span>
-
-            <span class="profile-name">
-
-                {{ user.Username if user and user.Username else 'Account' }}
-
-            </span>
-
-        </a>
-
-    {% endif %}
-
-</div>       
-        </div>
 
         </div>
 
