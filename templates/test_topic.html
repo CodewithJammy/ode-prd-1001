@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}
+Topic Wise
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        Select Topic
+    </h2>
+
+    <div class="row g-4">
+
+        {% for topic in topics %}
+
+        <div class="col-md-4">
+
+            <a
+                href="{{ url_for(
+                    'demo_test.sets',
+                    category_id=category_id,
+                    subcategory_id=subcategory_id,
+                    subject_id=subject_id,
+                    contenttype_id=contenttype_id,
+                    topic_id=topic.TopicId
+                ) }}"
+                class="text-decoration-none"
+            >
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            {{ topic.NameEnglish }}
+                        </h5>
+
+                        {% if topic.NameHindi %}
+                            <p class="text-muted mb-0">
+                                {{ topic.NameHindi }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% else %}
+
+        <div class="col-12">
+
+            <div class="alert alert-warning">
+                No topics available for this subject.
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
