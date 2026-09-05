@@ -578,48 +578,34 @@ def oneday_topicwise(category_id, subcategory_id, subject_id):
     )
 
 # ============================================================
-# SUBJECT PAGE
+# subject PAGE and contenttype for oneday flow
 # ============================================================
-
-@demotest_bp.route(
-    "/category/<category_id>/<subcategory_id>"
-)
-def subjects(
-    category_id,
-    subcategory_id
-):
-
-    category = get_category(
-        category_id
-    )
-
-    subcategory = get_subcategory(
-        subcategory_id
-    )
-
+@demotest_bp.route("/category/<category_id>/<subcategory_id>")
+def category_flow(category_id, subcategory_id):
+    category = get_category(category_id)
+    subcategory = get_subcategory(subcategory_id)
     if not category or not subcategory:
         abort(404)
 
-    # Make sure subcategory belongs
-    # to selected category
-    if (
-        subcategory.get(
-            "CategoryId"
+    # Special case: OneDay → show contenttypes first
+    if category_id.lower() == "oneday":
+        contenttypes_data = get_contenttypes_by_subcategory(subcategory_id)
+        return render_template(
+            "test_contenttypes.html",
+            category=category,
+            subcategory=subcategory,
+            contenttypes=contenttypes_data
         )
-        != category_id
-    ):
-        abort(404)
 
-    subjects_data = get_subjects(
-        subcategory_id
-    )
-
+    # Normal flow → show subjects
+    subjects_data = get_subjects(subcategory_id)
     return render_template(
         "test_subjects.html",
         category=category,
         subcategory=subcategory,
         subjects=subjects_data
     )
+
 
 
 # ============================================================
