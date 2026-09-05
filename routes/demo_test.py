@@ -249,6 +249,29 @@ def get_subject(
 
     return None
 
+# ============================================================
+# FIND CONTENT TYPES FOR SUBCATEGORY
+# ============================================================
+
+def get_contenttypes_by_subcategory(subcategory_id):
+    contenttypes = load_contenttypes()
+    return [
+        contenttype
+        for contenttype in contenttypes
+        if contenttype.get("SubCategoryId") == subcategory_id
+    ]
+
+
+# ============================================================
+# FIND ONE CONTENT TYPE BY SUBCATEGORY
+# ============================================================
+
+def get_contenttype_by_subcategory(subcategory_id, contenttype_id):
+    contenttypes = get_contenttypes_by_subcategory(subcategory_id)
+    for contenttype in contenttypes:
+        if contenttype.get("ContenttypeId") == contenttype_id:
+            return contenttype
+    return None
 
 # ============================================================
 # FIND CONTENT TYPES FOR SUBJECT
@@ -481,6 +504,78 @@ def subcategories(category_id):
         subcategories=subcategories_data
     )
 
+# ============================================================
+# Content PAGE for ONEday
+# ============================================================
+# Step 1: After category + subcategory → show contenttypes
+@demotest_bp.route(
+    "/category/<category_id>/<subcategory_id>/contenttypes",
+    methods=["GET"]
+)
+def oneday_contenttypes(category_id, subcategory_id):
+    if category_id.lower() != "oneday":
+        abort(404)
+
+    category = get_category(category_id)
+    subcategory = get_subcategory(subcategory_id)
+    if not category or not subcategory:
+        abort(404)
+
+    contenttypes_data = get_contenttypes(subcategory_id)  # use SubCategoryId for OneDay
+    return render_template(
+        "test_contenttypes.html",
+        category=category,
+        subcategory=subcategory,
+        contenttypes=contenttypes_data
+    )
+
+
+# Step 2: If user clicks Subjectwise → show subjects for that subcategory
+@demotest_bp.route(
+    "/category/<category_id>/<subcategory_id>/subjectwise",
+    methods=["GET"]
+)
+def oneday_subjectwise(category_id, subcategory_id):
+    if category_id.lower() != "oneday":
+        abort(404)
+
+    category = get_category(category_id)
+    subcategory = get_subcategory(subcategory_id)
+    if not category or not subcategory:
+        abort(404)
+
+    subjects_data = get_subjects(subcategory_id)
+    return render_template(
+        "test_subjects.html",
+        category=category,
+        subcategory=subcategory,
+        subjects=subjects_data
+    )
+
+
+# Step 3: If user clicks Topicwise for a subject → show topics.json
+@demotest_bp.route(
+    "/category/<category_id>/<subcategory_id>/<subject_id>/topicwise",
+    methods=["GET"]
+)
+def oneday_topicwise(category_id, subcategory_id, subject_id):
+    if category_id.lower() != "oneday":
+        abort(404)
+
+    category = get_category(category_id)
+    subcategory = get_subcategory(subcategory_id)
+    subject = get_subject(subcategory_id, subject_id)
+    if not category or not subcategory or not subject:
+        abort(404)
+
+    topics = load_json_file("topics.json").get("Topics", [])
+    return render_template(
+        "test_topics.html",
+        category=category,
+        subcategory=subcategory,
+        subject=subject,
+        topics=topics
+    )
 
 # ============================================================
 # SUBJECT PAGE
