@@ -7,11 +7,12 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>{% if subject %}
+    <title>
+    {% if subject %}
     {{ subject.NameEnglish }}
       {% else %}
     {{ subcategory.NameEnglish }}
-      {% endif %}
+    {% endif %}
     </title>
 
     <style>
@@ -140,7 +141,11 @@
     <div class="header">
 
         <h1>
+          {% if subject %}
             {{ subject.NameEnglish }}
+              {% else %}
+            {{ subcategory.NameEnglish }}
+               {% endif %}
         </h1>
 
         <p>
@@ -168,6 +173,8 @@
                 <div class="content-icon">
 
                     {% if contenttype.ContenttypeId == "Topicwise" %}
+                        📚
+                    {% elif contenttype.ContenttypeId == "Subjectwise" %}
                         📚
                     {% elif contenttype.ContenttypeId == "Previousyears" %}
                         📄
