@@ -211,8 +211,9 @@ function prevBatch() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  showQuestion(1);
-  updateBatch();
+  batchStart = 1;        // reset pagination
+  updateBatch();         // show first batch of buttons
+  showQuestion(1);       // show first question
 });
 </script>
 </body>
