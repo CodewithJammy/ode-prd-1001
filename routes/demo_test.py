@@ -521,7 +521,7 @@ def oneday_contenttypes(category_id, subcategory_id):
     if not category or not subcategory:
         abort(404)
 
-    contenttypes_data = get_contenttypes(subcategory_id)  # use SubCategoryId for OneDay
+    contenttypes_data = get_contenttypes_by_subcategory(subcategory_id)  # use SubCategoryId for OneDay
     return render_template(
         "test_contenttypes.html",
         category=category,
