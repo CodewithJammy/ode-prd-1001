@@ -138,20 +138,82 @@
     </div>
   </form>
 </div>
-
 <script>
-function changeLanguage(language) {
-  const currentUrl = new URL(window.location.href);
-  currentUrl.searchParams.set("language", language);
-  window.location.href = currentUrl.toString();
-}
-function confirmSubmit() { return confirm("Are you sure you want to submit the test?"); }
-
 // Show only one question
 function showQuestion(index) {
   document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
-  document.getElementById('q' + index).classList.remove('d-none');
+  const q = document.getElementById('q' + index);
+  if (q) q.classList.remove('d-none');
+  currentQuestion = index;
 }
 
 // Mark answered (green)
-function mark
+function markAnswered(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('review');
+    navBtn.classList.add('answered');
+  }
+}
+
+// Mark for review (yellow)
+function markReview(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('answered');
+    navBtn.classList.add('review');
+  }
+}
+
+// Next / Previous navigation
+let currentQuestion = 1;
+function nextQuestion(index) {
+  const next = index + 1;
+  if (document.getElementById('q' + next)) {
+    showQuestion(next);
+  }
+}
+function prevQuestion(index) {
+  const prev = index - 1;
+  if (document.getElementById('q' + prev)) {
+    showQuestion(prev);
+  }
+}
+
+// Pagination for batches of 30
+let batchStart = 1;
+const batchSize = 30;
+function updateBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  for (let i = 1; i <= total; i++) {
+    const btn = document.getElementById('nav' + i);
+    if (!btn) continue;
+    if (i >= batchStart && i < batchStart + batchSize) {
+      btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+}
+function nextBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  if (batchStart + batchSize <= total) {
+    batchStart += batchSize;
+    updateBatch();
+  }
+}
+function prevBatch() {
+  if (batchStart - batchSize >= 1) {
+    batchStart -= batchSize;
+    updateBatch();
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+</script>
+</body>
+</html>
