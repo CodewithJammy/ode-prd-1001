@@ -7,7 +7,12 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>{{ subject.NameEnglish }}</title>
+    <title>{% if subject %}
+    {{ subject.NameEnglish }}
+      {% else %}
+    {{ subcategory.NameEnglish }}
+      {% endif %}
+    </title>
 
     <style>
 
