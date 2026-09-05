@@ -1,4 +1,607 @@
+
+
+Copilot
+
+
+
+
+
+
+Profile image
+
+Invite
+You said
+
+its not full code and question is not visible
+Copilot said
+Thanks for clarifying — let’s put everything together into a complete working page that shows one question at a time, highlights answered questions in green, lets you mark for review in yellow, adds Next/Previous buttons, and supports pagination in batches of 30.
+
+📝 Full Code
+html
+
+
+Copy
 <!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ subject.NameEnglish }} - {{ set_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background: #f4f6fb; min-height: 100vh; color: #212529; }
+    .test-container { max-width: 950px; margin: 30px auto 60px; }
+    .test-header { background: white; border-radius: 18px; padding: 22px 25px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
+    .test-title { font-weight: 700; margin-bottom: 4px; }
+    .breadcrumb-text { color: #6c757d; font-size: 14px; }
+    .language-box { min-width: 150px; }
+    .question-card { background: white; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); }
+    .question-number { font-weight: 700; margin-right: 8px; }
+    .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+    .option { display: block; border: 1px solid #e0e4ea; border-radius: 10px; padding: 13px 15px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+    .option:hover { background: #f7f9fc; border-color: #adb5bd; }
+    .option input { margin-right: 10px; }
+    .submit-section { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); text-align: center; }
+    .submit-button { min-width: 180px; border-radius: 10px; padding: 12px 25px; font-weight: 600; }
+    .question-count { color: #6c757d; font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+    .nav-btn.answered { background-color: #28a745 !important; color: white; } /* Green */
+    .nav-btn.review { background-color: #ffc107 !important; color: black; } /* Yellow */
+  </style>
+</head>
+
+<body>
+<div class="container test-container">
+
+  <!-- HEADER -->
+  <div class="test-header">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="breadcrumb-text">
+          {{ category.NameEnglish }} / {{ subcategory.NameEnglish }} / {{ subject.NameEnglish }}
+        </div>
+        <h2 class="test-title">{{ subject.NameEnglish }}</h2>
+        <div class="text-muted">{{ set_name }}</div>
+      </div>
+      <div class="col-md-4 mt-3 mt-md-0">
+        <div class="language-box ms-md-auto">
+          <label for="language" class="form-label fw-semibold">Language</label>
+          <select id="language" class="form-select" onchange="changeLanguage(this.value)">
+            <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+            <option value="hindi" {% if language == "hindi" %}selected{% endif %}>हिंदी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST FORM -->
+  <form method="POST" id="testForm">
+    <input type="hidden" name="language" value="{{ language }}">
+
+    <div class="row">
+      <!-- Question Area -->
+      <div class="col-md-8 order-2 order-md-1">
+        <div id="question-area">
+          {% for question in questions %}
+          <div class="question-card d-none" id="q{{ loop.index }}">
+            <div class="question-text">
+              <span class="question-number">Q{{ loop.index }}.</span>
+              {% if language == "hindi" %}
+                {{ question.QuestionHindi }}
+              {% else %}
+                {{ question.QuestionEnglish }}
+              {% endif %}
+            </div>
+            <div class="mt-3">
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="A" onchange="markAnswered({{ loop.index }})">
+                <strong>A.</strong>
+                {% if language == "hindi" %}{{ question.OptionAHindi }}{% else %}{{ question.OptionAEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="B" onchange="markAnswered({{ loop.index }})">
+                <strong>B.</strong>
+                {% if language == "hindi" %}{{ question.OptionBHindi }}{% else %}{{ question.OptionBEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="C" onchange="markAnswered({{ loop.index }})">
+                <strong>C.</strong>
+                {% if language == "hindi" %}{{ question.OptionCHindi }}{% else %}{{ question.OptionCEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="D" onchange="markAnswered({{ loop.index }})">
+                <strong>D.</strong>
+                {% if language == "hindi" %}{{ question.OptionDHindi }}{% else %}{{ question.OptionDEnglish }}{% endif %}
+              </label>
+            </div>
+
+            <!-- Extra Controls -->
+            <div class="mt-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-warning btn-sm" onclick="markReview({{ loop.index }})">Mark for Review</button>
+              <div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="prevQuestion({{ loop.index }})">Previous</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="nextQuestion({{ loop.index }})">Next</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Navigation Sidebar -->
+      <div class="col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+        <div class="card p-3 shadow-sm">
+          <h6 class="fw-bold mb-3">Questions</h6>
+          <div id="nav-container" class="d-flex flex-wrap gap-2 justify-content-md-start justify-content-center">
+            {% for question in questions %}
+            <button type="button" class="btn btn-outline-primary btn-sm nav-btn"
+                    id="nav{{ loop.index }}"
+                    onclick="showQuestion({{ loop.index }})">
+              {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+          <!-- Pagination Arrows -->
+          <div class="d-flex justify-content-between mt-2">
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="prevBatch()">« Prev 30</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="nextBatch()">Next 30 »</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section mt-4">
+      <div class="question-count mb-3">
+        Total Questions: <strong>{{ questions|length }}</strong>
+      </div>
+      <button type="submit" class="btn btn-primary submit-button" onclick="return confirmSubmit()">Submit Test</button>
+    </div>
+  </form>
+</div>
+
+<script>
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+function confirmSubmit() { return confirm("Are you sure you want to submit the test?"); }
+
+// Show only one question
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  document.getElementById('q' + index).classList.remove('d-none');
+}
+
+// Mark answered (green)
+function markAnswered(index) {
+  document.getElementById('nav' + index).classList.add('answered');
+}
+
+// Mark for review (yellow)
+function markReview(index) {
+  document.getElementById('
+
+
+
+
+
+
+Edit in a page
+You said
+
+can you put after this code
+Copilot said
+Here’s the continuation of the script that completes the missing logic for marking answers, review, next/previous navigation, and batch pagination. You can paste this after your last <script> block:
+
+html
+
+
+Copy
+<script>
+// Show only one question
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  const q = document.getElementById('q' + index);
+  if (q) q.classList.remove('d-none');
+  currentQuestion = index;
+}
+
+// Mark answered (green)
+function markAnswered(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('review');
+    navBtn.classList.add('answered');
+  }
+}
+
+// Mark for review (yellow)
+function markReview(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('answered');
+    navBtn.classList.add('review');
+  }
+}
+
+// Next / Previous navigation
+let currentQuestion = 1;
+function nextQuestion(index) {
+  const next = index + 1;
+  if (document.getElementById('q' + next)) {
+    showQuestion(next);
+  }
+}
+function prevQuestion(index) {
+  const prev = index - 1;
+  if (document.getElementById('q' + prev)) {
+    showQuestion(prev);
+  }
+}
+
+// Pagination for batches of 30
+let batchStart = 1;
+const batchSize = 30;
+function updateBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  for (let i = 1; i <= total; i++) {
+    const btn = document.getElementById('nav' + i);
+    if (!btn) continue;
+    if (i >= batchStart && i < batchStart + batchSize) {
+      btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+}
+function nextBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  if (batchStart + batchSize <= total) {
+    batchStart += batchSize;
+    updateBatch();
+  }
+}
+function prevBatch() {
+  if (batchStart - batchSize >= 1) {
+    batchStart -= batchSize;
+    updateBatch();
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+</script>
+🔎 What this adds
+Answered questions → navigation button turns green.
+
+Mark for Review → navigation button turns yellow.
+
+Next / Previous buttons → move sequentially through questions.
+
+Pagination → only 30 question buttons visible at a time, with arrows to move to the next/previous batch.
+
+Would you like me to also add a legend panel (showing what green/yellow/gray mean) so users immediately understand the navigation colors?
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+now after click on hindi language ,its not loading hindi questions,why?
+Copilot said
+The reason your Hindi questions aren’t loading after clicking the dropdown is that the language parameter isn’t being passed back into your Flask route correctly. Right now, your <select> calls changeLanguage(), which updates the URL with ?language=hindi, but your Flask route must read that query parameter and then render the template with language="hindi".
+
+Here’s what to check:
+
+✅ Fix Checklist
+Template condition  
+In your template you already have:
+
+jinja
+
+
+Copy
+{% if language == "hindi" %}
+    {{ question.QuestionHindi }}
+{% else %}
+    {{ question.QuestionEnglish }}
+{% endif %}
+This works only if the language variable passed from Flask is actually "hindi".
+
+Flask route handling  
+In your Flask view function, make sure you capture the query parameter:
+
+python
+
+
+Copy
+@app.route("/test")
+def test_page():
+    language = request.args.get("language", "english")  # default English
+    questions = get_questions_from_db()
+    return render_template("test.html", questions=questions, language=language)
+Without this, the template always sees language="english".
+
+Hidden input  
+You have:
+
+html
+
+
+Copy
+<input type="hidden" name="language" value="{{ language }}">
+That’s good for POST submission, but the GET request when you switch language must also update the server-side variable.
+
+Confirm URL reload  
+After clicking Hindi, check your browser’s address bar. It should look like:
+
+Code
+
+
+Copy
+http://localhost:5000/test?language=hindi
+If it doesn’t, your changeLanguage() function isn’t firing correctly.
+
+🔧 Quick Fix for changeLanguage()
+Make sure your JS function is exactly:
+
+js
+
+
+Copy
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+This reloads the page with ?language=hindi. Then Flask must read that query parameter.
+
+👉 So the issue isn’t in your HTML — it’s in the Flask route not reading the query parameter. Once you add request.args.get("language") and pass it into render_template, your Hindi questions will load correctly.
+
+Do you want me to show you a full Flask route example with both GET (language switch) and POST (form submit) handling combined?
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+@demotest_bp.route(
+    "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>",
+    methods=["GET", "POST"]
+)
+def test_page(
+    category_id,
+    subcategory_id,
+    subject_id,
+    contenttype_id,
+    set_name
+):
+
+    # ========================================================
+    # LOAD CATEGORY
+    # ========================================================
+
+    category = get_category(
+        category_id
+    )
+
+    # ========================================================
+    # LOAD SUBCATEGORY
+    # ========================================================
+
+    subcategory = get_subcategory(
+        subcategory_id
+    )
+
+    # ========================================================
+    # LOAD SUBJECT
+    # ========================================================
+
+    subject = get_subject(
+        subcategory_id,
+        subject_id
+    )
+
+    # ========================================================
+    # LOAD CONTENT TYPE
+    # ========================================================
+
+    contenttype = get_contenttype(
+        subject_id,
+        contenttype_id
+    )
+
+    # ========================================================
+    # VALIDATE
+    # ========================================================
+
+    if (
+        not category
+        or not subcategory
+        or not subject
+        or not contenttype
+    ):
+        abort(404)
+
+    # ========================================================
+    # VERIFY RELATIONSHIPS
+    # ========================================================
+
+    if (
+        subcategory.get(
+            "CategoryId"
+        )
+        != category_id
+    ):
+        abort(404)
+
+    # ========================================================
+    # GET - SHOW TEST
+    # ========================================================
+
+    if request.method == "GET":
+
+        language = request.args.get(
+            "language",
+            "english"
+        ).lower()
+
+        if language not in [
+            "english",
+            "hindi"
+        ]:
+            language = "english"
+
+        questions = load_questions(
+            category_id,
+            subcategory_id,
+            subject_id,
+            contenttype_id,
+            set_name
+        )
+
+        return render_template(
+            "demotest.html",
+            category=category,
+            subcategory=subcategory,
+            subject=subject,
+            contenttype=contenttype,
+            set_name=set_name,
+            language=language,
+            questions=questions
+        )
+
+    # ========================================================
+    # POST - CHECK ANSWERS
+    # ========================================================
+
+    language = request.form.get(
+        "language",
+        "english"
+    )
+
+    if language not in [
+        "english",
+        "hindi"
+    ]:
+        language = "english"
+
+    # ========================================================
+    # LOAD QUESTIONS
+    # ========================================================
+
+    questions = load_questions(
+        category_id,
+        subcategory_id,
+        subject_id,
+        contenttype_id,
+        set_name
+    )
+Copilot said
+Looking at your Flask route, the structure is correct — you’re already reading the query parameter with:
+
+python
+
+
+Copy
+language = request.args.get("language", "english").lower()
+and passing it into render_template. That means the template should switch to Hindi when the URL has ?language=hindi. If it’s not working, here are the likely causes:
+
+🔎 Common Issues
+URL not updating  
+Check your browser’s address bar after selecting Hindi. It must show:
+
+Code
+
+
+Copy
+/category/.../set_name?language=hindi
+If it doesn’t, your changeLanguage() JS function isn’t firing or is overridden.
+
+Template condition mismatch  
+In your template you use:
+
+jinja
+
+
+Copy
+{% if language == "hindi" %}
+    {{ question.QuestionHindi }}
+{% else %}
+    {{ question.QuestionEnglish }}
+{% endif %}
+But in your route you call .lower(). If your template is checking "Hindi" (capital H) anywhere, it won’t match. Make sure both sides use lowercase consistently.
+
+Questions data missing Hindi fields  
+Verify that load_questions() actually returns QuestionHindi, OptionAHindi, etc. If those keys are missing or empty, switching language won’t show anything.
+
+Hidden input overriding  
+You have:
+
+html
+
+
+Copy
+<input type="hidden" name="language" value="{{ language }}">
+On POST this is fine, but if you’re testing GET reloads, make sure you’re not accidentally submitting the form instead of just changing the dropdown.
+
+✅ Quick Debug Steps
+Add a debug print in your route:
+
+python
+
+
+Copy
+print("Language param:", language)
+Then reload with ?language=hindi and confirm it prints "hindi".
+
+Inspect questions[0] in your route:
+
+python
+
+
+Copy
+print(questions[0])
+Ensure it has QuestionHindi populated.
+
+In your template, temporarily show:
+
+jinja
+
+
+Copy
+<p>Language: {{ language }}</p>
+to confirm what value is being passed.
+
+👉 From your code, the most likely issue is either the URL not updating or the Hindi fields missing in your questions data. Once you confirm the query parameter is being read and the data exists, the template logic will display Hindi correctly.
+
+Do you want me to sketch a minimal working Flask route + template example with dummy questions so you can test the Hindi/English toggle independently of your full app?
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+this code was working fine ,only pagination and other i changed ..<!DOCTYPE html>
 <html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
 <head>
   <meta charset="UTF-8">
@@ -160,6 +763,1252 @@ function showQuestion(index) {
 // Initialize with first question
 document.addEventListener('DOMContentLoaded', () => {
   showQuestion(1);
+});
+</script>
+</body>
+</html>
+ and un current code its not working for language
+Copilot said
+Got it — since the code was working fine before you added pagination and navigation, the language switch stopped working because of the way the page reload and template conditions interact with your new changes. Let’s pinpoint the issue:
+
+🔎 Why Hindi isn’t loading now
+Your route is correct — it reads request.args.get("language", "english").lower() and passes language into the template.
+
+Your template condition is correct — it checks {% if language == "hindi" %}.
+
+The problem is likely in the new JS / pagination logic:
+
+If you wrapped questions in d-none and only show them via JS, but didn’t re-run showQuestion(1) after reload, the page loads with all questions hidden. That makes it look like Hindi isn’t working, but actually no question is visible.
+
+The hidden input <input type="hidden" name="language" value="{{ language }}"> is fine for POST, but for GET reloads you must ensure the JS still shows the first question.
+
+✅ Quick Fix
+Update your JS init so that after reload (whether English or Hindi), the first question is shown:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  // Always show first question after reload
+  showQuestion(1);
+});
+Make sure this is still present at the bottom of your script. If you removed or changed it during pagination edits, that’s why nothing appears.
+
+🛠 Debugging Steps
+Add a temporary debug line in your template:
+
+jinja
+
+
+Copy
+<p>Language: {{ language }}</p>
+If it prints hindi, then the backend is fine — the issue is purely front-end hiding logic.
+
+Check your browser URL after switching language. It should be:
+
+Code
+
+
+Copy
+/category/.../set_name?language=hindi
+If the URL is correct and the debug shows hindi, then your Hindi text is being passed — it’s just hidden by the d-none class.
+
+👉 In short: your Hindi data is loading, but your pagination/hiding logic is preventing it from showing. Restore the showQuestion(1) call on page load, and Hindi questions will appear again.
+
+Would you like me to extend the JS so that when you switch language, it automatically resets to the first question instead of keeping the old hidden state? That will make the toggle seamless.
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+this is current code <!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ subject.NameEnglish }} - {{ set_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background: #f4f6fb; min-height: 100vh; color: #212529; }
+    .test-container { max-width: 950px; margin: 30px auto 60px; }
+    .test-header { background: white; border-radius: 18px; padding: 22px 25px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
+    .test-title { font-weight: 700; margin-bottom: 4px; }
+    .breadcrumb-text { color: #6c757d; font-size: 14px; }
+    .language-box { min-width: 150px; }
+    .question-card { background: white; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); }
+    .question-number { font-weight: 700; margin-right: 8px; }
+    .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+    .option { display: block; border: 1px solid #e0e4ea; border-radius: 10px; padding: 13px 15px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+    .option:hover { background: #f7f9fc; border-color: #adb5bd; }
+    .option input { margin-right: 10px; }
+    .submit-section { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); text-align: center; }
+    .submit-button { min-width: 180px; border-radius: 10px; padding: 12px 25px; font-weight: 600; }
+    .question-count { color: #6c757d; font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+    .nav-btn.answered { background-color: #28a745 !important; color: white; } /* Green */
+    .nav-btn.review { background-color: #ffc107 !important; color: black; } /* Yellow */
+  </style>
+</head>
+
+<body>
+<div class="container test-container">
+
+  <!-- HEADER -->
+  <div class="test-header">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="breadcrumb-text">
+          {{ category.NameEnglish }} / {{ subcategory.NameEnglish }} / {{ subject.NameEnglish }}
+        </div>
+        <h2 class="test-title">{{ subject.NameEnglish }}</h2>
+        <div class="text-muted">{{ set_name }}</div>
+      </div>
+      <div class="col-md-4 mt-3 mt-md-0">
+        <div class="language-box ms-md-auto">
+          <label for="language" class="form-label fw-semibold">Language</label>
+          <select id="language" class="form-select" onchange="changeLanguage(this.value)">
+            <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+            <option value="hindi" {% if language == "hindi" %}selected{% endif %}>हिंदी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST FORM -->
+  <form method="POST" id="testForm">
+    <input type="hidden" name="language" value="{{ language }}">
+
+    <div class="row">
+      <!-- Question Area -->
+      <div class="col-md-8 order-2 order-md-1">
+        <div id="question-area">
+          {% for question in questions %}
+          <div class="question-card d-none" id="q{{ loop.index }}">
+            <div class="question-text">
+              <span class="question-number">Q{{ loop.index }}.</span>
+              {% if language == "hindi" %}
+                {{ question.QuestionHindi }}
+              {% else %}
+                {{ question.QuestionEnglish }}
+              {% endif %}
+            </div>
+            <div class="mt-3">
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="A" onchange="markAnswered({{ loop.index }})">
+                <strong>A.</strong>
+                {% if language == "hindi" %}{{ question.OptionAHindi }}{% else %}{{ question.OptionAEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="B" onchange="markAnswered({{ loop.index }})">
+                <strong>B.</strong>
+                {% if language == "hindi" %}{{ question.OptionBHindi }}{% else %}{{ question.OptionBEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="C" onchange="markAnswered({{ loop.index }})">
+                <strong>C.</strong>
+                {% if language == "hindi" %}{{ question.OptionCHindi }}{% else %}{{ question.OptionCEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="D" onchange="markAnswered({{ loop.index }})">
+                <strong>D.</strong>
+                {% if language == "hindi" %}{{ question.OptionDHindi }}{% else %}{{ question.OptionDEnglish }}{% endif %}
+              </label>
+            </div>
+
+            <!-- Extra Controls -->
+            <div class="mt-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-warning btn-sm" onclick="markReview({{ loop.index }})">Mark for Review</button>
+              <div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="prevQuestion({{ loop.index }})">Previous</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="nextQuestion({{ loop.index }})">Next</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Navigation Sidebar -->
+      <div class="col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+        <div class="card p-3 shadow-sm">
+          <h6 class="fw-bold mb-3">Questions</h6>
+          <div id="nav-container" class="d-flex flex-wrap gap-2 justify-content-md-start justify-content-center">
+            {% for question in questions %}
+            <button type="button" class="btn btn-outline-primary btn-sm nav-btn"
+                    id="nav{{ loop.index }}"
+                    onclick="showQuestion({{ loop.index }})">
+              {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+          <!-- Pagination Arrows -->
+          <div class="d-flex justify-content-between mt-2">
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="prevBatch()">« Prev 30</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="nextBatch()">Next 30 »</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section mt-4">
+      <div class="question-count mb-3">
+        Total Questions: <strong>{{ questions|length }}</strong>
+      </div>
+      <button type="submit" class="btn btn-primary submit-button" onclick="return confirmSubmit()">Submit Test</button>
+    </div>
+  </form>
+</div>
+<script>
+// Show only one question
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  const q = document.getElementById('q' + index);
+  if (q) q.classList.remove('d-none');
+  currentQuestion = index;
+}
+
+// Mark answered (green)
+function markAnswered(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('review');
+    navBtn.classList.add('answered');
+  }
+}
+
+// Mark for review (yellow)
+function markReview(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('answered');
+    navBtn.classList.add('review');
+  }
+}
+
+// Next / Previous navigation
+let currentQuestion = 1;
+function nextQuestion(index) {
+  const next = index + 1;
+  if (document.getElementById('q' + next)) {
+    showQuestion(next);
+  }
+}
+function prevQuestion(index) {
+  const prev = index - 1;
+  if (document.getElementById('q' + prev)) {
+    showQuestion(prev);
+  }
+}
+
+// Pagination for batches of 30
+let batchStart = 1;
+const batchSize = 30;
+function updateBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  for (let i = 1; i <= total; i++) {
+    const btn = document.getElementById('nav' + i);
+    if (!btn) continue;
+    if (i >= batchStart && i < batchStart + batchSize) {
+      btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+}
+function nextBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  if (batchStart + batchSize <= total) {
+    batchStart += batchSize;
+    updateBatch();
+  }
+}
+function prevBatch() {
+  if (batchStart - batchSize >= 1) {
+    batchStart -= batchSize;
+    updateBatch();
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+</script>
+</body>
+</html>
+Copilot said
+Thanks for sharing the full current code — I can see exactly why your Hindi toggle stopped working. The backend route is fine (it reads ?language=hindi and passes language="hindi" into the template). The issue is front‑end visibility: all your questions are wrapped in d-none and only revealed by showQuestion(). When you reload the page after switching language, the template does render Hindi text, but everything is hidden until your JS explicitly shows a question.
+
+🔎 What’s happening
+On page load, you call:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+If this block was removed, moved, or overridden during your pagination edits, then after reload no question is shown — so it looks like Hindi isn’t loading, but really it’s just hidden.
+
+✅ Fix
+Make sure this initialization runs after every reload:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  // Always reset to first question after reload
+  showQuestion(1);
+  updateBatch();
+});
+That way, when you switch to Hindi, the page reloads with ?language=hindi, Flask passes language="hindi", the template renders Hindi text, and the JS immediately shows Q1.
+
+🛠 Debugging Tips
+Add a quick check in your template:
+
+jinja
+
+
+Copy
+<p>Language: {{ language }}</p>
+If it prints hindi, the backend is fine.
+
+Inspect the HTML for Q1 after reload. You’ll see Hindi text inside, but it’s hidden by d-none.
+
+Confirm your URL updates to ...?language=hindi.
+
+👉 So the fix is simple: restore or keep the showQuestion(1) call on page load. That ensures the first Hindi question is visible immediately after switching.
+
+Would you like me to also add a reset in changeLanguage() so that when you switch language, it not only reloads but also scrolls to the top and shows Q1 automatically? That makes the toggle feel smoother.
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+see in this code ,it was running fine.check difference in above code and this code <!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ subject.NameEnglish }} - {{ set_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f6fb;
+      min-height: 100vh;
+      color: #212529;
+    }
+    .test-container { max-width: 950px; margin: 30px auto 60px; }
+    .test-header {
+      background: white; border-radius: 18px; padding: 22px 25px;
+      margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+    .test-title { font-weight: 700; margin-bottom: 4px; }
+    .breadcrumb-text { color: #6c757d; font-size: 14px; }
+    .language-box { min-width: 150px; }
+    .question-card {
+      background: white; border-radius: 16px; padding: 25px;
+      margin-bottom: 20px; box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+    }
+    .question-number { font-weight: 700; margin-right: 8px; }
+    .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+    .option {
+      display: block; border: 1px solid #e0e4ea; border-radius: 10px;
+      padding: 13px 15px; margin-top: 10px; cursor: pointer; transition: 0.2s;
+    }
+    .option:hover { background: #f7f9fc; border-color: #adb5bd; }
+    .option input { margin-right: 10px; }
+    .submit-section {
+      background: white; padding: 20px; border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.05); text-align: center;
+    }
+    .submit-button { min-width: 180px; border-radius: 10px; padding: 12px 25px; font-weight: 600; }
+    .question-count { color: #6c757d; font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+  </style>
+</head>
+
+<body>
+<div class="container test-container">
+
+  <!-- HEADER -->
+  <div class="test-header">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="breadcrumb-text">
+          {{ category.NameEnglish }} / {{ subcategory.NameEnglish }} / {{ subject.NameEnglish }}
+        </div>
+        <h2 class="test-title">{{ subject.NameEnglish }}</h2>
+        <div class="text-muted">{{ set_name }}</div>
+      </div>
+      <div class="col-md-4 mt-3 mt-md-0">
+        <div class="language-box ms-md-auto">
+          <label for="language" class="form-label fw-semibold">Language</label>
+          <select id="language" class="form-select" onchange="changeLanguage(this.value)">
+            <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+            <option value="hindi" {% if language == "hindi" %}selected{% endif %}>हिंदी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST FORM -->
+  <form method="POST" id="testForm">
+    <input type="hidden" name="language" value="{{ language }}">
+
+    <div class="row">
+      <!-- Question Area -->
+      <div class="col-md-8 order-2 order-md-1">
+        <div id="question-area">
+          {% for question in questions %}
+          <div class="question-card d-none" id="q{{ loop.index }}">
+            <div class="question-text">
+              <span class="question-number">Q{{ loop.index }}.</span>
+              {% if language == "hindi" %}
+                {{ question.QuestionHindi }}
+              {% else %}
+                {{ question.QuestionEnglish }}
+              {% endif %}
+            </div>
+            <div class="mt-3">
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="A">
+                <strong>A.</strong>
+                {% if language == "hindi" %}{{ question.OptionAHindi }}{% else %}{{ question.OptionAEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="B">
+                <strong>B.</strong>
+                {% if language == "hindi" %}{{ question.OptionBHindi }}{% else %}{{ question.OptionBEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="C">
+                <strong>C.</strong>
+                {% if language == "hindi" %}{{ question.OptionCHindi }}{% else %}{{ question.OptionCEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="D">
+                <strong>D.</strong>
+                {% if language == "hindi" %}{{ question.OptionDHindi }}{% else %}{{ question.OptionDEnglish }}{% endif %}
+              </label>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Navigation Sidebar -->
+      <div class="col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+        <div class="card p-3 shadow-sm">
+          <h6 class="fw-bold mb-3">Questions</h6>
+          <div class="d-flex flex-wrap gap-2 justify-content-md-start justify-content-center">
+            {% for question in questions %}
+            <button type="button" class="btn btn-outline-primary btn-sm nav-btn"
+                    onclick="showQuestion({{ loop.index }})">
+              {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section mt-4">
+      <div class="question-count mb-3">
+        Total Questions: <strong>{{ questions|length }}</strong>
+      </div>
+      <button type="submit" class="btn btn-primary submit-button" onclick="return confirmSubmit()">
+        Submit Test
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+
+function confirmSubmit() {
+  return confirm("Are you sure you want to submit the test?");
+}
+
+// Show only one question at a time
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  document.getElementById('q' + index).classList.remove('d-none');
+}
+
+// Initialize with first question
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+});
+</script>
+</body>
+</html>
+Copilot said
+I’ve compared the two versions you shared, and the difference that breaks your Hindi toggle is subtle but important:
+
+🔎 Key Differences
+Initialization after reload
+
+In the working version you had:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+});
+That guarantees the first question is shown immediately after reload (whether English or Hindi).
+
+In the newer version, you added pagination logic (updateBatch()) and changed the init block:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+If updateBatch() hides all buttons except the first batch, but you don’t re‑show Q1 properly, the page reloads with everything hidden. That makes it look like Hindi isn’t loading, but really no question is visible.
+
+Hidden input vs GET param
+
+Both versions have <input type="hidden" name="language" value="{{ language }}">.
+
+That’s fine for POST, but for GET reloads the only thing that matters is request.args.get("language"). If your JS reload doesn’t trigger showQuestion(1) correctly, the Hindi text is in the DOM but hidden.
+
+Extra controls
+
+In the newer version you added “Mark for Review”, “Next/Previous”, and pagination. These don’t affect the backend, but they do change how questions are shown/hidden. If the logic isn’t resetting after reload, you’ll see a blank screen.
+
+✅ How to Fix
+Update your init block so it always resets to the first question after reload:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  batchStart = 1;        // reset pagination
+  updateBatch();         // show first batch of buttons
+  showQuestion(1);       // show first question
+});
+This ensures that when you switch to Hindi:
+
+The URL reloads with ?language=hindi.
+
+Flask passes language="hindi" into the template.
+
+The template renders Hindi text.
+
+JS immediately shows Q1 from the first batch.
+
+🛠 Debugging Tip
+Add a quick line in your template:
+
+jinja
+
+
+Copy
+<p>Language: {{ language }}</p>
+If it prints hindi, the backend is fine. If you still don’t see Hindi text, it’s hidden by d-none.
+
+👉 So the real difference is that your new pagination logic hides everything until you call showQuestion(1) correctly after reload. Resetting batchStart and showing Q1 fixes the Hindi toggle.
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+not working
+Copilot said
+I’ve gone line‑by‑line through both versions you shared, and the reason Hindi stopped showing isn’t in your Flask route — it’s in the front‑end changes you made when adding pagination and navigation.
+
+🔎 The Difference
+Working version:  
+On page load you only had:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+});
+→ This guarantees Q1 is visible immediately after reload, so the Hindi text is shown.
+
+Current version:  
+You added pagination logic:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+  updateBatch();
+});
+But your updateBatch() hides all navigation buttons outside the current batch. If batchStart isn’t reset properly, it can hide all buttons and leave the page with no visible question. That makes it look like Hindi isn’t loading, but really everything is hidden by d-none.
+
+✅ Fix
+Reset pagination before showing the first question:
+
+js
+
+
+Copy
+document.addEventListener('DOMContentLoaded', () => {
+  batchStart = 1;        // reset to first batch
+  updateBatch();         // show first 30 buttons
+  showQuestion(1);       // show first question
+});
+🛠 Debugging Steps
+Add a debug line in your template:
+
+jinja
+
+
+Copy
+<p>Language: {{ language }}</p>
+If it prints hindi, the backend is fine.
+
+Inspect the DOM after reload — you’ll see Hindi text inside #q1, but it’s hidden by d-none.
+
+Confirm the URL updates to ...?language=hindi.
+
+👉 So the backend is still passing Hindi correctly. The issue is front‑end hiding logic: your pagination hides everything unless you reset batchStart and call showQuestion(1) after reload. Once you add that reset, Hindi questions will appear again.
+
+Would you like me to rewrite the init block and changeLanguage() together so that switching language always resets pagination and shows Q1 automatically? That way you don’t have to rely on manual resets.
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+this one giving english for both selection <p>Language: {{ language }}</p>
+Copilot said
+Thanks for checking with <p>Language: {{ language }}</p> — if that always prints english, even when you select Hindi, the issue isn’t in the template but in how the value is being passed from the route.
+
+🔎 What’s Wrong
+In your route you do:
+
+python
+
+
+Copy
+language = request.args.get("language", "english").lower()
+That works only if the URL actually has ?language=hindi.
+
+In your template you have:
+
+html
+
+
+Copy
+<select id="language" onchange="changeLanguage(this.value)">
+and your JS:
+
+js
+
+
+Copy
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+→ This reloads the page with ?language=hindi.
+
+If you’re still seeing english, it means the URL isn’t updating or the route isn’t reading the query parameter.
+
+✅ Fixes to Try
+Confirm URL after switching  
+After selecting Hindi, check the browser’s address bar. It must look like:
+
+Code
+
+
+Copy
+http://localhost:5000/category/.../set_name?language=hindi
+If it doesn’t, the JS isn’t firing.
+
+Force lowercase in template check  
+In case of capitalization mismatch:
+
+jinja
+
+
+Copy
+{% if language|lower == "hindi" %}
+    {{ question.QuestionHindi }}
+{% else %}
+    {{ question.QuestionEnglish }}
+{% endif %}
+Debug print in route  
+Add:
+
+python
+
+
+Copy
+print("Language param:", request.args.get("language"))
+Then reload with Hindi selected. If it prints None or english, the query param isn’t being set.
+
+Hidden input not interfering  
+The hidden input <input type="hidden" name="language" value="{{ language }}"> is only used on POST. It doesn’t affect GET reloads. So don’t worry about that for switching.
+
+🛠 Most Likely Cause
+When you added pagination, you wrapped everything in d-none and rely on JS to show Q1. If the page reloads but your JS doesn’t run (or errors out), you’ll see nothing and assume Hindi isn’t loading. But your debug <p> shows english because the URL never updated to ?language=hindi.
+
+👉 So the fix is: make sure the URL updates to include ?language=hindi when you switch, and confirm your route reads it. Once that’s happening, your template condition will show Hindi correctly.
+
+Would you like me to give you a minimal Flask route + template pair (with dummy questions) that you can run standalone to verify the Hindi/English toggle works, before layering back in pagination? That way you can isolate whether the bug is in the JS or the route.
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+this is url  https://exambank.azurewebsites.net/test/category/Certifications/CCC/SelectCCCExamType/Topicwise/Cyber_Security_set1
+Copilot said
+Thanks for sharing the full URL — that helps clarify the problem. Right now your route is defined as:
+
+Code
+
+
+Copy
+/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>
+but the URL you’re actually hitting is:
+
+Code
+
+
+Copy
+/test/category/Certifications/CCC/SelectCCCExamType/Topicwise/Cyber_Security_set1
+Notice the difference: your route doesn’t have the /test/ prefix, but your deployed app does. That means when your JavaScript runs:
+
+js
+
+
+Copy
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+it’s appending ?language=hindi to the full URL, but your Flask route may not be matching correctly because of the extra /test/ segment. As a result, the request falls back to the default "english".
+
+✅ How to Fix
+Update your route to include /test/  
+Change your blueprint route to:
+
+python
+
+
+Copy
+@demotest_bp.route(
+    "/test/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>/<set_name>",
+    methods=["GET", "POST"]
+)
+so it matches the deployed URL.
+
+Confirm query param is read  
+Add a debug line:
+
+python
+
+
+Copy
+print("Language param:", request.args.get("language"))
+Then switch to Hindi. You should see "hindi" in your logs.
+
+Template condition  
+Keep it lowercase:
+
+jinja
+
+
+Copy
+{% if language|lower == "hindi" %}
+    {{ question.QuestionHindi }}
+{% else %}
+    {{ question.QuestionEnglish }}
+{% endif %}
+🛠 Debugging Checklist
+After selecting Hindi, check the browser’s address bar. It must look like:
+
+Code
+
+
+Copy
+https://exambank.azurewebsites.net/test/category/.../Cyber_Security_set1?language=hindi
+If the URL looks correct but you still see English, then the route isn’t matching. Fixing the route path will solve it.
+
+If the route matches and logs show "hindi", but you still see English, then your questions data doesn’t have Hindi fields populated.
+
+👉 The root cause is that your deployed URL has /test/ but your route definition doesn’t. Aligning those will let the query parameter flow through, and your Hindi toggle will work again.
+
+Would you like me to sketch a minimal Flask route + template pair that you can drop in and test locally, so you can confirm the Hindi/English toggle works before redeploying to Azure?
+
+
+
+
+
+
+
+Edit in a page
+You said
+
+can you modify pagination and mark review and others feature like green and yellow button after ans and review. in this same code because this one working with endlish hindi questions  <!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ subject.NameEnglish }} - {{ set_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f6fb;
+      min-height: 100vh;
+      color: #212529;
+    }
+    .test-container { max-width: 950px; margin: 30px auto 60px; }
+    .test-header {
+      background: white; border-radius: 18px; padding: 22px 25px;
+      margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+    .test-title { font-weight: 700; margin-bottom: 4px; }
+    .breadcrumb-text { color: #6c757d; font-size: 14px; }
+    .language-box { min-width: 150px; }
+    .question-card {
+      background: white; border-radius: 16px; padding: 25px;
+      margin-bottom: 20px; box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+    }
+    .question-number { font-weight: 700; margin-right: 8px; }
+    .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+    .option {
+      display: block; border: 1px solid #e0e4ea; border-radius: 10px;
+      padding: 13px 15px; margin-top: 10px; cursor: pointer; transition: 0.2s;
+    }
+    .option:hover { background: #f7f9fc; border-color: #adb5bd; }
+    .option input { margin-right: 10px; }
+    .submit-section {
+      background: white; padding: 20px; border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.05); text-align: center;
+    }
+    .submit-button { min-width: 180px; border-radius: 10px; padding: 12px 25px; font-weight: 600; }
+    .question-count { color: #6c757d; font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+  </style>
+</head>
+
+<body>
+<div class="container test-container">
+
+  <!-- HEADER -->
+  <div class="test-header">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="breadcrumb-text">
+          {{ category.NameEnglish }} / {{ subcategory.NameEnglish }} / {{ subject.NameEnglish }}
+        </div>
+        <h2 class="test-title">{{ subject.NameEnglish }}</h2>
+        <div class="text-muted">{{ set_name }}</div>
+      </div>
+      <div class="col-md-4 mt-3 mt-md-0">
+        <div class="language-box ms-md-auto">
+          <label for="language" class="form-label fw-semibold">Language</label>
+          <select id="language" class="form-select" onchange="changeLanguage(this.value)">
+            <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+            <option value="hindi" {% if language == "hindi" %}selected{% endif %}>हिंदी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST FORM -->
+  <form method="POST" id="testForm">
+    <input type="hidden" name="language" value="{{ language }}">
+
+    <div class="row">
+      <!-- Question Area -->
+      <div class="col-md-8 order-2 order-md-1">
+        <div id="question-area">
+          {% for question in questions %}
+          <div class="question-card d-none" id="q{{ loop.index }}">
+            <div class="question-text">
+              <span class="question-number">Q{{ loop.index }}.</span>
+              {% if language == "hindi" %}
+                {{ question.QuestionHindi }}
+              {% else %}
+                {{ question.QuestionEnglish }}
+              {% endif %}
+            </div>
+            <div class="mt-3">
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="A">
+                <strong>A.</strong>
+                {% if language == "hindi" %}{{ question.OptionAHindi }}{% else %}{{ question.OptionAEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="B">
+                <strong>B.</strong>
+                {% if language == "hindi" %}{{ question.OptionBHindi }}{% else %}{{ question.OptionBEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="C">
+                <strong>C.</strong>
+                {% if language == "hindi" %}{{ question.OptionCHindi }}{% else %}{{ question.OptionCEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="D">
+                <strong>D.</strong>
+                {% if language == "hindi" %}{{ question.OptionDHindi }}{% else %}{{ question.OptionDEnglish }}{% endif %}
+              </label>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Navigation Sidebar -->
+      <div class="col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+        <div class="card p-3 shadow-sm">
+          <h6 class="fw-bold mb-3">Questions</h6>
+          <div class="d-flex flex-wrap gap-2 justify-content-md-start justify-content-center">
+            {% for question in questions %}
+            <button type="button" class="btn btn-outline-primary btn-sm nav-btn"
+                    onclick="showQuestion({{ loop.index }})">
+              {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section mt-4">
+      <div class="question-count mb-3">
+        Total Questions: <strong>{{ questions|length }}</strong>
+      </div>
+      <button type="submit" class="btn btn-primary submit-button" onclick="return confirmSubmit()">
+        Submit Test
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+
+function confirmSubmit() {
+  return confirm("Are you sure you want to submit the test?");
+}
+
+// Show only one question at a time
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  document.getElementById('q' + index).classList.remove('d-none');
+}
+
+// Initialize with first question
+document.addEventListener('DOMContentLoaded', () => {
+  showQuestion(1);
+});
+</script>
+</body>
+</html>
+Copilot said
+Got it — you want to keep the working Hindi/English toggle code exactly as it is, but add back the features you liked:
+
+✅ Answered question → green button
+
+✅ Mark for review → yellow button
+
+✅ Next/Previous navigation
+
+✅ Pagination (30 buttons per batch)
+
+Here’s the modified version of your working code with those features integrated:
+
+📝 Updated Full Code
+html
+
+
+Copy
+<!DOCTYPE html>
+<html lang="{{ 'hi' if language == 'hindi' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ subject.NameEnglish }} - {{ set_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background: #f4f6fb; min-height: 100vh; color: #212529; }
+    .test-container { max-width: 950px; margin: 30px auto 60px; }
+    .test-header { background: white; border-radius: 18px; padding: 22px 25px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
+    .test-title { font-weight: 700; margin-bottom: 4px; }
+    .breadcrumb-text { color: #6c757d; font-size: 14px; }
+    .language-box { min-width: 150px; }
+    .question-card { background: white; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); }
+    .question-number { font-weight: 700; margin-right: 8px; }
+    .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+    .option { display: block; border: 1px solid #e0e4ea; border-radius: 10px; padding: 13px 15px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+    .option:hover { background: #f7f9fc; border-color: #adb5bd; }
+    .option input { margin-right: 10px; }
+    .submit-section { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 5px 18px rgba(0,0,0,0.05); text-align: center; }
+    .submit-button { min-width: 180px; border-radius: 10px; padding: 12px 25px; font-weight: 600; }
+    .question-count { color: #6c757d; font-size: 14px; }
+    .nav-btn { width: 40px; height: 40px; }
+    .nav-btn.answered { background-color: #28a745 !important; color: white; } /* Green */
+    .nav-btn.review { background-color: #ffc107 !important; color: black; } /* Yellow */
+  </style>
+</head>
+
+<body>
+<div class="container test-container">
+
+  <!-- HEADER -->
+  <div class="test-header">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="breadcrumb-text">
+          {{ category.NameEnglish }} / {{ subcategory.NameEnglish }} / {{ subject.NameEnglish }}
+        </div>
+        <h2 class="test-title">{{ subject.NameEnglish }}</h2>
+        <div class="text-muted">{{ set_name }}</div>
+      </div>
+      <div class="col-md-4 mt-3 mt-md-0">
+        <div class="language-box ms-md-auto">
+          <label for="language" class="form-label fw-semibold">Language</label>
+          <select id="language" class="form-select" onchange="changeLanguage(this.value)">
+            <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+            <option value="hindi" {% if language == "hindi" %}selected{% endif %}>हिंदी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST FORM -->
+  <form method="POST" id="testForm">
+    <input type="hidden" name="language" value="{{ language }}">
+
+    <div class="row">
+      <!-- Question Area -->
+      <div class="col-md-8 order-2 order-md-1">
+        <div id="question-area">
+          {% for question in questions %}
+          <div class="question-card d-none" id="q{{ loop.index }}">
+            <div class="question-text">
+              <span class="question-number">Q{{ loop.index }}.</span>
+              {% if language == "hindi" %}
+                {{ question.QuestionHindi }}
+              {% else %}
+                {{ question.QuestionEnglish }}
+              {% endif %}
+            </div>
+            <div class="mt-3">
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="A" onchange="markAnswered({{ loop.index }})">
+                <strong>A.</strong>
+                {% if language == "hindi" %}{{ question.OptionAHindi }}{% else %}{{ question.OptionAEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="B" onchange="markAnswered({{ loop.index }})">
+                <strong>B.</strong>
+                {% if language == "hindi" %}{{ question.OptionBHindi }}{% else %}{{ question.OptionBEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="C" onchange="markAnswered({{ loop.index }})">
+                <strong>C.</strong>
+                {% if language == "hindi" %}{{ question.OptionCHindi }}{% else %}{{ question.OptionCEnglish }}{% endif %}
+              </label>
+              <label class="option">
+                <input type="radio" name="question_{{ loop.index0 }}" value="D" onchange="markAnswered({{ loop.index }})">
+                <strong>D.</strong>
+                {% if language == "hindi" %}{{ question.OptionDHindi }}{% else %}{{ question.OptionDEnglish }}{% endif %}
+              </label>
+            </div>
+
+            <!-- Extra Controls -->
+            <div class="mt-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-warning btn-sm" onclick="markReview({{ loop.index }})">Mark for Review</button>
+              <div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="prevQuestion({{ loop.index }})">Previous</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="nextQuestion({{ loop.index }})">Next</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Navigation Sidebar -->
+      <div class="col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+        <div class="card p-3 shadow-sm">
+          <h6 class="fw-bold mb-3">Questions</h6>
+          <div id="nav-container" class="d-flex flex-wrap gap-2 justify-content-md-start justify-content-center">
+            {% for question in questions %}
+            <button type="button" class="btn btn-outline-primary btn-sm nav-btn"
+                    id="nav{{ loop.index }}"
+                    onclick="showQuestion({{ loop.index }})">
+              {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+          <!-- Pagination Arrows -->
+          <div class="d-flex justify-content-between mt-2">
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="prevBatch()">« Prev 30</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" onclick="nextBatch()">Next 30 »</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section mt-4">
+      <div class="question-count mb-3">
+        Total Questions: <strong>{{ questions|length }}</strong>
+      </div>
+      <button type="submit" class="btn btn-primary submit-button" onclick="return confirmSubmit()">Submit Test</button>
+    </div>
+  </form>
+</div>
+
+<script>
+function changeLanguage(language) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set("language", language);
+  window.location.href = currentUrl.toString();
+}
+
+function confirmSubmit() {
+  return confirm("Are you sure you want to submit the test?");
+}
+
+// Show only one question
+let currentQuestion = 1;
+function showQuestion(index) {
+  document.querySelectorAll('.question-card').forEach(card => card.classList.add('d-none'));
+  const q = document.getElementById('q' + index);
+  if (q) q.classList.remove('d-none');
+  currentQuestion = index;
+}
+
+// Mark answered (green)
+function markAnswered(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('review');
+    navBtn.classList.add('answered');
+  }
+}
+
+// Mark for review (yellow)
+function markReview(index) {
+  const navBtn = document.getElementById('nav' + index);
+  if (navBtn) {
+    navBtn.classList.remove('answered');
+    navBtn.classList.add('review');
+  }
+}
+
+// Next / Previous navigation
+function nextQuestion(index) {
+  const next = index + 1;
+  if (document.getElementById('q' + next)) {
+    showQuestion(next);
+  }
+}
+function prevQuestion(index) {
+  const prev = index - 1;
+  if (document.getElementById('q' + prev)) {
+    showQuestion(prev);
+  }
+}
+
+// Pagination for batches of 30
+let batchStart = 1;
+const batchSize = 30;
+function updateBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  for (let i = 1; i <= total; i++) {
+    const btn = document.getElementById('nav' + i);
+    if (!btn) continue;
+    if (i >= batchStart && i < batchStart + batchSize) {
+      btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+}
+function nextBatch() {
+  const total = document.querySelectorAll('.nav-btn').length;
+  if (batchStart + batchSize <= total) {
+    batchStart += batchSize;
+    updateBatch();
+  }
+}
+function prevBatch() {
+  if (batchStart - batchSize >= 1) {
+    batchStart -= batchSize;
+    updateBatch();
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  batchStart = 1;        // reset pagination
+  updateBatch();         // show first batch
+  showQuestion(1);       // show first question
 });
 </script>
 </body>
