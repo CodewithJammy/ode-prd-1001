@@ -221,7 +221,7 @@ def login():
     ):
 
         print(
-            "DEBUG LOGIN: ALREADY LOGGED IN"
+            "DEBUG LOGIN: ALREADY LOGGED IN...ok"
         )
 
         return redirect(
