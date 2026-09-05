@@ -159,18 +159,13 @@
 
         {% for contenttype in contenttypes %}
 
-            <a
-                class="content-card"
-                href="{{ url_for(
-                    'demo_test.sets',
-                    category_id=category.CategoryId,
-                    subcategory_id=subcategory.SubCategoryId,
-                    subject_id=category_flow.SubjectId,
-                    contenttype_id=contenttype.ContenttypeId
-                ) }}"
-            >
-
-                <div class="content-icon">
+            {% if category.CategoryId|lower == "oneday" and contenttype.ContenttypeId == "Subjectwise" %}
+              <a class="content-card"
+                 href="{{ url_for('demo_test.oneday_subjectwise',
+                      category_id=category.CategoryId,
+                      subcategory_id=subcategory.SubCategoryId) }}"
+               >
+                 <div class="content-icon">
 
                     {% if contenttype.ContenttypeId == "Topicwise" %}
                         📚
@@ -193,8 +188,42 @@
                 <p>
                     {{ contenttype.NameHindi }}
                 </p>
+     
+                </a>
+            {% else %}
+              <a class="content-card"
+                 href="{{ url_for('demo_test.sets',
+                      category_id=category.CategoryId,
+                      subcategory_id=subcategory.SubCategoryId,
+                      subject_id=subject.SubjectId,
+                      contenttype_id=contenttype.ContenttypeId) }}"
+                >
+                 <div class="content-icon">
 
-            </a>
+                    {% if contenttype.ContenttypeId == "Topicwise" %}
+                        📚
+                    {% elif contenttype.ContenttypeId == "Subjectwise" %}
+                        📚
+                    {% elif contenttype.ContenttypeId == "Previousyears" %}
+                        📄
+                    {% elif contenttype.ContenttypeId == "Completetest" %}
+                        📝
+                    {% else %}
+                        📖
+                    {% endif %}
+
+                </div>
+
+                <h2>
+                    {{ contenttype.NameEnglish }}
+                </h2>
+
+                <p>
+                    {{ contenttype.NameHindi }}
+                </p>
+  
+              </a>
+            {% endif %}
 
         {% endfor %}
 
