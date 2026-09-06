@@ -147,7 +147,7 @@
 
         {% for contenttype in contenttypes %}
 
-          {% if category.CategoryId|lower == "oneday" and contenttype.ContenttypeId == "Subjectwise" %}
+          {% if category.CategoryId|lower == "oneday"  %}
             <!-- OneDay flow: Subjectwise goes to oneday_subjectwise -->
             <a class="content-card"
                href="{{ url_for('demo_test.oneday_subjectwise',
