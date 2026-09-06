@@ -161,8 +161,8 @@ subcategorySelect.addEventListener("change", async function () {
   if (!subcategoryId) { updatePathPreview(); return; }
 
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-    // Fetch contenttypes directly
-    const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
+    // Fetch contenttypes by subcategory
+    const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.contenttypes.forEach(item => {
       const option = document.createElement("option");
@@ -176,16 +176,14 @@ subcategorySelect.addEventListener("change", async function () {
     contenttypeSelect.addEventListener("change", function () {
       const selectedType = this.value.toLowerCase();
       if (selectedType === "subjectwise" || selectedType === "topicwise") {
-        // Enable subject dropdown for manual selection
-        subjectSelect.disabled = false;
+        subjectSelect.disabled = false; // allow manual subject selection
       } else if (selectedType === "completetest" || selectedType === "previousyears") {
-        // Auto populate subject with subcategoryId
         subjectSelect.innerHTML = "";
         const option = document.createElement("option");
-        option.value = subcategoryId.toLowerCase();
+        option.value = subcategoryId;   // auto populate with subcategoryId
         option.textContent = subcategoryId;
         subjectSelect.appendChild(option);
-        subjectSelect.disabled = true; // keep locked
+        subjectSelect.disabled = true;  // keep locked
       } else {
         subjectSelect.disabled = true;
         subjectSelect.value = "";
@@ -204,7 +202,7 @@ subcategorySelect.addEventListener("change", async function () {
     });
     subjectSelect.disabled = false;
 
-    // When subject selected, fetch contenttypes
+    // When subject selected, fetch contenttypes by subject
     subjectSelect.addEventListener("change", async function () {
       const subjectId = this.value;
       contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
@@ -235,6 +233,6 @@ subcategorySelect.addEventListener("change", updatePathPreview);
 categorySelect.addEventListener("change", updatePathPreview);
 </script>
 
-
+  
 </body>
 </html>
