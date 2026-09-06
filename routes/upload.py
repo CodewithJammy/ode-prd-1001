@@ -138,75 +138,84 @@ def upload_file():
             if set_name.lower().endswith(".csv"):
                 set_name = set_name[:-4]
 
-           
-# ============================================================
-# SPECIAL CASE HANDLING
-# ============================================================
-if subcategory_id.lower() in ("oneday", "certification"):
-    # Force subject_id to match subcategory for path consistency
-    subject_id = subcategory_id.lower()
+            # ============================================================
+            # SPECIAL CASE HANDLING
+            # ============================================================
+            if subcategory_id.lower() in ("oneday", "certification"):
+                # Force subject_id to match subcategory for path consistency
+                subject_id = subcategory_id.lower()
 
-    # Validate contenttype normally
-    contenttype = next(
-        (c for c in get_contenttypes(subject_id)
-         if c.get("ContenttypeId") == contenttype_id),
-        None
-    )
-    if not contenttype:
-        flash("Invalid content type selected.", "danger")
-        return redirect(url_for("upload.upload_file"))
+                # Validate contenttype normally
+                contenttype = next(
+                    (c for c in get_contenttypes(subject_id)
+                     if c.get("ContenttypeId") == contenttype_id),
+                    None
+                )
+                if not contenttype:
+                    flash("Invalid content type selected.", "danger")
+                    return redirect(url_for("upload.upload_file"))
 
-    blob_path = (
-        f"{DATA_PREFIX}{category_id}/"
-        f"{subcategory_id}/"
-        f"{subject_id}/"
-        f"{contenttype_id}/"
-        f"{set_name}.csv"
-    )
+                blob_path = (
+                    f"{DATA_PREFIX}{category_id}/"
+                    f"{subcategory_id}/"
+                    f"{subject_id}/"
+                    f"{contenttype_id}/"
+                    f"{set_name}.csv"
+                )
 
-else:
-    # Normal flow → subject required
-    if not subject_id:
-        flash("Please select a subject.", "danger")
-        return redirect(url_for("upload.upload_file"))
+            else:
+                # Normal flow → subject required
+                if not subject_id:
+                    flash("Please select a subject.", "danger")
+                    return redirect(url_for("upload.upload_file"))
 
-    subject = next(
-        (s for s in get_subjects(subcategory_id)
-         if s.get("SubjectId") == subject_id),
-        None
-    )
-    if not subject:
-        flash("Invalid subject selected.", "danger")
-        return redirect(url_for("upload.upload_file"))
+                subject = next(
+                    (s for s in get_subjects(subcategory_id)
+                     if s.get("SubjectId") == subject_id),
+                    None
+                )
+                if not subject:
+                    flash("Invalid subject selected.", "danger")
+                    return redirect(url_for("upload.upload_file"))
 
-    contenttype = next(
-        (c for c in get_contenttypes(subject_id)
-         if c.get("ContenttypeId") == contenttype_id),
-        None
-    )
-    if not contenttype:
-        flash("Invalid content type selected.", "danger")
-        return redirect(url_for("upload.upload_file"))
+                contenttype = next(
+                    (c for c in get_contenttypes(subject_id)
+                     if c.get("ContenttypeId") == contenttype_id),
+                    None
+                )
+                if not contenttype:
+                    flash("Invalid content type selected.", "danger")
+                    return redirect(url_for("upload.upload_file"))
 
-    blob_path = (
-        f"{DATA_PREFIX}{category_id}/"
-        f"{subcategory_id}/"
-        f"{subject_id}/"
-        f"{contenttype_id}/"
-        f"{set_name}.csv"
-    )
+                blob_path = (
+                    f"{DATA_PREFIX}{category_id}/"
+                    f"{subcategory_id}/"
+                    f"{subject_id}/"
+                    f"{contenttype_id}/"
+                    f"{set_name}.csv"
+                )
 
-# ============================================================
-# UPLOAD TO AZURE
-# ============================================================
-container = get_container_client()
-blob_client = container.get_blob_client(blob_path)
-uploaded_file.stream.seek(0)
-blob_client.upload_blob(uploaded_file.stream, overwrite=True)
+            # ============================================================
+            # UPLOAD TO AZURE
+            # ============================================================
+            container = get_container_client()
+            blob_client = container.get_blob_client(blob_path)
+            uploaded_file.stream.seek(0)
+            blob_client.upload_blob(uploaded_file.stream, overwrite=True)
 
-current_app.logger.info(f"UPLOAD SUCCESS: {blob_path}")
-flash(f"File uploaded successfully: {blob_path}", "success")
-return redirect(url_for("upload.upload_file"))
+            current_app.logger.info(f"UPLOAD SUCCESS: {blob_path}")
+            flash(f"File uploaded successfully: {blob_path}", "success")
+            return redirect(url_for("upload.upload_file"))
+
+        except Exception as e:
+            current_app.logger.exception("UPLOAD FAILED")
+            flash(f"Upload failed: {str(e)}", "danger")
+            return redirect(url_for("upload.upload_file"))
+
+    # GET
+    categories = load_categories()
+    return render_template("upload.html", categories=categories)
+
 
 # ============================================================
 # API ENDPOINTS
