@@ -4,7 +4,7 @@
 
 <head>
 
-```
+
 <meta charset="UTF-8">
 
 <meta
@@ -82,7 +82,7 @@
     }
 
 </style>
-```
+
 
 </head>
 
@@ -90,7 +90,7 @@
 
 <div class="container upload-container">
 
-```
+
 <div class="upload-card">
 
 
@@ -133,701 +133,150 @@
     <!-- FORM -->
     <!-- ================================================= -->
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
+    <form method="POST" enctype="multipart/form-data">
+
+  <!-- Category -->
+  <div class="mb-3">
+    <label class="form-label" for="category">Category</label>
+    <select class="form-select" id="category" name="category_id" required>
+      <option value="">Select Category</option>
+      {% for category in categories %}
+        <option value="{{ category['CategoryId'] }}">
+          {{ category['NameEnglish'] }} - {{ category['NameHindi'] }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- SubCategory -->
+  <div class="mb-3">
+    <label class="form-label" for="subcategory">SubCategory</label>
+    <select class="form-select" id="subcategory" name="subcategory_id" required disabled>
+      <option value="">Select SubCategory</option>
+    </select>
+  </div>
+
+  <!-- Subject -->
+  <div class="mb-3">
+    <label class="form-label" for="subject">Subject</label>
+    <select class="form-select" id="subject" name="subject_id" disabled>
+      <option value="">Select Subject</option>
+    </select>
+  </div>
+
+  <!-- Content Type -->
+  <div class="mb-3">
+    <label class="form-label" for="contenttype">Content Type</label>
+    <select class="form-select" id="contenttype" name="contenttype_id" required disabled>
+      <option value="">Select Content Type</option>
+    </select>
+  </div>
+
+  <!-- Set Name -->
+  <div class="mb-3">
+    <label class="form-label" for="set_name">Set Name</label>
+    <input type="text" class="form-control" id="set_name" name="set_name" placeholder="Example: Set1" required>
+    <small class="text-muted">Enter Set1, Set2, Set3 etc.</small>
+  </div>
+
+  <!-- File -->
+  <div class="mb-3">
+    <label class="form-label" for="questions_file">Question CSV File</label>
+    <input type="file" class="form-control" id="questions_file" name="questions_file" accept=".csv" required>
+  </div>
+
+  <!-- Path Preview -->
+  <div class="mb-4">
+    <label class="form-label">Upload Location</label>
+    <div class="path-preview" id="pathPreview">
+      data/Category/SubCategory/Subject/ContentType/Set1.csv
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary upload-button">Upload Question Set</button>
+</form>
 
-
-        <!-- ================================================= -->
-        <!-- CATEGORY -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="category"
-            >
-                Category
-            </label>
-
-
-            <select
-                class="form-select"
-                id="category"
-                name="category_id"
-                required
-            >
-
-                <option value="">
-                    Select Category
-                </option>
-
-
-                {% for category in categories %}
-
-                    <option
-                        value="{{ category['CategoryId'] }}"
-                    >
-                        {{ category['NameEnglish'] }}
-                        -
-                        {{ category['NameHindi'] }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- SUBCATEGORY -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="subcategory"
-            >
-                SubCategory
-            </label>
-
-
-            <select
-                class="form-select"
-                id="subcategory"
-                name="subcategory_id"
-                required
-                disabled
-            >
-
-                <option value="">
-                    Select SubCategory
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- SUBJECT -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="subject"
-            >
-                Subject
-            </label>
-
-
-            <select
-                class="form-select"
-                id="subject"
-                name="subject_id"
-                required
-                disabled
-            >
-
-                <option value="">
-                    Select Subject
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- CONTENT TYPE -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="contenttype"
-            >
-                Content Type
-            </label>
-
-
-            <select
-                class="form-select"
-                id="contenttype"
-                name="contenttype_id"
-                required
-                disabled
-            >
-
-                <option value="">
-                    Select Content Type
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- SET -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="set_name"
-            >
-                Set Name
-            </label>
-
-
-            <input
-                type="text"
-                class="form-control"
-                id="set_name"
-                name="set_name"
-                placeholder="Example: Set1"
-                required
-            >
-
-
-            <small class="text-muted">
-
-                Enter Set1, Set2, Set3 etc.
-
-            </small>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- FILE -->
-        <!-- ================================================= -->
-
-        <div class="mb-3">
-
-            <label
-                class="form-label"
-                for="questions_file"
-            >
-                Question CSV File
-            </label>
-
-
-            <input
-                type="file"
-                class="form-control"
-                id="questions_file"
-                name="questions_file"
-                accept=".csv"
-                required
-            >
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- PATH PREVIEW -->
-        <!-- ================================================= -->
-
-        <div class="mb-4">
-
-            <label class="form-label">
-                Upload Location
-            </label>
-
-
-            <div
-                class="path-preview"
-                id="pathPreview"
-            >
-                data/Category/SubCategory/Subject/ContentType/Set1.csv
-            </div>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- UPLOAD -->
-        <!-- ================================================= -->
-
-        <button
-            type="submit"
-            class="btn btn-primary upload-button"
-        >
-            Upload Question Set
-        </button>
-
-
-    </form>
 
 
 </div>
-```
+
 
 </div>
 
 <script>
-
-
-// ============================================================
-// ELEMENTS
-// ============================================================
-
-const categorySelect =
-    document.getElementById(
-        "category"
-    );
-
-
-const subcategorySelect =
-    document.getElementById(
-        "subcategory"
-    );
-
-
-const subjectSelect =
-    document.getElementById(
-        "subject"
-    );
-
-
-const contenttypeSelect =
-    document.getElementById(
-        "contenttype"
-    );
-
-
-const setNameInput =
-    document.getElementById(
-        "set_name"
-    );
-
-
-const pathPreview =
-    document.getElementById(
-        "pathPreview"
-    );
-
-
-// ============================================================
-// UPDATE PATH PREVIEW
-// ============================================================
-
 function updatePathPreview() {
+  const category = categorySelect.value;
+  const subcategory = subcategorySelect.value;
+  const subject = subjectSelect.disabled ? "" : subjectSelect.value;
+  const contenttype = contenttypeSelect.value;
+  let setName = setNameInput.value.trim() || "Set1";
 
-    const category =
-        categorySelect.value;
-
-    const subcategory =
-        subcategorySelect.value;
-
-    const subject =
-        subjectSelect.value;
-
-    const contenttype =
-        contenttypeSelect.value;
-
-    let setName =
-        setNameInput.value.trim();
-
-
-    if (!setName) {
-
-        setName = "Set1";
-
+  if (category && subcategory && contenttype) {
+    if (subject) {
+      pathPreview.textContent = `data/${category}/${subcategory}/${subject}/${contenttype}/${setName}.csv`;
+    } else {
+      pathPreview.textContent = `data/${category}/${subcategory}/${contenttype}/${setName}.csv`;
     }
-
-
-    if (
-        category &&
-        subcategory &&
-        subject &&
-        contenttype
-    ) {
-
-        pathPreview.textContent =
-            `data/${category}/${subcategory}/${subject}/${contenttype}/${setName}.csv`;
-
-    }
-
-    else {
-
-        pathPreview.textContent =
-            "data/Category/SubCategory/Subject/ContentType/Set1.csv";
-
-    }
-
+  } else {
+    pathPreview.textContent = "data/Category/SubCategory/Subject/ContentType/Set1.csv";
+  }
 }
 
-
-// ============================================================
-// CATEGORY CHANGE
-// ============================================================
-
-categorySelect.addEventListener(
-    "change",
-    async function () {
-
-        const categoryId =
-            this.value;
-
-
-        // Reset subcategory
-
-        subcategorySelect.innerHTML =
-            '<option value="">Select SubCategory</option>';
-
-
-        // Reset subject
-
-        subjectSelect.innerHTML =
-            '<option value="">Select Subject</option>';
-
-
-        // Reset content type
-
-        contenttypeSelect.innerHTML =
-            '<option value="">Select Content Type</option>';
-
-
-        // Disable dependent fields
-
-        subcategorySelect.disabled =
-            true;
-
-        subjectSelect.disabled =
-            true;
-
-        contenttypeSelect.disabled =
-            true;
-
-
-        if (!categoryId) {
-
-            updatePathPreview();
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/upload/subcategories/${encodeURIComponent(categoryId)}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load subcategories"
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            data.subcategories.forEach(
-                function (item) {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-
-                    option.value =
-                        item.SubCategoryId;
-
-
-                    option.textContent =
-                        `${item.NameEnglish} - ${item.NameHindi}`;
-
-
-                    subcategorySelect.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-
-            subcategorySelect.disabled =
-                false;
-
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to load subcategories."
-            );
-
-        }
-
-
-        updatePathPreview();
-
-    }
-);
-
-
-// ============================================================
-// SUBCATEGORY CHANGE
-// ============================================================
-
-subcategorySelect.addEventListener(
-    "change",
-    async function () {
-
-        const subcategoryId =
-            this.value;
-
-
-        // Reset subject
-
-        subjectSelect.innerHTML =
-            '<option value="">Select Subject</option>';
-
-
-        // Reset content type
-
-        contenttypeSelect.innerHTML =
-            '<option value="">Select Content Type</option>';
-
-
-        // Disable content type
-
-        contenttypeSelect.disabled =
-            true;
-
-
-        if (!subcategoryId) {
-
-            subjectSelect.disabled =
-                true;
-
-            updatePathPreview();
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/upload/subjects/${encodeURIComponent(subcategoryId)}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load subjects"
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            data.subjects.forEach(
-                function (item) {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-
-                    option.value =
-                        item.SubjectId;
-
-
-                    option.textContent =
-                        `${item.NameEnglish} - ${item.NameHindi}`;
-
-
-                    subjectSelect.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-
-            subjectSelect.disabled =
-                false;
-
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to load subjects."
-            );
-
-        }
-
-
-        updatePathPreview();
-
-    }
-);
-
-
-// ============================================================
-// SUBJECT CHANGE
-// ============================================================
-
-subjectSelect.addEventListener(
-    "change",
-    async function () {
-
-        const subjectId =
-            this.value;
-
-
-        // Reset content type
-
-        contenttypeSelect.innerHTML =
-            '<option value="">Select Content Type</option>';
-
-
-        contenttypeSelect.disabled =
-            true;
-
-
-        if (!subjectId) {
-
-            updatePathPreview();
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/upload/contenttypes/${encodeURIComponent(subjectId)}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load content types"
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            data.contenttypes.forEach(
-                function (item) {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-
-                    option.value =
-                        item.ContenttypeId;
-
-
-                    option.textContent =
-                        `${item.NameEnglish} - ${item.NameHindi}`;
-
-
-                    contenttypeSelect.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-
-            contenttypeSelect.disabled =
-                false;
-
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to load content types."
-            );
-
-        }
-
-
-        updatePathPreview();
-
-    }
-);
-
-
-// ============================================================
-// CONTENT TYPE CHANGE
-// ============================================================
-
-contenttypeSelect.addEventListener(
-    "change",
-    updatePathPreview
-);
-
-
-// ============================================================
-// SET NAME CHANGE
-// ============================================================
-
-setNameInput.addEventListener(
-    "input",
-    updatePathPreview
-);
-
-
-// ============================================================
-// INITIAL PATH
-// ============================================================
-
-updatePathPreview();
-
-
+// SubCategory change → special case
+subcategorySelect.addEventListener("change", async function () {
+  const subcategoryId = this.value;
+  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+  contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
+  subjectSelect.disabled = true;
+  contenttypeSelect.disabled = true;
+
+  if (!subcategoryId) {
+    updatePathPreview();
+    return;
+  }
+
+  if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
+    // Fetch contenttypes directly
+    const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
+    const data = await response.json();
+    data.contenttypes.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item.ContenttypeId;
+      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+      contenttypeSelect.appendChild(option);
+    });
+    contenttypeSelect.disabled = false;
+  } else {
+    // Normal flow → fetch subjects
+    const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
+    const data = await response.json();
+    data.subjects.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item.SubjectId;
+      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+      subjectSelect.appendChild(option);
+    });
+    subjectSelect.disabled = false;
+  }
+  updatePathPreview();
+});
+
+// ContentType change → enable subject if Subjectwise
+contenttypeSelect.addEventListener("change", function () {
+  if (this.value.toLowerCase() === "subjectwise") {
+    subjectSelect.disabled = false;
+  } else {
+    subjectSelect.disabled = true;
+  }
+  updatePathPreview();
+});
+
+// Other listeners
+subjectSelect.addEventListener("change", updatePathPreview);
+setNameInput.addEventListener("input", updatePathPreview);
+categorySelect.addEventListener("change", updatePathPreview);
 </script>
+
 
 </body>
 
