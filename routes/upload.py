@@ -19,22 +19,14 @@ from azure.storage.blob import BlobServiceClient
 # BLUEPRINT
 # ============================================================
 
-upload_bp = Blueprint(
-    "upload",
-    __name__,
-    url_prefix="/upload"
-)
+upload_bp = Blueprint("upload", __name__, url_prefix="/upload")
 
 
 # ============================================================
 # AZURE CONFIG
 # ============================================================
 
-CONTAINER_NAME = os.getenv(
-    "AZURE_DATA_CONTAINER",
-    "ode"
-)
-
+CONTAINER_NAME = os.getenv("AZURE_DATA_CONTAINER", "ode")
 CONFIG_PREFIX = "config/"
 DATA_PREFIX = "data/"
 
@@ -44,640 +36,174 @@ DATA_PREFIX = "data/"
 # ============================================================
 
 def get_container_client():
-
-    connection_string = os.getenv(
-        "AZURE_STORAGE_CONNECTION_STRING"
-    )
-
+    connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     if not connection_string:
-
-        raise RuntimeError(
-            "AZURE_STORAGE_CONNECTION_STRING is not configured."
-        )
-
-    service = BlobServiceClient.from_connection_string(
-        connection_string
-    )
-
-    return service.get_container_client(
-        CONTAINER_NAME
-    )
+        raise RuntimeError("AZURE_STORAGE_CONNECTION_STRING is not configured.")
+    service = BlobServiceClient.from_connection_string(connection_string)
+    return service.get_container_client(CONTAINER_NAME)
 
 
 # ============================================================
-# LOAD JSON
+# LOAD JSON HELPERS
 # ============================================================
 
 def load_json_file(filename):
-
     container = get_container_client()
-
-    blob_name = (
-        f"{CONFIG_PREFIX}{filename}"
-    )
-
-    blob_client = container.get_blob_client(
-        blob_name
-    )
-
-    data = (
-        blob_client
-        .download_blob()
-        .readall()
-    )
-
-    return json.loads(
-        data.decode("utf-8-sig")
-    )
-
-
-# ============================================================
-# LOAD CONFIG
-# ============================================================
+    blob_name = f"{CONFIG_PREFIX}{filename}"
+    blob_client = container.get_blob_client(blob_name)
+    data = blob_client.download_blob().readall()
+    return json.loads(data.decode("utf-8-sig"))
 
 def load_categories():
-
-    data = load_json_file(
-        "categories.json"
-    )
-
-    return data.get(
-        "Categories",
-        []
-    )
-
+    return load_json_file("categories.json").get("Categories", [])
 
 def load_subcategories():
-
-    data = load_json_file(
-        "subcategories.json"
-    )
-
-    return data.get(
-        "SubCategories",
-        []
-    )
-
+    return load_json_file("subcategories.json").get("SubCategories", [])
 
 def load_subjects():
-
-    data = load_json_file(
-        "subjects.json"
-    )
-
-    return data.get(
-        "Subjects",
-        []
-    )
-
-
-# ============================================================
-# LOAD CONTENT TYPES
-# ============================================================
+    return load_json_file("subjects.json").get("Subjects", [])
 
 def load_contenttypes():
-
-    data = load_json_file(
-        "contenttype.json"
-    )
-
-    return data.get(
-        "Contenttype",
-        []
-    )
+    return load_json_file("contenttype.json").get("Contenttype", [])
 
 
 # ============================================================
-# FIND CATEGORY
+# FINDERS
 # ============================================================
 
 def get_category(category_id):
-
-    for category in load_categories():
-
-        if (
-            category.get("CategoryId")
-            == category_id
-        ):
-
-            return category
-
-    return None
-
-
-# ============================================================
-# FIND SUBCATEGORIES
-# ============================================================
+    return next((c for c in load_categories() if c.get("CategoryId") == category_id), None)
 
 def get_subcategories(category_id):
-
-    return [
-
-        item
-
-        for item in load_subcategories()
-
-        if (
-            item.get("CategoryId")
-            == category_id
-        )
-
-    ]
-
-
-# ============================================================
-# FIND SUBJECTS
-# ============================================================
+    return [s for s in load_subcategories() if s.get("CategoryId") == category_id]
 
 def get_subjects(subcategory_id):
-
-    return [
-
-        item
-
-        for item in load_subjects()
-
-        if (
-            item.get("SubCategoryId")
-            == subcategory_id
-        )
-
-    ]
-
-
-# ============================================================
-# FIND CONTENT TYPES
-# ============================================================
+    return [s for s in load_subjects() if s.get("SubCategoryId") == subcategory_id]
 
 def get_contenttypes(subject_id):
-
-    return [
-
-        item
-
-        for item in load_contenttypes()
-
-        if (
-            item.get("SubjectId")
-            == subject_id
-        )
-
-    ]
+    return [c for c in load_contenttypes() if c.get("SubjectId") == subject_id]
 
 
 # ============================================================
 # UPLOAD PAGE
 # ============================================================
 
-@upload_bp.route(
-    "/",
-    methods=["GET", "POST"]
-)
+@upload_bp.route("/", methods=["GET", "POST"])
 def upload_file():
-
-    # --------------------------------------------------------
-    # POST
-    # --------------------------------------------------------
-
     if request.method == "POST":
-
         try:
+            category_id = request.form.get("category_id")
+            subcategory_id = request.form.get("subcategory_id")
+            subject_id = request.form.get("subject_id")
+            contenttype_id = request.form.get("contenttype_id")
+            set_name = request.form.get("set_name")
+            uploaded_file = request.files.get("questions_file")
 
-            category_id = request.form.get(
-                "category_id"
-            )
-
-            subcategory_id = request.form.get(
-                "subcategory_id"
-            )
-
-            subject_id = request.form.get(
-                "subject_id"
-            )
-
-            contenttype_id = request.form.get(
-                "contenttype_id"
-            )
-
-            set_name = request.form.get(
-                "set_name"
-            )
-
-            uploaded_file = request.files.get(
-                "questions_file"
-            )
-
-
-            # =================================================
-            # BASIC VALIDATION
-            # =================================================
-
+            # Basic validation
             if not category_id:
-
-                flash(
-                    "Please select a category.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
+                flash("Please select a category.", "danger")
+                return redirect(url_for("upload.upload_file"))
             if not subcategory_id:
-
-                flash(
-                    "Please select a subcategory.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            if not subject_id:
-
-                flash(
-                    "Please select a subject.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
+                flash("Please select a subcategory.", "danger")
+                return redirect(url_for("upload.upload_file"))
             if not contenttype_id:
-
-                flash(
-                    "Please select a content type.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
+                flash("Please select a content type.", "danger")
+                return redirect(url_for("upload.upload_file"))
             if not set_name:
+                flash("Please enter a set name.", "danger")
+                return redirect(url_for("upload.upload_file"))
+            if not uploaded_file or not uploaded_file.filename:
+                flash("Please select a CSV file.", "danger")
+                return redirect(url_for("upload.upload_file"))
 
-                flash(
-                    "Please enter a set name.",
-                    "danger"
-                )
+            original_filename = secure_filename(uploaded_file.filename)
+            if not original_filename.lower().endswith(".csv"):
+                flash("Only CSV files are allowed.", "danger")
+                return redirect(url_for("upload.upload_file"))
 
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            if not uploaded_file:
-
-                flash(
-                    "Please select a CSV file.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            if not uploaded_file.filename:
-
-                flash(
-                    "Selected file has no filename.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # ONLY CSV
-            # =================================================
-
-            original_filename = secure_filename(
-                uploaded_file.filename
-            )
-
-            if not original_filename.lower().endswith(
-                ".csv"
-            ):
-
-                flash(
-                    "Only CSV files are allowed.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # VALIDATE CATEGORY
-            # =================================================
-
-            category = get_category(
-                category_id
-            )
-
+            category = get_category(category_id)
             if not category:
+                flash("Invalid category selected.", "danger")
+                return redirect(url_for("upload.upload_file"))
 
-                flash(
-                    "Invalid category selected.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # VALIDATE SUBCATEGORY
-            # =================================================
-
-            subcategory = None
-
-            for item in get_subcategories(
-                category_id
-            ):
-
-                if (
-                    item.get("SubCategoryId")
-                    == subcategory_id
-                ):
-
-                    subcategory = item
-                    break
-
-
+            # Validate subcategory
+            subcategory = next((s for s in get_subcategories(category_id)
+                                if s.get("SubCategoryId") == subcategory_id), None)
             if not subcategory:
+                flash("Invalid subcategory selected.", "danger")
+                return redirect(url_for("upload.upload_file"))
 
-                flash(
-                    "Invalid subcategory selected.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # VALIDATE SUBJECT
-            # =================================================
-
-            subject = None
-
-            for item in get_subjects(
-                subcategory_id
-            ):
-
-                if (
-                    item.get("SubjectId")
-                    == subject_id
-                ):
-
-                    subject = item
-                    break
-
-
-            if not subject:
-
-                flash(
-                    "Invalid subject selected.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # VALIDATE CONTENT TYPE
-            # =================================================
-
-            contenttype = None
-
-            for item in get_contenttypes(
-                subject_id
-            ):
-
-                if (
-                    item.get("ContenttypeId")
-                    == contenttype_id
-                ):
-
-                    contenttype = item
-                    break
-
-
-            if not contenttype:
-
-                flash(
-                    "Invalid content type selected.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # =================================================
-            # CLEAN SET NAME
-            # =================================================
-
-            set_name = secure_filename(
-                set_name
-            )
-
-            if not set_name:
-
-                flash(
-                    "Invalid set name.",
-                    "danger"
-                )
-
-                return redirect(
-                    url_for("upload.upload_file")
-                )
-
-
-            # Remove .csv if admin entered it
-
-            if set_name.lower().endswith(
-                ".csv"
-            ):
-
+            # Clean set name
+            set_name = secure_filename(set_name)
+            if set_name.lower().endswith(".csv"):
                 set_name = set_name[:-4]
 
-
             # =================================================
-            # FINAL BLOB PATH
+            # SPECIAL CASE HANDLING
             # =================================================
+            if subcategory_id.lower() in ("oneday", "certification"):
+                if contenttype_id.lower() == "subjectwise":
+                    # Subject required
+                    if not subject_id:
+                        flash("Please select a subject for Subjectwise uploads.", "danger")
+                        return redirect(url_for("upload.upload_file"))
+                    subject = next((s for s in get_subjects(subcategory_id)
+                                    if s.get("SubjectId") == subject_id), None)
+                    if not subject:
+                        flash("Invalid subject selected.", "danger")
+                        return redirect(url_for("upload.upload_file"))
+                    blob_path = f"{DATA_PREFIX}{category_id}/{subcategory_id}/{subject_id}/{contenttype_id}/{set_name}.csv"
+                else:
+                    # Skip subject
+                    blob_path = f"{DATA_PREFIX}{category_id}/{subcategory_id}/{contenttype_id}/{set_name}.csv"
+            else:
+                # Normal flow
+                if not subject_id:
+                    flash("Please select a subject.", "danger")
+                    return redirect(url_for("upload.upload_file"))
+                subject = next((s for s in get_subjects(subcategory_id)
+                                if s.get("SubjectId") == subject_id), None)
+                if not subject:
+                    flash("Invalid subject selected.", "danger")
+                    return redirect(url_for("upload.upload_file"))
+                blob_path = f"{DATA_PREFIX}{category_id}/{subcategory_id}/{subject_id}/{contenttype_id}/{set_name}.csv"
 
-            blob_path = (
-                f"{DATA_PREFIX}"
-                f"{category_id}/"
-                f"{subcategory_id}/"
-                f"{subject_id}/"
-                f"{contenttype_id}/"
-                f"{set_name}.csv"
-            )
-
-
-            # =================================================
-            # UPLOAD
-            # =================================================
-
+            # Upload to Azure
             container = get_container_client()
-
-            blob_client = (
-                container
-                .get_blob_client(
-                    blob_path
-                )
-            )
-
-
+            blob_client = container.get_blob_client(blob_path)
             uploaded_file.stream.seek(0)
+            blob_client.upload_blob(uploaded_file.stream, overwrite=True)
 
-            blob_client.upload_blob(
-                uploaded_file.stream,
-                overwrite=True
-            )
-
-
-            current_app.logger.info(
-                f"UPLOAD SUCCESS: {blob_path}"
-            )
-
-
-            # =================================================
-            # SUCCESS
-            # =================================================
-
-            flash(
-                f"File uploaded successfully: {blob_path}",
-                "success"
-            )
-
-            return redirect(
-                url_for(
-                    "upload.upload_file"
-                )
-            )
-
+            current_app.logger.info(f"UPLOAD SUCCESS: {blob_path}")
+            flash(f"File uploaded successfully: {blob_path}", "success")
+            return redirect(url_for("upload.upload_file"))
 
         except Exception as e:
+            current_app.logger.exception("UPLOAD FAILED")
+            flash(f"Upload failed: {str(e)}", "danger")
+            return redirect(url_for("upload.upload_file"))
 
-            current_app.logger.exception(
-                "UPLOAD FAILED"
-            )
-
-            flash(
-                f"Upload failed: {str(e)}",
-                "danger"
-            )
-
-            return redirect(
-                url_for(
-                    "upload.upload_file"
-                )
-            )
-
-
-    # ========================================================
     # GET
-    # ========================================================
-
     categories = load_categories()
-
-    current_app.logger.error(
-        f"UPLOAD PAGE: loaded {len(categories)} categories"
-    )
-
-    return render_template(
-        "upload.html",
-        categories=categories
-    )
+    return render_template("upload.html", categories=categories)
 
 
 # ============================================================
-# API - SUBCATEGORIES
+# API ENDPOINTS
 # ============================================================
 
-@upload_bp.route(
-    "/subcategories/<category_id>"
-)
-def get_subcategories_api(
-    category_id
-):
+@upload_bp.route("/subcategories/<category_id>")
+def get_subcategories_api(category_id):
+    return {"subcategories": get_subcategories(category_id)}
 
-    subcategories = get_subcategories(
-        category_id
-    )
+@upload_bp.route("/subjects/<subcategory_id>")
+def get_subjects_api(subcategory_id):
+    return {"subjects": get_subjects(subcategory_id)}
 
-    return {
-        "subcategories": subcategories
-    }
+@upload_bp.route("/contenttypes/<subject_id>")
+def get_contenttypes_api(subject_id):
+    return {"contenttypes": get_contenttypes(subject_id)}
 
-
-# ============================================================
-# API - SUBJECTS
-# ============================================================
-
-@upload_bp.route(
-    "/subjects/<subcategory_id>"
-)
-def get_subjects_api(
-    subcategory_id
-):
-
-    subjects = get_subjects(
-        subcategory_id
-    )
-
-    return {
-        "subjects": subjects
-    }
-
-
-# ============================================================
-# API - CONTENT TYPES
-# ============================================================
-
-@upload_bp.route(
-    "/contenttypes/<subject_id>"
-)
-def get_contenttypes_api(
-    subject_id
-):
-
-    contenttypes = get_contenttypes(
-        subject_id
-    )
-
-    return {
-        "contenttypes": contenttypes
-    }
-
-
-# ============================================================
-# DEPLOYMENT TEST
-# ============================================================
-
-@upload_bp.route(
-    "/deployment-test"
-)
+@upload_bp.route("/deployment-test")
 def deployment_test():
-
     return "DEPLOYMENT TEST - NEW UPLOAD.PY"
