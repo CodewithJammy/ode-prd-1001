@@ -205,7 +205,6 @@
 
 
 <script>
-
 // ============================================================
 // ELEMENT REFERENCES
 // ============================================================
@@ -215,7 +214,10 @@ const subjectSelect = document.getElementById("subject");
 const contenttypeSelect = document.getElementById("contenttype");
 const setNameInput = document.getElementById("set_name");
 const pathPreview = document.getElementById("pathPreview");
-        
+
+// ============================================================
+// PATH PREVIEW
+// ============================================================
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
@@ -234,7 +236,48 @@ function updatePathPreview() {
   }
 }
 
-// SubCategory change → special case
+// ============================================================
+// CATEGORY CHANGE → fetch subcategories
+// ============================================================
+categorySelect.addEventListener("change", async function () {
+  const categoryId = this.value;
+
+  // Reset dependent selects
+  subcategorySelect.innerHTML = '<option value="">Select SubCategory</option>';
+  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+  contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
+  subcategorySelect.disabled = true;
+  subjectSelect.disabled = true;
+  contenttypeSelect.disabled = true;
+
+  if (!categoryId) {
+    updatePathPreview();
+    return;
+  }
+
+  try {
+    const response = await fetch(`/upload/subcategories/${encodeURIComponent(categoryId)}`);
+    const data = await response.json();
+
+    data.subcategories.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item.SubCategoryId;
+      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+      subcategorySelect.appendChild(option);
+    });
+
+    subcategorySelect.disabled = false;
+  } catch (error) {
+    console.error(error);
+    alert("Unable to load subcategories.");
+  }
+
+  updatePathPreview();
+});
+
+// ============================================================
+// SUBCATEGORY CHANGE (your existing code)
+// ============================================================
 subcategorySelect.addEventListener("change", async function () {
   const subcategoryId = this.value;
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
@@ -248,7 +291,10 @@ subcategorySelect.addEventListener("change", async function () {
   }
 
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-    // Fetch contenttypes directly
+    // Force subject_id for backend consistency
+    subjectSelect.innerHTML = `<option value="${subcategoryId.toLowerCase()}" selected>${subcategoryId}</option>`;
+    subjectSelect.disabled = true;
+
     const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.contenttypes.forEach(item => {
@@ -259,7 +305,6 @@ subcategorySelect.addEventListener("change", async function () {
     });
     contenttypeSelect.disabled = false;
   } else {
-    // Normal flow → fetch subjects
     const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.subjects.forEach(item => {
@@ -270,10 +315,13 @@ subcategorySelect.addEventListener("change", async function () {
     });
     subjectSelect.disabled = false;
   }
+
   updatePathPreview();
 });
 
-// ContentType change → enable subject if Subjectwise
+// ============================================================
+// CONTENTTYPE CHANGE
+// ============================================================
 contenttypeSelect.addEventListener("change", function () {
   if (this.value.toLowerCase() === "subjectwise") {
     subjectSelect.disabled = false;
@@ -286,7 +334,6 @@ contenttypeSelect.addEventListener("change", function () {
 // Other listeners
 subjectSelect.addEventListener("change", updatePathPreview);
 setNameInput.addEventListener("input", updatePathPreview);
-categorySelect.addEventListener("change", updatePathPreview);
 </script>
 
 
