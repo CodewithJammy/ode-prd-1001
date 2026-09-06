@@ -97,9 +97,10 @@
     </form>
   </div>
 </div>
-
 <script>
-// Element references
+// ============================================================
+// ELEMENT REFERENCES
+// ============================================================
 const categorySelect = document.getElementById("category");
 const subcategorySelect = document.getElementById("subcategory");
 const subjectSelect = document.getElementById("subject");
@@ -107,7 +108,9 @@ const contenttypeSelect = document.getElementById("contenttype");
 const setNameInput = document.getElementById("set_name");
 const pathPreview = document.getElementById("pathPreview");
 
-// Path preview
+// ============================================================
+// PATH PREVIEW
+// ============================================================
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
@@ -126,7 +129,9 @@ function updatePathPreview() {
   }
 }
 
-// Category change → fetch subcategories
+// ============================================================
+// CATEGORY CHANGE → fetch subcategories
+// ============================================================
 categorySelect.addEventListener("change", async function () {
   const categoryId = this.value;
   subcategorySelect.innerHTML = '<option value="">Select SubCategory</option>';
@@ -138,19 +143,26 @@ categorySelect.addEventListener("change", async function () {
 
   if (!categoryId) { updatePathPreview(); return; }
 
-  const response = await fetch(`/upload/subcategories/${encodeURIComponent(categoryId)}`);
-  const data = await response.json();
-  data.subcategories.forEach(item => {
-    const option = document.createElement("option");
-    option.value = item.SubCategoryId;
-    option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-    subcategorySelect.appendChild(option);
-  });
-  subcategorySelect.disabled = false;
+  try {
+    const response = await fetch(`/upload/subcategories/${encodeURIComponent(categoryId)}`);
+    const data = await response.json();
+    data.subcategories.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item.SubCategoryId;
+      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+      subcategorySelect.appendChild(option);
+    });
+    subcategorySelect.disabled = false;
+  } catch (error) {
+    console.error("Error fetching subcategories:", error);
+    alert("Unable to load subcategories.");
+  }
   updatePathPreview();
 });
 
-// Subcategory change
+// ============================================================
+// SUBCATEGORY CHANGE
+// ============================================================
 subcategorySelect.addEventListener("change", async function () {
   const subcategoryId = this.value;
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
@@ -161,15 +173,21 @@ subcategorySelect.addEventListener("change", async function () {
   if (!subcategoryId) { updatePathPreview(); return; }
 
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-    const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
-    const data = await response.json();
-    data.contenttypes.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.ContenttypeId;
-      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-      contenttypeSelect.appendChild(option);
-    });
-    contenttypeSelect.disabled = false;
+    // Fetch contenttypes directly
+    try {
+      const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
+      const data = await response.json();
+      data.contenttypes.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.ContenttypeId;
+        option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+        contenttypeSelect.appendChild(option);
+      });
+      contenttypeSelect.disabled = false;
+    } catch (error) {
+      console.error("Error fetching contenttypes:", error);
+      alert("Unable to load content types.");
+    }
 
     // Enable subject only if contenttype is subjectwise/topicwise
     contenttypeSelect.addEventListener("change", function () {
@@ -182,17 +200,57 @@ subcategorySelect.addEventListener("change", async function () {
     });
   } else {
     // Normal flow → fetch subjects first
-    const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
-    const data = await response.json();
-    data.subjects.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.SubjectId;
-      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-      subjectSelect.appendChild(option);
-    });
-    subjectSelect.disabled = false;
+    try {
+      const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
+      const data = await response.json();
+      data.subjects.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.SubjectId;
+        option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+        subjectSelect.appendChild(option);
+      });
+      subjectSelect.disabled = false;
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      alert("Unable to load subjects.");
+    }
 
     // When subject selected, fetch contenttypes
     subjectSelect.addEventListener("change", async function () {
       const subjectId = this.value;
-      contenttypeSelect.innerHTML = '<option value="">Select Content Type</
+      contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
+      contenttypeSelect.disabled = true;
+
+      if (!subjectId) { updatePathPreview(); return; }
+
+      try {
+        const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subjectId)}`);
+        const data = await response.json();
+        data.contenttypes.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.ContenttypeId;
+          option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+          contenttypeSelect.appendChild(option);
+        });
+        contenttypeSelect.disabled = false;
+      } catch (error) {
+        console.error("Error fetching contenttypes:", error);
+        alert("Unable to load content types.");
+      }
+      updatePathPreview();
+    });
+  }
+  updatePathPreview();
+});
+
+// ============================================================
+// OTHER LISTENERS
+// ============================================================
+setNameInput.addEventListener("input", updatePathPreview);
+subjectSelect.addEventListener("change", updatePathPreview);
+contenttypeSelect.addEventListener("change", updatePathPreview);
+subcategorySelect.addEventListener("change", updatePathPreview);
+categorySelect.addEventListener("change", updatePathPreview);
+</script>
+</body>
+</html>
