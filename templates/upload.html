@@ -99,9 +99,7 @@
 </div>
 
 <script>
-// ============================================================
-// ELEMENT REFERENCES
-// ============================================================
+// Element references
 const categorySelect = document.getElementById("category");
 const subcategorySelect = document.getElementById("subcategory");
 const subjectSelect = document.getElementById("subject");
@@ -109,9 +107,7 @@ const contenttypeSelect = document.getElementById("contenttype");
 const setNameInput = document.getElementById("set_name");
 const pathPreview = document.getElementById("pathPreview");
 
-// ============================================================
-// PATH PREVIEW
-// ============================================================
+// Path preview
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
@@ -130,9 +126,7 @@ function updatePathPreview() {
   }
 }
 
-// ============================================================
-// CATEGORY CHANGE → fetch subcategories
-// ============================================================
+// Category change → fetch subcategories
 categorySelect.addEventListener("change", async function () {
   const categoryId = this.value;
   subcategorySelect.innerHTML = '<option value="">Select SubCategory</option>';
@@ -144,26 +138,19 @@ categorySelect.addEventListener("change", async function () {
 
   if (!categoryId) { updatePathPreview(); return; }
 
-  try {
-    const response = await fetch(`/upload/subcategories/${encodeURIComponent(categoryId)}`);
-    const data = await response.json();
-    data.subcategories.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.SubCategoryId;
-      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-      subcategorySelect.appendChild(option);
-    });
-    subcategorySelect.disabled = false;
-  } catch (error) {
-    console.error(error);
-    alert("Unable to load subcategories.");
-  }
+  const response = await fetch(`/upload/subcategories/${encodeURIComponent(categoryId)}`);
+  const data = await response.json();
+  data.subcategories.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.SubCategoryId;
+    option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+    subcategorySelect.appendChild(option);
+  });
+  subcategorySelect.disabled = false;
   updatePathPreview();
 });
 
-// ============================================================
-// SUBCATEGORY CHANGE
-// ============================================================
+// Subcategory change
 subcategorySelect.addEventListener("change", async function () {
   const subcategoryId = this.value;
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
@@ -174,9 +161,6 @@ subcategorySelect.addEventListener("change", async function () {
   if (!subcategoryId) { updatePathPreview(); return; }
 
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-    subjectSelect.innerHTML = `<option value="${subcategoryId.toLowerCase()}" selected>${subcategoryId}</option>`;
-    subjectSelect.disabled = true;
-
     const response = await fetch(`/upload/contenttypes/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.contenttypes.forEach(item => {
@@ -186,7 +170,18 @@ subcategorySelect.addEventListener("change", async function () {
       contenttypeSelect.appendChild(option);
     });
     contenttypeSelect.disabled = false;
+
+    // Enable subject only if contenttype is subjectwise/topicwise
+    contenttypeSelect.addEventListener("change", function () {
+      if (this.value.toLowerCase() === "subjectwise" || this.value.toLowerCase() === "topicwise") {
+        subjectSelect.disabled = false;
+      } else {
+        subjectSelect.disabled = true;
+      }
+      updatePathPreview();
+    });
   } else {
+    // Normal flow → fetch subjects first
     const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.subjects.forEach(item => {
@@ -196,16 +191,8 @@ subcategorySelect.addEventListener("change", async function () {
       subjectSelect.appendChild(option);
     });
     subjectSelect.disabled = false;
-  }
-  updatePathPreview();
-});
 
-// ============================================================
-// SUBJECT CHANGE → fetch contenttypes for normal subcategories
-// ============================================================
-subjectSelect.addEventListener("change", async function () {
-  const subjectId = this.value;
-  contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
-  contenttypeSelect.disabled = true;
-
-  if (!subjectId) {
+    // When subject selected, fetch contenttypes
+    subjectSelect.addEventListener("change", async function () {
+      const subjectId = this.value;
+      contenttypeSelect.innerHTML = '<option value="">Select Content Type</
