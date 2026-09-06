@@ -160,6 +160,10 @@ subcategorySelect.addEventListener("change", async function () {
 
   if (!subcategoryId) { updatePathPreview(); return; }
 
+  // Remove any old contenttype listeners
+  contenttypeSelect.replaceWith(contenttypeSelect.cloneNode(true));
+  const newContenttypeSelect = document.getElementById("contenttype");
+
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
     // Fetch contenttypes by subcategory
     const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
@@ -168,12 +172,12 @@ subcategorySelect.addEventListener("change", async function () {
       const option = document.createElement("option");
       option.value = item.ContenttypeId;
       option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-      contenttypeSelect.appendChild(option);
+      newContenttypeSelect.appendChild(option);
     });
-    contenttypeSelect.disabled = false;
+    newContenttypeSelect.disabled = false;
 
     // Subject logic depends on contenttype
-    contenttypeSelect.addEventListener("change", function () {
+    newContenttypeSelect.addEventListener("change", function () {
       const selectedType = this.value.toLowerCase();
       if (selectedType === "subjectwise" || selectedType === "topicwise") {
         subjectSelect.disabled = false; // allow manual subject selection
@@ -205,8 +209,8 @@ subcategorySelect.addEventListener("change", async function () {
     // When subject selected, fetch contenttypes by subject
     subjectSelect.addEventListener("change", async function () {
       const subjectId = this.value;
-      contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
-      contenttypeSelect.disabled = true;
+      newContenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
+      newContenttypeSelect.disabled = true;
 
       if (!subjectId) { updatePathPreview(); return; }
 
@@ -216,9 +220,9 @@ subcategorySelect.addEventListener("change", async function () {
         const option = document.createElement("option");
         option.value = item.ContenttypeId;
         option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-        contenttypeSelect.appendChild(option);
+        newContenttypeSelect.appendChild(option);
       });
-      contenttypeSelect.disabled = false;
+      newContenttypeSelect.disabled = false;
       updatePathPreview();
     });
   }
