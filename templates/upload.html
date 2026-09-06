@@ -97,10 +97,9 @@
     </form>
   </div>
 </div>
-<script>
-// ============================================================
-// ELEMENT REFERENCES
-// ============================================================
+
+  <script>
+// Element references
 const categorySelect = document.getElementById("category");
 const subcategorySelect = document.getElementById("subcategory");
 const subjectSelect = document.getElementById("subject");
@@ -108,9 +107,7 @@ const contenttypeSelect = document.getElementById("contenttype");
 const setNameInput = document.getElementById("set_name");
 const pathPreview = document.getElementById("pathPreview");
 
-// ============================================================
-// PATH PREVIEW
-// ============================================================
+// Path preview
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
@@ -129,9 +126,7 @@ function updatePathPreview() {
   }
 }
 
-// ============================================================
 // CATEGORY CHANGE → fetch subcategories
-// ============================================================
 categorySelect.addEventListener("change", async function () {
   const categoryId = this.value;
   subcategorySelect.innerHTML = '<option value="">Select SubCategory</option>';
@@ -160,9 +155,7 @@ categorySelect.addEventListener("change", async function () {
   updatePathPreview();
 });
 
-// ============================================================
 // SUBCATEGORY CHANGE
-// ============================================================
 subcategorySelect.addEventListener("change", async function () {
   const subcategoryId = this.value;
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
@@ -243,14 +236,13 @@ subcategorySelect.addEventListener("change", async function () {
   updatePathPreview();
 });
 
-// ============================================================
 // OTHER LISTENERS
-// ============================================================
 setNameInput.addEventListener("input", updatePathPreview);
 subjectSelect.addEventListener("change", updatePathPreview);
 contenttypeSelect.addEventListener("change", updatePathPreview);
 subcategorySelect.addEventListener("change", updatePathPreview);
 categorySelect.addEventListener("change", updatePathPreview);
 </script>
+
 </body>
 </html>
