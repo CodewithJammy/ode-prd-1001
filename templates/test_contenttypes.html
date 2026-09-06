@@ -147,21 +147,30 @@
 
         {% for contenttype in contenttypes %}
 
-          {% if category.CategoryId|lower == "oneday"  %}
-            <!-- OneDay flow: Subjectwise goes to oneday_subjectwise -->
-            <a class="content-card"
-               href="{{ url_for('demo_test.oneday_subjectwise',
-                                category_id=category.CategoryId,
-                                subcategory_id=subcategory.SubCategoryId) }}">
-          {% elif subject %}
-            <!-- Normal flow: use subject.SubjectId -->
-            <a class="content-card"
-               href="{{ url_for('demo_test.sets',
-                                category_id=category.CategoryId,
-                                subcategory_id=subcategory.SubCategoryId,
-                                subject_id=subject.SubjectId,
-                                contenttype_id=contenttype.ContenttypeId) }}">
-          {% endif %}
+          {% if category.CategoryId|lower == "oneday" and contenttype.ContenttypeId == "Subjectwise" %}
+  <!-- OneDay: Subjectwise → show subjects list -->
+          <a class="content-card"
+             href="{{ url_for('demo_test.oneday_subjectwise',
+                      category_id=category.CategoryId,
+                      subcategory_id=subcategory.SubCategoryId) }}">
+         {% elif category.CategoryId|lower == "oneday" %}
+  <!-- OneDay: all other contenttypes → go directly to sets -->
+          <a class="content-card"
+             href="{{ url_for('demo_test.sets',
+                      category_id=category.CategoryId,
+                      subcategory_id=subcategory.SubCategoryId,
+                      subject_id='',   <!-- or a dummy value if sets route requires it -->
+                      contenttype_id=contenttype.ContenttypeId) }}">
+            {% elif subject %}
+  <!-- Normal categories → sets with subject -->
+              <a class="content-card"
+                     href="{{ url_for('demo_test.sets',
+                      category_id=category.CategoryId,
+                      subcategory_id=subcategory.SubCategoryId,
+                      subject_id=subject.SubjectId,
+                      contenttype_id=contenttype.ContenttypeId) }}">
+            {% endif %}
+
 
               <div class="content-icon">
                 {% if contenttype.ContenttypeId == "Topicwise" %}
