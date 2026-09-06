@@ -111,9 +111,11 @@ const pathPreview = document.getElementById("pathPreview");
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
-  const subject = subjectSelect.disabled ? "" : subjectSelect.value;
   const contenttype = contenttypeSelect.value;
   let setName = setNameInput.value.trim() || "Set1";
+
+  // Always read subject value, even if disabled
+  const subject = subjectSelect.value;
 
   if (category && subcategory && contenttype) {
     if (subject) {
@@ -125,6 +127,7 @@ function updatePathPreview() {
     pathPreview.textContent = "data/Category/SubCategory/Subject/ContentType/Set1.csv";
   }
 }
+
 
 // CATEGORY CHANGE → fetch subcategories
 categorySelect.addEventListener("change", async function () {
@@ -150,7 +153,7 @@ categorySelect.addEventListener("change", async function () {
   updatePathPreview();
 });
 
-// SUBCATEGORY CHANGE
+
 subcategorySelect.addEventListener("change", async function () {
   const subcategoryId = this.value;
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
@@ -160,49 +163,50 @@ subcategorySelect.addEventListener("change", async function () {
 
   if (!subcategoryId) { updatePathPreview(); return; }
 
-  // Remove any old contenttype listeners
-  contenttypeSelect.replaceWith(contenttypeSelect.cloneNode(true));
-  const newContenttypeSelect = document.getElementById("contenttype");
-
-  if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-  // Reset contenttype element to clear old listeners
-  let newContenttypeSelect = contenttypeSelect.cloneNode(true);
-  contenttypeSelect.parentNode.replaceChild(newContenttypeSelect, contenttypeSelect);
-  contenttypeSelect = newContenttypeSelect;
-
-  // Fetch contenttypes by subcategory
-  const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
-  const data = await response.json();
-  data.contenttypes.forEach(item => {
-    const option = document.createElement("option");
-    option.value = item.ContenttypeId;
-    option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-    contenttypeSelect.appendChild(option);
-  });
-  contenttypeSelect.disabled = false;
-
-  // Subject logic depends on contenttype
-  contenttypeSelect.addEventListener("change", function () {
-    const selectedType = this.value.toLowerCase();
-    if (selectedType === "subjectwise" || selectedType === "topicwise") {
-      subjectSelect.disabled = false; // unlock subject
-    } else if (selectedType === "completetest" || selectedType === "previousyears") {
-      subjectSelect.innerHTML = "";
+  // Case 1: oneday or certification
+  if (["oneday", "certification"].includes(subcategoryId.toLowerCase())) {
+    // Fetch contenttypes by subcategory
+    const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
+    const data = await response.json();
+    data.contenttypes.forEach(item => {
       const option = document.createElement("option");
-      option.value = subcategoryId;   // auto populate with subcategoryId
-      option.textContent = subcategoryId;
-      subjectSelect.appendChild(option);
-      subjectSelect.disabled = true;  // keep locked
-    } else {
-      subjectSelect.disabled = true;
-      subjectSelect.value = "";
-    }
-    updatePathPreview();
-  });
+      option.value = item.ContenttypeId.toLowerCase();
+      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+      contenttypeSelect.appendChild(option);
+    });
+    contenttypeSelect.disabled = false;
 
+    // Handle subject logic based on contenttype
+    contenttypeSelect.addEventListener("change", async function () {
+      const selectedType = this.value.toLowerCase();
+      subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+
+      if (["subjectwise", "topicwise"].includes(selectedType)) {
+        // Fetch subjects
+        const resp = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
+        const subjData = await resp.json();
+        subjData.subjects.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.SubjectId;
+          option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+          subjectSelect.appendChild(option);
+        });
+        subjectSelect.disabled = false;
+      } else if (["completetest", "previousyears"].includes(selectedType)) {
+        // Auto-fill subject with subcategory
+        const option = document.createElement("option");
+        option.value = subcategoryId;
+        option.textContent = subcategoryId;
+        subjectSelect.appendChild(option);
+        subjectSelect.disabled = true;
+      } else {
+        subjectSelect.disabled = true;
+      }
+      updatePathPreview();
+    });
 
   } else {
-    // Normal flow → fetch subjects first
+    // Case 2: Normal flow
     const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
     const data = await response.json();
     data.subjects.forEach(item => {
@@ -213,11 +217,10 @@ subcategorySelect.addEventListener("change", async function () {
     });
     subjectSelect.disabled = false;
 
-    // When subject selected, fetch contenttypes by subject
     subjectSelect.addEventListener("change", async function () {
       const subjectId = this.value;
-      newContenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
-      newContenttypeSelect.disabled = true;
+      contenttypeSelect.innerHTML = '<option value="">Select Content Type</option>';
+      contenttypeSelect.disabled = true;
 
       if (!subjectId) { updatePathPreview(); return; }
 
@@ -227,15 +230,16 @@ subcategorySelect.addEventListener("change", async function () {
         const option = document.createElement("option");
         option.value = item.ContenttypeId;
         option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-        newContenttypeSelect.appendChild(option);
+        contenttypeSelect.appendChild(option);
       });
-      newContenttypeSelect.disabled = false;
+      contenttypeSelect.disabled = false;
       updatePathPreview();
     });
   }
   updatePathPreview();
 });
 
+  
 // OTHER LISTENERS
 setNameInput.addEventListener("input", updatePathPreview);
 subjectSelect.addEventListener("change", updatePathPreview);
