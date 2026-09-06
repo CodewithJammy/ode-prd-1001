@@ -666,58 +666,41 @@ def contenttypes(
 # ============================================================
 # SET PAGE
 # ============================================================
-
 @demotest_bp.route(
     "/category/<category_id>/<subcategory_id>/<subject_id>/<contenttype_id>"
 )
-def sets(
-    category_id,
-    subcategory_id,
-    subject_id,
-    contenttype_id
-):
+def sets(category_id, subcategory_id, subject_id, contenttype_id):
+    category = get_category(category_id)
+    subcategory = get_subcategory(subcategory_id)
 
-    category = get_category(
-        category_id
-    )
-
-    subcategory = get_subcategory(
-        subcategory_id
-    )
-
-    subject = get_subject(
-        subcategory_id,
-        subject_id
-    )
-
-    contenttype = get_contenttype(
-        subject_id,
-        contenttype_id
-    )
-
-    if (
-        not category
-        or not subcategory
-        or not subject
-        or not contenttype
-    ):
+    if not category or not subcategory:
         abort(404)
 
-    # Verify category relationship
-    if (
-        subcategory.get(
-            "CategoryId"
+    # Special case: OneDay → skip subject lookup
+    if category_id.lower() == "oneday":
+        contenttype = get_contenttype_by_subcategory(subcategory_id, contenttype_id)
+        if not contenttype:
+            abort(404)
+
+        sets_data = get_sets(category_id, subcategory_id, subject_id, contenttype_id)
+
+        return render_template(
+            "test_sets.html",
+            category=category,
+            subcategory=subcategory,
+            subject=None,   # no subject in OneDay
+            contenttype=contenttype,
+            sets=sets_data
         )
-        != category_id
-    ):
+
+    # Normal flow → subject required
+    subject = get_subject(subcategory_id, subject_id)
+    contenttype = get_contenttype(subject_id, contenttype_id)
+
+    if not subject or not contenttype:
         abort(404)
 
-    sets_data = get_sets(
-        category_id,
-        subcategory_id,
-        subject_id,
-        contenttype_id
-    )
+    sets_data = get_sets(category_id, subcategory_id, subject_id, contenttype_id)
 
     return render_template(
         "test_sets.html",
@@ -727,7 +710,6 @@ def sets(
         contenttype=contenttype,
         sets=sets_data
     )
-
 
 # ============================================================
 # TEST PAGE
