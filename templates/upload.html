@@ -27,7 +27,6 @@
           <label>Category</label>
           <select id="normalCategory" class="form-select" required>
             <option value="">Select Category</option>
-            <!-- exclude certification/oneday -->
             <option value="skilldev">Skill Development</option>
             <option value="school">School</option>
           </select>
@@ -62,7 +61,7 @@
       </form>
     </div>
 
-    <!-- Certification & OneDay Flow -->
+        <!-- Certification & OneDay Flow -->
     <div class="tab-pane fade" id="cert">
       <form id="certForm">
         <div class="mb-3">
@@ -107,7 +106,11 @@
   </div>
 </div>
 
-<script>
+<!-- Bootstrap JS bundle for tabs -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
 // Normal Flow
 const normalCategory = document.getElementById("normalCategory");
 const normalSubCategory = document.getElementById("normalSubCategory");
@@ -129,6 +132,8 @@ function updateNormalPath() {
 
 normalCategory.addEventListener("change", async function() {
   normalSubCategory.innerHTML = '<option value="">Select SubCategory</option>';
+  normalSubject.innerHTML = '<option value="">Select Subject</option>';
+  normalContentType.innerHTML = '<option value="">Select Content Type</option>';
   normalSubCategory.disabled = true;
   normalSubject.disabled = true;
   normalContentType.disabled = true;
@@ -146,6 +151,7 @@ normalCategory.addEventListener("change", async function() {
 
 normalSubCategory.addEventListener("change", async function() {
   normalSubject.innerHTML = '<option value="">Select Subject</option>';
+  normalContentType.innerHTML = '<option value="">Select Content Type</option>';
   normalSubject.disabled = true;
   normalContentType.disabled = true;
   if (!this.value) return;
@@ -180,7 +186,8 @@ normalSubject.addEventListener("change", async function() {
   el.addEventListener("input", updateNormalPath);
 });
 
-// Certification/OneDay Flow
+
+    // Certification/OneDay Flow
 const certCategory = document.getElementById("certCategory");
 const certSubCategory = document.getElementById("certSubCategory");
 const certSubject = document.getElementById("certSubject");
@@ -199,11 +206,12 @@ function updateCertPath() {
   }
 }
 
-  certCategory.addEventListener("change", async function() {
+
+    certCategory.addEventListener("change", async function() {
   certSubCategory.innerHTML = '<option value="">Select SubCategory</option>';
-  certSubCategory.disabled = true;
   certSubject.innerHTML = '<option value="">Select Subject</option>';
   certContentType.disabled = true;
+  certSubCategory.disabled = true;
 
   if (!this.value) return;
 
@@ -239,7 +247,6 @@ certSubCategory.addEventListener("change", function() {
   el.addEventListener("input", updateCertPath);
 });
 
-
-</script>
+    </script>
 </body>
 </html>
