@@ -203,7 +203,19 @@
 
 </div>
 
+
 <script>
+
+// ============================================================
+// ELEMENT REFERENCES
+// ============================================================
+const categorySelect = document.getElementById("category");
+const subcategorySelect = document.getElementById("subcategory");
+const subjectSelect = document.getElementById("subject");
+const contenttypeSelect = document.getElementById("contenttype");
+const setNameInput = document.getElementById("set_name");
+const pathPreview = document.getElementById("pathPreview");
+        
 function updatePathPreview() {
   const category = categorySelect.value;
   const subcategory = subcategorySelect.value;
