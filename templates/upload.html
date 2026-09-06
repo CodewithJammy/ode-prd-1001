@@ -165,35 +165,42 @@ subcategorySelect.addEventListener("change", async function () {
   const newContenttypeSelect = document.getElementById("contenttype");
 
   if (subcategoryId.toLowerCase() === "oneday" || subcategoryId.toLowerCase() === "certification") {
-    // Fetch contenttypes by subcategory
-    const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
-    const data = await response.json();
-    data.contenttypes.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.ContenttypeId;
-      option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
-      newContenttypeSelect.appendChild(option);
-    });
-    newContenttypeSelect.disabled = false;
+  // Reset contenttype element to clear old listeners
+  let newContenttypeSelect = contenttypeSelect.cloneNode(true);
+  contenttypeSelect.parentNode.replaceChild(newContenttypeSelect, contenttypeSelect);
+  contenttypeSelect = newContenttypeSelect;
 
-    // Subject logic depends on contenttype
-    newContenttypeSelect.addEventListener("change", function () {
-      const selectedType = this.value.toLowerCase();
-      if (selectedType === "subjectwise" || selectedType === "topicwise") {
-        subjectSelect.disabled = false; // allow manual subject selection
-      } else if (selectedType === "completetest" || selectedType === "previousyears") {
-        subjectSelect.innerHTML = "";
-        const option = document.createElement("option");
-        option.value = subcategoryId;   // auto populate with subcategoryId
-        option.textContent = subcategoryId;
-        subjectSelect.appendChild(option);
-        subjectSelect.disabled = true;  // keep locked
-      } else {
-        subjectSelect.disabled = true;
-        subjectSelect.value = "";
-      }
-      updatePathPreview();
-    });
+  // Fetch contenttypes by subcategory
+  const response = await fetch(`/upload/contenttypes-by-subcategory/${encodeURIComponent(subcategoryId)}`);
+  const data = await response.json();
+  data.contenttypes.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.ContenttypeId;
+    option.textContent = `${item.NameEnglish} - ${item.NameHindi}`;
+    contenttypeSelect.appendChild(option);
+  });
+  contenttypeSelect.disabled = false;
+
+  // Subject logic depends on contenttype
+  contenttypeSelect.addEventListener("change", function () {
+    const selectedType = this.value.toLowerCase();
+    if (selectedType === "subjectwise" || selectedType === "topicwise") {
+      subjectSelect.disabled = false; // unlock subject
+    } else if (selectedType === "completetest" || selectedType === "previousyears") {
+      subjectSelect.innerHTML = "";
+      const option = document.createElement("option");
+      option.value = subcategoryId;   // auto populate with subcategoryId
+      option.textContent = subcategoryId;
+      subjectSelect.appendChild(option);
+      subjectSelect.disabled = true;  // keep locked
+    } else {
+      subjectSelect.disabled = true;
+      subjectSelect.value = "";
+    }
+    updatePathPreview();
+  });
+
+
   } else {
     // Normal flow → fetch subjects first
     const response = await fetch(`/upload/subjects/${encodeURIComponent(subcategoryId)}`);
