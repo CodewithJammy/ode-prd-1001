@@ -122,15 +122,24 @@ normalCategory.addEventListener("change", async function() {
 
   if (!this.value) return;
 
-  const resp = await fetch(`/upload/subcategories/${this.value}`);
-  const data = await resp.json();
-  data.subcategories.forEach(sc => {
-    const opt = document.createElement("option");
-    opt.value = sc.SubCategoryId;
-    opt.textContent = sc.NameEnglish;
-    normalSubCategory.appendChild(opt);
-  });
-  normalSubCategory.disabled = false;
+  try {
+    const resp = await fetch(`/upload/subcategories/${this.value.toLowerCase()}`);
+    const data = await resp.json();
+
+    if (data.subcategories && data.subcategories.length > 0) {
+      data.subcategories.forEach(sc => {
+        const opt = document.createElement("option");
+        opt.value = sc.SubCategoryId;
+        opt.textContent = sc.NameEnglish;
+        normalSubCategory.appendChild(opt);
+      });
+      normalSubCategory.disabled = false;   // ✅ always unlock if data exists
+    } else {
+      console.warn("No subcategories found for", this.value);
+    }
+  } catch (err) {
+    console.error("Failed to load subcategories", err);
+  }
 });
 
 normalSubCategory.addEventListener("change", async function() {
