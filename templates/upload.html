@@ -111,25 +111,7 @@
 
 
   <script>
-// Normal Flow
-const normalCategory = document.getElementById("normalCategory");
-const normalSubCategory = document.getElementById("normalSubCategory");
-const normalSubject = document.getElementById("normalSubject");
-const normalContentType = document.getElementById("normalContentType");
-const normalSetName = document.getElementById("normalSetName");
-const normalPathPreview = document.getElementById("normalPathPreview");
-
-function updateNormalPath() {
-  const cat = normalCategory.value;
-  const sub = normalSubCategory.value;
-  const subj = normalSubject.value;
-  const ct = normalContentType.value;
-  const set = normalSetName.value.trim() || "Set1";
-  if (cat && sub && subj && ct) {
-    normalPathPreview.textContent = `data/${cat}/${sub}/${subj}/${ct}/${set}.csv`;
-  }
-}
-
+// Skill Dev & School
 normalCategory.addEventListener("change", async function() {
   normalSubCategory.innerHTML = '<option value="">Select SubCategory</option>';
   normalSubject.innerHTML = '<option value="">Select Subject</option>';
@@ -137,7 +119,9 @@ normalCategory.addEventListener("change", async function() {
   normalSubCategory.disabled = true;
   normalSubject.disabled = true;
   normalContentType.disabled = true;
+
   if (!this.value) return;
+
   const resp = await fetch(`/upload/subcategories/${this.value}`);
   const data = await resp.json();
   data.subcategories.forEach(sc => {
@@ -154,7 +138,9 @@ normalSubCategory.addEventListener("change", async function() {
   normalContentType.innerHTML = '<option value="">Select Content Type</option>';
   normalSubject.disabled = true;
   normalContentType.disabled = true;
+
   if (!this.value) return;
+
   const resp = await fetch(`/upload/subjects/${this.value}`);
   const data = await resp.json();
   data.subjects.forEach(s => {
@@ -169,7 +155,9 @@ normalSubCategory.addEventListener("change", async function() {
 normalSubject.addEventListener("change", async function() {
   normalContentType.innerHTML = '<option value="">Select Content Type</option>';
   normalContentType.disabled = true;
+
   if (!this.value) return;
+
   const resp = await fetch(`/upload/contenttypes/${this.value}`);
   const data = await resp.json();
   data.contenttypes.forEach(ct => {
@@ -180,71 +168,34 @@ normalSubject.addEventListener("change", async function() {
   });
   normalContentType.disabled = false;
 });
-
-[normalCategory, normalSubCategory, normalSubject, normalContentType, normalSetName].forEach(el => {
-  el.addEventListener("change", updateNormalPath);
-  el.addEventListener("input", updateNormalPath);
-});
-
-
     // Certification/OneDay Flow
-const certCategory = document.getElementById("certCategory");
-const certSubCategory = document.getElementById("certSubCategory");
-const certSubject = document.getElementById("certSubject");
-const certContentType = document.getElementById("certContentType");
-const certSetName = document.getElementById("certSetName");
-const certPathPreview = document.getElementById("certPathPreview");
-
-function updateCertPath() {
-  const cat = certCategory.value;
-  const sub = certSubCategory.value;
-  const subj = certSubject.value;
-  const ct = certContentType.value;
-  const set = certSetName.value.trim() || "Set1";
-  if (cat && sub && subj && ct) {
-    certPathPreview.textContent = `data/${cat}/${sub}/${subj}/${ct}/${set}.csv`;
-  }
-}
-
-
-    certCategory.addEventListener("change", async function() {
-  certSubCategory.innerHTML = '<option value="">Select SubCategory</option>';
+certContentType.addEventListener("change", async function() {
   certSubject.innerHTML = '<option value="">Select Subject</option>';
-  certContentType.disabled = true;
-  certSubCategory.disabled = true;
+  certSubject.disabled = true;
 
   if (!this.value) return;
 
-  // Fetch subcategories for selected category
-  const resp = await fetch(`/upload/subcategories/${this.value}`);
-  const data = await resp.json();
-  data.subcategories.forEach(sc => {
+  if (["previousyears", "completetest"].includes(this.value.toLowerCase())) {
+    // Auto-fill subject with default categoryId
     const opt = document.createElement("option");
-    opt.value = sc.SubCategoryId;
-    opt.textContent = sc.NameEnglish;
-    certSubCategory.appendChild(opt);
-  });
-  certSubCategory.disabled = false;
-});
+    opt.value = certCategory.value;
+    opt.textContent = certCategory.value;
+    certSubject.appendChild(opt);
+    certSubject.disabled = true; // locked
+  } else {
+    // Subject-wise → load subjects from JSON
+    const resp = await fetch(`/upload/subjects/${certSubCategory.value}`);
+    const data = await resp.json();
+    data.subjects.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.SubjectId;
+      opt.textContent = s.NameEnglish;
+      certSubject.appendChild(opt);
+    });
+    certSubject.disabled = false;
+  }
 
-// When SubCategory changes → auto-fill Subject with SubCategoryId
-certSubCategory.addEventListener("change", function() {
-  certSubject.innerHTML = "";
-  const opt = document.createElement("option");
-  opt.value = this.value;
-  opt.textContent = this.value;
-  certSubject.appendChild(opt);
-  certSubject.disabled = true; // keep locked
-
-  // Enable ContentType (fixed options)
-  certContentType.disabled = false;
   updateCertPath();
-});
-
-// Update path preview on changes
-[certCategory, certSubCategory, certContentType, certSetName].forEach(el => {
-  el.addEventListener("change", updateCertPath);
-  el.addEventListener("input", updateCertPath);
 });
 
     </script>
