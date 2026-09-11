@@ -2,7 +2,7 @@
 set -e
 
 # Update package lists
-apt-get update
+# apt-get update
 
 # Install unixODBC
 apt-get install -y unixodbc-dev
