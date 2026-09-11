@@ -13,6 +13,8 @@ ACCEPT_EULA=Y apt-get install -y msodbcsql18
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Start gunicorn
-gunicorn --bind=0.0.0.0:8000 app:app
+# Use Azure-provided PORT (default to 8000 if not set)
+PORT=${PORT:-8000}
 
+# Start gunicorn on the correct port
+gunicorn --bind=0.0.0.0:$PORT app:app
